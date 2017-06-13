@@ -13,7 +13,7 @@
 alias TradingApi.LiangYee.USStock, as: USSTockApi
 alias TradingSystem.Stocks
 
-us_symbols = ["TSLA", "FB", "BABA", "GOOG", "MSFT", "AAPL", "NVDA"]
+us_symbols = ["TSLA", "FB", "BABA", "GOOG", "MSFT", "AAPL", "NVDA", "BRK.B"]
 
 defmodule Api do
   @start_date "2010-01-01"
@@ -25,15 +25,18 @@ defmodule Api do
 
   def get_data(symbol, date) do
     resp = USSTockApi.get("/getDailyKBar", symbol: symbol, startDate: date, endDate: @end_date).body
-    IO.inspect resp
+    
     case resp do
       [] ->
-        {year, month, day} = Date.from_iso8601!(date) |> Date.to_erl
-        date = Date.from_erl!({year + 1, month, day}) |> Date.to_string
         :timer.sleep(1000)
-        get_data(symbol, date)
+        get_data(symbol, add_years(date))
       data -> data
     end
+  end
+
+  defp add_years(date, years \\ 1) do
+    {year, month, day} = Date.from_iso8601!(date) |> Date.to_erl
+    Date.from_erl!({year + years, month, day}) |> Date.to_string
   end
 end
 
