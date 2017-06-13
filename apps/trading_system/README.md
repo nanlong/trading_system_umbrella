@@ -1,0 +1,3 @@
+# TradingSystem
+
+**TODO: Add description**
