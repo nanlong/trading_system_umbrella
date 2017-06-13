@@ -6,7 +6,7 @@ defmodule TradingApi.LiangYee.USStock do
   TradingApi.LiangYee.USStock.get("/get5MinK", symbol: "AAPL")
 
   获取日k线
-  TradingApi.LiangYee.USStock.get("/getDailyKBar", symbol: "AAPL", startDate: "2015-01-01", endDate: "2016-02-20")
+  TradingApi.LiangYee.USStock.get("/getDailyKBar", symbol: "FB", startDate: "2010-01-01", endDate: "2016-02-20")
   """
   use HTTPotion.Base
   
@@ -40,12 +40,19 @@ defmodule TradingApi.LiangYee.USStock do
     pre_close_price:decimal 昨收盘
   """
   def process_response_body(body) do
-    data_map =
-      body 
-      |> IO.iodata_to_binary 
+    data =
+      body
+      |> IO.iodata_to_binary
       |> :jsx.decode
       |> Enum.into(%{})
     
+    case data do
+      %{"code" => "999999"} -> []
+      data -> parse_data(data)
+    end
+  end
+
+  defp parse_data(data_map) do
     data_keys =
       case Map.get(data_map, "columns") do
         "交易时间,开盘价,最高价,最低价,收盘价,成交量" ->
@@ -70,7 +77,8 @@ defmodule TradingApi.LiangYee.USStock do
     pre_data = Enum.slice(data, 0, len - 1)
     now_data = Enum.slice(data, 1, len - 1)
 
-    Enum.zip(pre_data, now_data)
+    pre_data
+    |> Enum.zip(now_data)
     |> Enum.map(fn {pre_item, now_item} -> 
       Map.put_new(now_item, :pre_close_price, Map.get(pre_item, :close_price))
     end)
