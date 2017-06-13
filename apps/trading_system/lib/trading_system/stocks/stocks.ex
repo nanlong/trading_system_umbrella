@@ -36,6 +36,7 @@ defmodule TradingSystem.Stocks do
 
   """
   def get_us_stock_daily_prices!(id), do: Repo.get!(USStockDailyPrices, id)
+  def get_us_stock_daily_prices(attrs \\ []), do: Repo.get_by(USStockDailyPrices, attrs)
 
   @doc """
   Creates a us_stock_daily_prices.

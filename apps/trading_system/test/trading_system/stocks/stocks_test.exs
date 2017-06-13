@@ -6,9 +6,9 @@ defmodule TradingSystem.StocksTest do
   describe "us_stock_daily_prices" do
     alias TradingSystem.Stocks.USStockDailyPrices
 
-    @valid_attrs %{chg_pct: "120.5", close_price: "120.5", datetime: ~N[2010-04-17 14:00:00.000000], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", turnover_vol: 42}
-    @update_attrs %{chg_pct: "456.7", close_price: "456.7", datetime: ~N[2011-05-18 15:01:01.000000], highest_price: "456.7", lowest_price: "456.7", open_price: "456.7", symbol: "some updated symbol", turnover_vol: 43}
-    @invalid_attrs %{chg_pct: nil, close_price: nil, datetime: nil, highest_price: nil, lowest_price: nil, open_price: nil, symbol: nil, turnover_vol: nil}
+    @valid_attrs %{chg_pct: "120.5", close_price: "120.5", date: ~D[2010-04-17], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", turnover_vol: 42, pre_close_price: "120.8"}
+    @update_attrs %{chg_pct: "456.7", close_price: "456.7", date: ~D[2011-05-18], highest_price: "456.7", lowest_price: "456.7", open_price: "456.7", symbol: "some updated symbol", turnover_vol: 43, pre_close_price: "480.5"}
+    @invalid_attrs %{chg_pct: nil, close_price: nil, date: nil, highest_price: nil, lowest_price: nil, open_price: nil, symbol: nil, turnover_vol: nil}
 
     def us_stock_daily_prices_fixture(attrs \\ %{}) do
       {:ok, us_stock_daily_prices} =
@@ -33,12 +33,13 @@ defmodule TradingSystem.StocksTest do
       assert {:ok, %USStockDailyPrices{} = us_stock_daily_prices} = Stocks.create_us_stock_daily_prices(@valid_attrs)
       assert us_stock_daily_prices.chg_pct == 120.5
       assert us_stock_daily_prices.close_price == Decimal.new("120.5")
-      assert us_stock_daily_prices.datetime == ~N[2010-04-17 14:00:00.000000]
+      assert us_stock_daily_prices.date == ~D[2010-04-17]
       assert us_stock_daily_prices.highest_price == Decimal.new("120.5")
       assert us_stock_daily_prices.lowest_price == Decimal.new("120.5")
       assert us_stock_daily_prices.open_price == Decimal.new("120.5")
       assert us_stock_daily_prices.symbol == "some symbol"
       assert us_stock_daily_prices.turnover_vol == 42
+      assert us_stock_daily_prices.pre_close_price == Decimal.new("120.8")
     end
 
     test "create_us_stock_daily_prices/1 with invalid data returns error changeset" do
@@ -51,12 +52,13 @@ defmodule TradingSystem.StocksTest do
       assert %USStockDailyPrices{} = us_stock_daily_prices
       assert us_stock_daily_prices.chg_pct == 456.7
       assert us_stock_daily_prices.close_price == Decimal.new("456.7")
-      assert us_stock_daily_prices.datetime == ~N[2011-05-18 15:01:01.000000]
+      assert us_stock_daily_prices.date == ~D[2011-05-18]
       assert us_stock_daily_prices.highest_price == Decimal.new("456.7")
       assert us_stock_daily_prices.lowest_price == Decimal.new("456.7")
       assert us_stock_daily_prices.open_price == Decimal.new("456.7")
       assert us_stock_daily_prices.symbol == "some updated symbol"
       assert us_stock_daily_prices.turnover_vol == 43
+      assert us_stock_daily_prices.pre_close_price == Decimal.new("480.5")
     end
 
     test "update_us_stock_daily_prices/2 with invalid data returns error changeset" do

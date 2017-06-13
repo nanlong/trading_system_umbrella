@@ -9,3 +9,24 @@
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
+
+alias TradingApi.LiangYee.USStock, as: USSTockApi
+alias TradingSystem.Stocks
+
+us_symbols = ["TSLA", "FB", "BABA", "GOOG", "MSFT", "AAPL", "NVDA"]
+start_date = "2010-01-01"
+end_date = Date.utc_today |> Date.to_string
+
+Enum.map(us_symbols, fn symbol -> 
+  resp = USSTockApi.get("/getDailyKBar", symbol: symbol, startDate: start_date, endDate: end_date).body
+
+  Enum.map(resp, fn attrs -> 
+    attrs = Map.put_new(attrs, :symbol, symbol)
+
+    unless Stocks.get_us_stock_daily_prices(attrs) do
+      Stocks.create_us_stock_daily_prices(attrs)
+    end
+  end)
+
+  :timer.sleep(1000)
+end)
