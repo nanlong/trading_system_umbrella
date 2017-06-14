@@ -10,19 +10,24 @@ defmodule TradingKernel do
   def n(results, days, index, pre_n) when index <= days - 1, do: n(results, days, index + 1, pre_n)
   def n(results, _days, index, n) when index >= length(results), do: n
   def n(results, days, index, _pre_n) when index == days do
-    before_results = Enum.slice(results, 0..index-1)
-    tr_list = Enum.map(before_results, fn item -> Base.tr(item.pre_close_price, item.highest_price, item.lowest_price) end)
-    
     pre_n =
-      Enum.reduce(tr_list, &(Decimal.add(&1, &2)))
+      results
+      |> Enum.slice(0..index-1)
+      |> Enum.map(&(item_tr(&1)))
+      |> Enum.reduce(&(Decimal.add(&1, &2)))
       |> Decimal.div(Decimal.new(days))
 
     n(results, days, index + 1, pre_n)
   end
   def n(results, days, index, pre_n) when index > days do
-    item = Enum.at(results, index)
-    item_tr = Base.tr(item.pre_close_price, item.highest_price, item.lowest_price)
-    pre_n = Base.atr(pre_n, item_tr, days)
+    pre_n =
+      results
+      |> Enum.at(index)
+      |> item_atr(days, pre_n)
+
     n(results, days, index + 1, pre_n)
   end
+
+  defp item_tr(item), do: Base.tr(item.pre_close_price, item.highest_price, item.lowest_price)
+  defp item_atr(item, days, pre_n), do: Base.atr(pre_n, item_tr(item), days)
 end
