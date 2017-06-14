@@ -20,7 +20,7 @@ defmodule TradingKernel.DonchianChannel do
   def execute(results, days, index, resp) do
     current = Enum.at(results, index)
     start_index = index - days
-    end_index = start_index + days
+    end_index = start_index + days - 1
     before_results = Enum.slice(results, start_index..end_index)
     max = max_highest_price(before_results)
     min = min_lowest_price(before_results)

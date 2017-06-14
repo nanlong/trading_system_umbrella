@@ -1,9 +1,15 @@
 defmodule TradingKernelTest do
   use ExUnit.Case
-  doctest TradingKernel
-  doctest TradingKernel.Base
+  use TradingKernel.Sample
 
-  test "the truth" do
-    assert 1 + 1 == 2
+  doctest TradingKernel
+
+  describe "trading kernel" do
+    alias TradingKernel
+
+    test "n" do
+      n = TradingKernel.n(@stock_results)
+      assert Decimal.to_string(n) == "1.357340054285142186734116083"
+    end
   end
 end

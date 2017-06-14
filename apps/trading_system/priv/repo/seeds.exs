@@ -66,6 +66,6 @@ Enum.map(us_symbols, fn symbol ->
     # end
   end)
 
-  IO.inspect data
+  IO.inspect(data, limit: 100)
   :timer.sleep(1000)
 end)

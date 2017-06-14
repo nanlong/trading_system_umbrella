@@ -37,16 +37,16 @@ defmodule TradingKernel.Base do
     iex> TradingKernel.Base.atr(Decimal.new(5.0), Decimal.new(4.0), Decimal.new(20))
     #Decimal<4.95>
   """
-  def atr(pre_tr, tr, duration) when is_float(pre_tr) or is_float(tr) or is_integer(duration) do
-    pre_tr = Decimal.new(pre_tr)
+  def atr(pre_atr, tr, duration) when is_float(pre_atr) or is_float(tr) or is_integer(duration) do
+    pre_atr = Decimal.new(pre_atr)
     tr = Decimal.new(tr)
     duration = Decimal.new(duration)
-    atr(pre_tr, tr, duration)
+    atr(pre_atr, tr, duration)
   end
-  def atr(pre_tr, tr, duration) do
+  def atr(pre_atr, tr, duration) do
     duration
     |> Decimal.sub(Decimal.new(1))
-    |> Decimal.mult(pre_tr)
+    |> Decimal.mult(pre_atr)
     |> Decimal.add(tr)
     |> Decimal.div(duration)
   end
