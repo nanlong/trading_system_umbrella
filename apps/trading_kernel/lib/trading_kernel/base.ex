@@ -50,4 +50,26 @@ defmodule TradingKernel.Base do
     |> Decimal.add(tr)
     |> Decimal.div(duration)
   end
+
+  @doc """
+  ## 建仓单位:
+    如果是股票单位为`股`
+    如果是期货单位为`合约`
+  
+  ## 参数说明:
+    account: 账户金额
+    atr: 当天平均真实波动范围
+
+  ## Examples:
+    iex> TradingKernel.Base.unit(10000, 1.35)
+    74
+  """
+  def unit(account, atr) do
+    {amount, _} = 
+      (account * 0.01 / atr) 
+      |> Float.to_string 
+      |> Integer.parse
+
+    amount
+  end
 end
