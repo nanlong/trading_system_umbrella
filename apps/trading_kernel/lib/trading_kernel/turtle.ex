@@ -5,8 +5,23 @@ defmodule TradingKernel.Turtle do
   @doc """
   20天短线
   """
-  def system(:one, status, stock) do
-    
+  def system(:one, status, stock, results) do
+    {_, dc} = DonchianChannel.system(:one, results) |> Enum.at(-1)
+
+    atr =
+      cond do
+        status.position_size > 0 -> status.n
+        true -> n(results ++ [stock])
+      end
+
+    up = unit_price(status.account, atr, stock.bid_price)
+    action = action(status, stock, dc, up, atr)
+
+    %{
+      status: status,
+      stock: stock,
+      action: action,
+    }
   end
 
   @doc """
@@ -16,7 +31,33 @@ defmodule TradingKernel.Turtle do
     
   end
 
-  def unit_price(account, n, price) do
+  defp action(status, stock, dc, up, n) do
+    # account 资金总量
+    # max_position_size 最大仓位
+    # position_size 当前仓规模
+    # avg_price 当前仓平均价
+    # bid_price 股票买入价格
+    # ask_price 股票卖出价格
+    # max_price 唐奇安最高价
+    # min_price 唐奇安最低价
+    # up 单位价格
+    # n
+
+    cond do
+      # 建仓
+      status.position_size == 0 and stock.bid_price > dc.max_price -> :op
+      # 加仓
+      status.position_size > 0 and status.position_size < status.max_position_size and stock.bid_price > (dc.max_price + 0.5 * n) and status.account > up -> :ap
+      # 止损平仓
+      status.position_size > 0 and stock.ask_price < (status.avg_price - 2 / status.position_size * n) -> :cp
+      # 止盈平仓
+      status.position_size > 0 and stock.ask_price < dc.min_price -> :cp
+      #  默认
+      true -> :nothing
+    end
+  end
+
+  defp unit_price(account, n, price) do
     # 计算头寸资金
     # account 总资金
     # n 当天n值

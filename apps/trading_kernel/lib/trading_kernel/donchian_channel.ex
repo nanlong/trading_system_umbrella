@@ -25,7 +25,7 @@ defmodule TradingKernel.DonchianChannel do
     max = max_highest_price(before_results) |> Decimal.to_float
     min = min_lowest_price(before_results) |> Decimal.to_float
     mid = mid_price(max, min) |> Decimal.to_float
-    resp = resp ++ [{current.date, %{max: max, min: min, mid: mid}}]
+    resp = resp ++ [{current.date, %{max_price: max, min_price: min, mid_price: mid}}]
     execute(results, days, index + 1, resp)
   end
   
