@@ -22,9 +22,9 @@ defmodule TradingKernel.DonchianChannel do
     start_index = index - days
     end_index = start_index + days - 1
     before_results = Enum.slice(results, start_index..end_index)
-    max = max_highest_price(before_results)
-    min = min_lowest_price(before_results)
-    mid = mid_price(max, min)
+    max = max_highest_price(before_results) |> Decimal.to_float
+    min = min_lowest_price(before_results) |> Decimal.to_float
+    mid = mid_price(max, min) |> Decimal.to_float
     resp = resp ++ [{current.date, %{max: max, min: min, mid: mid}}]
     execute(results, days, index + 1, resp)
   end

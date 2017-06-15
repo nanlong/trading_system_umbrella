@@ -1,5 +1,28 @@
-defmodule TradingKernel.TurtleBase do
+defmodule TradingKernel.Turtle do
   alias TradingKernel.Base
+  alias TradingKernel.DonchianChannel
+
+  @doc """
+  20天短线
+  """
+  def system(:one, status, stock) do
+    
+  end
+
+  @doc """
+  55天长线
+  """
+  def system(:two, status, stock) do
+    
+  end
+
+  def unit_price(account, n, price) do
+    # 计算头寸资金
+    # account 总资金
+    # n 当天n值
+    # price 股票价格
+    Base.unit(account, n) * price
+  end
 
   def n(results, days \\ 20)
   def n(results, _days) when length(results) <= 20, do: 0.0

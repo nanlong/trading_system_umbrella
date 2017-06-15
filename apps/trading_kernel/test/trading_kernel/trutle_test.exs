@@ -3,10 +3,10 @@ defmodule TradingKernel.TurtleBaseTest do
   use TradingKernel.Sample
 
   describe "turtle base" do
-    alias TradingKernel.TurtleBase
+    alias TradingKernel.Turtle
 
     test "n" do
-      n = TurtleBase.n(@stock_results)
+      n = Turtle.n(@stock_results)
       assert Decimal.to_string(n) == "1.357340054285142186734116083"
     end
   end

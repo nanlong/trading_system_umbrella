@@ -21,6 +21,17 @@ defmodule TradingSystem.Stocks do
     Repo.all(USStockDailyPrices)
   end
 
+  def list_us_stock_daily_prices(symbol, date, limit) when is_bitstring(date), 
+    do: list_us_stock_daily_prices(symbol, Date.from_iso8601!(date), limit)
+  def list_us_stock_daily_prices(symbol, date, limit) do
+    USStockDailyPrices
+    |> where(symbol: ^symbol)
+    |> where([s], s.date < ^date)
+    |> order_by(desc: :date)
+    |> limit(^limit)
+    |> Repo.all
+  end
+
   @doc """
   Gets a single us_stock_daily_prices.
 
