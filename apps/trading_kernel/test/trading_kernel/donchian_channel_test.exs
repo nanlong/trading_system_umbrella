@@ -19,7 +19,7 @@ defmodule TradingKernel.DonchianChannelTest do
 
     test "system two" do
       resp = DonchianChannel.system(:two, @stock_results)
-      assert length(resp) == 41
+      assert length(resp) == 36
     end
   end
 end

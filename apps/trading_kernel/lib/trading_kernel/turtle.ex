@@ -69,6 +69,34 @@ defmodule TradingKernel.Turtle do
   end
 
   @doc """
+  止损点
+  最多损失资金的2%
+  """
+  def stop_point(status) do
+    spread = 2 / status.position_size * status.n
+    %{long: status.avg_price - spread, short: status.avg_price + spread}
+  end
+
+  @doc """
+  10000本金 每次损失2% 全部失败，到剩1000块的次数是：114笔交易
+  100000本金 每次损失2% 全部失败，到剩1000块的次数是：228笔交易
+  1000000本金 每次损失2% 全部失败，到剩1000块的次数是：342笔交易
+  
+  ## Examples:
+    iex> TradingKernel.Turtle.stop_loss(10000, 0.02)
+    114
+
+    iex> TradingKernel.Turtle.stop_loss(100000, 0.02)
+    228
+
+    iex> TradingKernel.Turtle.stop_loss(1000000, 0.02)
+    342
+  """
+  def stop_loss(account, percent), do: stop_loss(account, percent, 0, 1000)
+  def stop_loss(account, _percent, time, limit) when account <= limit, do: time
+  def stop_loss(account, percent, time, limit), do: stop_loss(account * (1 - percent), percent, time + 1, limit)
+
+  @doc """
   s2系统的退出点
   """
   def out_point(:s2, dt) when is_map(dt), do: %{long: dt.min_price, short: dt.max_price}

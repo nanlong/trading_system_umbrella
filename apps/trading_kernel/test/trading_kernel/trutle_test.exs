@@ -1,6 +1,7 @@
 defmodule TradingKernel.TurtleBaseTest do
   use ExUnit.Case
   use TradingKernel.Sample
+  doctest TradingKernel.Turtle
 
   describe "turtle base" do
     alias TradingKernel.Turtle
