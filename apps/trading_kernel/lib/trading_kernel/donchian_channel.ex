@@ -1,10 +1,10 @@
 defmodule TradingKernel.DonchianChannel do
 
   @doc """
-  唐奇安通道的两个系统，分别为20天和55天
+  唐奇安通道的两个系统，分别为20天和60天
   """
   def system(:one, results), do: execute(results, 20)
-  def system(:two, results), do: execute(results, 55)
+  def system(:two, results), do: execute(results, 60)
 
   @doc """
   唐奇安通道
