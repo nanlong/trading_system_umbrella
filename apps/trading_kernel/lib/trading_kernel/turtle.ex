@@ -2,6 +2,11 @@ defmodule TradingKernel.Turtle do
   alias TradingKernel.Base
   alias TradingKernel.DonchianChannel
 
+
+  @s1_in_duration 20
+  @s1_out_duration 10
+  @s2_in_duration 60
+  @s2_out_duration 20
   @doc """
   20天短线
   """
@@ -13,6 +18,11 @@ defmodule TradingKernel.Turtle do
         status.position_size > 0 -> status.n
         true -> n(results ++ [stock])
       end
+    
+    # 做多入市点
+    long_in_point = dc.max_price
+    # 做空入市点
+    short_in_post = dc.min_price
 
     up = unit_price(status.account, atr, stock.bid_price)
     action = action(status, stock, dc, up, atr)
@@ -31,15 +41,44 @@ defmodule TradingKernel.Turtle do
     
   end
 
+  @doc """
+  s1系统的入市点
+  """
+  def in_point(:s1, dt) when is_map(dt), do: %{long: dt.max_price, short: dt.min_price}
+  def in_point(:s1, results) when is_list(results) do
+    {_, data} = DonchianChannel.execute(results, @s1_in_duration)
+    %{long: data.max_price, short: data.min_price}
+  end
+
+  @doc """
+  s2系统的入市点
+  """
+  def in_point(:s2, dt) when is_map(dt), do: %{long: dt.max_price, short: dt.min_price}
+  def in_point(:s2, results) when is_list(results) do
+    {_, data} = DonchianChannel.execute(results, @s2_in_duration)
+    %{long: data.max_price, short: data.min_price}
+  end
+
+  @doc """
+  s1系统的退出点
+  """
+  def out_point(:s1, dt) when is_map(dt), do: %{long: dt.min_price, short: dt.max_price}
+  def out_point(:s1, results) when is_list(results) do
+    {_, data} = DonchianChannel.execute(results, @s1_out_duration)
+    %{long: data.min_price, short: data.max_price}
+  end
+
+  @doc """
+  s2系统的退出点
+  """
+  def out_point(:s2, dt) when is_map(dt), do: %{long: dt.min_price, short: dt.max_price}
+  def out_point(:s2, results) when is_list(results) do
+    {_, data} = DonchianChannel.execute(results, @s2_out_duration)
+    %{long: data.min_price, short: data.max_price}
+  end
+
   defp action(status, stock, dc, up, n) do
-    # account 资金总量
-    # max_position_size 最大仓位
-    # position_size 当前仓规模
-    # avg_price 当前仓平均价
-    # bid_price 股票买入价格
-    # ask_price 股票卖出价格
-    # max_price 唐奇安最高价
-    # min_price 唐奇安最低价
+    # dc 唐奇安数据
     # up 单位价格
     # n
 
