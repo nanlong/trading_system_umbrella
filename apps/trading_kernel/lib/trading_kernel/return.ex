@@ -11,7 +11,7 @@ defmodule TradingKernel.Return do
     iex> TradingKernel.Return.cagr(190000, 100000, 3)
     0.23856232963017088
   """
-  def cagr(current_account, base_account, years) do
-    :math.pow(current_account / base_account, 1 / years) - 1
+  def cagr(now_account, before_account, years) do
+    :math.pow(now_account / before_account, 1 / years) - 1
   end
 end

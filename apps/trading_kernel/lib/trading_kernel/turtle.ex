@@ -19,11 +19,6 @@ defmodule TradingKernel.Turtle do
         true -> n(results ++ [stock])
       end
     
-    # 做多入市点
-    long_in_point = dc.max_price
-    # 做空入市点
-    short_in_post = dc.min_price
-
     up = unit_price(status.account, atr, stock.bid_price)
     action = action(status, stock, dc, up, atr)
 
@@ -32,13 +27,6 @@ defmodule TradingKernel.Turtle do
       stock: stock,
       action: action,
     }
-  end
-
-  @doc """
-  55天长线
-  """
-  def system(:two, status, stock) do
-    
   end
 
   @doc """
@@ -69,6 +57,15 @@ defmodule TradingKernel.Turtle do
   end
 
   @doc """
+  s2系统的退出点
+  """
+  def out_point(:s2, dt) when is_map(dt), do: %{long: dt.min_price, short: dt.max_price}
+  def out_point(:s2, results) when is_list(results) do
+    {_, data} = DonchianChannel.execute(results, @s2_out_duration)
+    %{long: data.min_price, short: data.max_price}
+  end
+  
+  @doc """
   止损点
   最多损失资金的2%
   """
@@ -81,7 +78,7 @@ defmodule TradingKernel.Turtle do
   10000本金 每次损失2% 全部失败，到剩1000块的次数是：114笔交易
   100000本金 每次损失2% 全部失败，到剩1000块的次数是：228笔交易
   1000000本金 每次损失2% 全部失败，到剩1000块的次数是：342笔交易
-  
+
   ## Examples:
     iex> TradingKernel.Turtle.stop_loss(10000, 0.02)
     114
@@ -95,15 +92,6 @@ defmodule TradingKernel.Turtle do
   def stop_loss(account, percent), do: stop_loss(account, percent, 0, 1000)
   def stop_loss(account, _percent, time, limit) when account <= limit, do: time
   def stop_loss(account, percent, time, limit), do: stop_loss(account * (1 - percent), percent, time + 1, limit)
-
-  @doc """
-  s2系统的退出点
-  """
-  def out_point(:s2, dt) when is_map(dt), do: %{long: dt.min_price, short: dt.max_price}
-  def out_point(:s2, results) when is_list(results) do
-    {_, data} = DonchianChannel.execute(results, @s2_out_duration)
-    %{long: data.min_price, short: data.max_price}
-  end
 
   defp action(status, stock, dc, up, n) do
     # dc 唐奇安数据
@@ -135,9 +123,9 @@ defmodule TradingKernel.Turtle do
   def n(results, days \\ 20)
   def n(results, _days) when length(results) <= 20, do: 0.0
   def n(results, days), do: n(results, days, 0, 0)
-  def n(results, days, index, pre_n) when index <= days - 1, do: n(results, days, index + 1, pre_n)
-  def n(results, _days, index, n) when index >= length(results), do: n
-  def n(results, days, index, _pre_n) when index == days do
+  defp n(results, days, index, pre_n) when index <= days - 1, do: n(results, days, index + 1, pre_n)
+  defp n(results, _days, index, n) when index >= length(results), do: n
+  defp n(results, days, index, _pre_n) when index == days do
     pre_n =
       results
       |> Enum.slice(0..index-1)
@@ -147,7 +135,7 @@ defmodule TradingKernel.Turtle do
 
     n(results, days, index + 1, pre_n)
   end
-  def n(results, days, index, pre_n) when index > days do
+  defp n(results, days, index, pre_n) when index > days do
     pre_n =
       results
       |> Enum.at(index)

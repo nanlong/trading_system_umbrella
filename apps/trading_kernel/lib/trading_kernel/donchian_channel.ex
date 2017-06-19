@@ -15,9 +15,9 @@ defmodule TradingKernel.DonchianChannel do
   """
   def execute(results, days) when length(results) <= days, do: []
   def execute(results, days), do: execute(results, days, 0, [])
-  def execute(results, days, index, resp) when index <= days - 1, do: execute(results, days, index + 1, resp)
-  def execute(results, _days, index, resp) when index == length(results), do: resp
-  def execute(results, days, index, resp) do
+  defp execute(results, days, index, resp) when index <= days - 1, do: execute(results, days, index + 1, resp)
+  defp execute(results, _days, index, resp) when index == length(results), do: resp
+  defp execute(results, days, index, resp) do
     current = Enum.at(results, index)
     start_index = index - days
     end_index = start_index + days - 1
