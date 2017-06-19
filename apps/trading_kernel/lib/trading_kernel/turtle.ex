@@ -13,14 +13,14 @@ defmodule TradingKernel.Turtle do
   def system(:one, status, stock, results) do
     {_, dc} = DonchianChannel.system(:one, results) |> Enum.at(-1)
 
-    atr =
+    n =
       cond do
         status.position_size > 0 -> status.n
         true -> n(results ++ [stock])
       end
     
-    up = unit_price(status.account, atr, stock.bid_price)
-    action = action(status, stock, dc, up, atr)
+    up = unit_price(status.account, n, stock.bid_price)
+    action = action(status, stock, dc, up, n)
 
     %{
       status: status,
@@ -64,7 +64,7 @@ defmodule TradingKernel.Turtle do
     {_, data} = DonchianChannel.execute(results, @s2_out_duration)
     %{long: data.min_price, short: data.max_price}
   end
-  
+
   @doc """
   止损点
   最多损失资金的2%

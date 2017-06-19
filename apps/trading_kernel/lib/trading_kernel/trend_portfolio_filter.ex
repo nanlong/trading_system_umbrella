@@ -15,6 +15,7 @@ defmodule TradingKernel.TrendPortfolioFilter do
     :long 适合长线交易
     :short 适合短线交易
   """
+  @spec execute(list) :: :long | :short | :nothing
   def execute(results) when length(results) < @max, do: :nothing
   def execute(results) do
     tr_50 = avg_tr(results, @min)

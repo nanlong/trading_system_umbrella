@@ -10,6 +10,7 @@ defmodule TradingKernel.Base do
     iex> TradingKernel.Base.tr(Decimal.new(110.06), Decimal.new(107.58), Decimal.new(105.2))
     #Decimal<4.86>
   """
+  @spec tr(float | Decimal.t, float | Decimal.t, float | Decimal.t) :: Decimal.t
   def tr(pre_close_price, highest_price, lowest_price) when is_float(pre_close_price) or is_float(highest_price) or is_float(lowest_price) do
     pre_close_price = Decimal.new(pre_close_price)
     highest_price = Decimal.new(highest_price)
@@ -37,6 +38,7 @@ defmodule TradingKernel.Base do
     iex> TradingKernel.Base.atr(Decimal.new(5.0), Decimal.new(4.0), Decimal.new(20))
     #Decimal<4.95>
   """
+  @spec atr(float | Decimal.t, float | Decimal.t, integer) :: Decimal.t
   def atr(pre_atr, tr, duration) when is_float(pre_atr) or is_float(tr) or is_integer(duration) do
     pre_atr = Decimal.new(pre_atr)
     tr = Decimal.new(tr)
@@ -64,6 +66,7 @@ defmodule TradingKernel.Base do
     iex> TradingKernel.Base.unit(10000, 1.35)
     74
   """
+  @spec unit(integer, float) :: integer
   def unit(account, atr) do
     {amount, _} = 
       (account * 0.01 / atr) 
