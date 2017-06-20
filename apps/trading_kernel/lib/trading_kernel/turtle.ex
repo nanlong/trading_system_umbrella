@@ -2,11 +2,11 @@ defmodule TradingKernel.Turtle do
   alias TradingKernel.Base
   alias TradingKernel.DonchianChannel
 
-
   @s1_in_duration 20
   @s1_out_duration 10
   @s2_in_duration 60
   @s2_out_duration 20
+  
   @doc """
   20天短线
   """
@@ -75,21 +75,26 @@ defmodule TradingKernel.Turtle do
   end
 
   @doc """
-  10000本金 每次损失2% 全部失败，到剩1000块的次数是：114笔交易
-  100000本金 每次损失2% 全部失败，到剩1000块的次数是：228笔交易
-  1000000本金 每次损失2% 全部失败，到剩1000块的次数是：342笔交易
+  回撤计算
+    损失10%是6次
+    损失20%是12次
+    损失30%是18次
+    损失40%是26次
+    损失50%是35次
+    损失60%是46次
 
-  ## Examples:
+  ## Examples
+
     iex> TradingKernel.Turtle.stop_loss(10000, 0.02)
-    114
+    35
 
     iex> TradingKernel.Turtle.stop_loss(100000, 0.02)
-    228
+    35
 
     iex> TradingKernel.Turtle.stop_loss(1000000, 0.02)
-    342
+    35
   """
-  def stop_loss(account, percent), do: stop_loss(account, percent, 0, 1000)
+  def stop_loss(account, percent), do: stop_loss(account, percent, 0, account * 0.4)
   def stop_loss(account, _percent, time, limit) when account <= limit, do: time
   def stop_loss(account, percent, time, limit), do: stop_loss(account * (1 - percent), percent, time + 1, limit)
 
