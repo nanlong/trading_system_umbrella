@@ -6,11 +6,12 @@ defmodule TradingKernel.TurtleBucket do
   @name :trutle_bucket
   @initial_value %{}
 
-  @doc """
-  创建数据
-  """
   def start_link do
     GenServer.start_link(__MODULE__, @initial_value, name: @name)
+  end
+
+  def state do
+    GenServer.call(@name, :state)
   end
 
   def get(key) do
@@ -19,6 +20,10 @@ defmodule TradingKernel.TurtleBucket do
 
   def put(key, value) do
     GenServer.call(@name, {:put, key, value})
+  end
+
+  def handle_call(:state, _from, state) do
+    {:reply, state, state}
   end
 
   def handle_call({:get, key}, _from, state) do

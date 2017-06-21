@@ -14,6 +14,8 @@ defmodule TradingKernel.TurtleBucketTest do
 
       TurtleBucket.put("milk", 3)
       assert TurtleBucket.get("milk") == 3
+
+      assert TurtleBucket.state() == %{"milk" => 3}
     end
   end
 end
