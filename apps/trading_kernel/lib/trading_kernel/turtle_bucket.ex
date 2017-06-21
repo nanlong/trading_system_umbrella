@@ -1,26 +1,32 @@
 defmodule TradingKernel.TurtleBucket do
   @moduledoc false
+
+  use GenServer
   
+  @name :trutle_bucket
+  @initial_value %{}
+
   @doc """
   创建数据
   """
   def start_link do
-    Agent.start_link(fn -> %{} end)
+    GenServer.start_link(__MODULE__, @initial_value, name: @name)
   end
 
-  @doc """
-  获取值
-  """
-  @spec get(map, atom) :: map
-  def get(bucket, key) do
-    Agent.get(bucket, &Map.get(&1, key))
+  def get(key) do
+    GenServer.call(@name, {:get, key})
   end
 
-  @doc """
-  更新值
-  """
-  @spec put(map, atom, any) :: map
-  def put(bucket, key, value) do
-    Agent.update(bucket, &Map.put(&1, key, value))
+  def put(key, value) do
+    GenServer.call(@name, {:put, key, value})
+  end
+
+  def handle_call({:get, key}, _from, state) do
+    {:reply, Map.get(state, key), state}
+  end
+
+  def handle_call({:put, key, value}, _from, state) do
+    state = Map.put(state, key, value)
+    {:reply, state, state}
   end
 end

@@ -5,15 +5,15 @@ defmodule TradingKernel.TurtleBucketTest do
     alias TradingKernel.TurtleBucket
 
     setup do
-      {:ok, bucket} = TurtleBucket.start_link()
-      {:ok, bucket: bucket}
+      TurtleBucket.start_link()
+      :ok
     end
 
-    test "stores values by key", %{bucket: bucket} do
-      assert TurtleBucket.get(bucket, "milk") == nil
+    test "stores values by key" do
+      assert TurtleBucket.get("milk") == nil
 
-      TurtleBucket.put(bucket, "milk", 3)
-      assert TurtleBucket.get(bucket, "milk") == 3
+      TurtleBucket.put("milk", 3)
+      assert TurtleBucket.get("milk") == 3
     end
   end
 end
