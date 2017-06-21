@@ -12,8 +12,7 @@ defmodule TradingKernel.Turtle do
   def init(opts \\ []) do
     symbol = Keyword.get(opts, :symbol, "")
     history = Keyword.get(opts, :history, [])
-
-    create_state()
+    
     put_state(:symbol, symbol)
     put_state(:today, Date.utc_today |> Date.to_string)
     put_state(:account, 100000)
@@ -29,7 +28,6 @@ defmodule TradingKernel.Turtle do
     put_state(:stop_4, stop(get_state(:status), get_state(:breakout), 4, get_state(:n)))
   end
   
-  def create_state, do: TurtleBucket.start_link()
   def state, do: TurtleBucket.state()    
   def get_state(key), do: TurtleBucket.get(key)
   def put_state(key, value), do: TurtleBucket.put(key, value)

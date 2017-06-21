@@ -4,11 +4,6 @@ defmodule TradingKernel.TurtleBucketTest do
   describe "turtle bucket" do
     alias TradingKernel.TurtleBucket
 
-    setup do
-      TurtleBucket.start_link()
-      :ok
-    end
-
     test "stores values by key" do
       assert TurtleBucket.get("milk") == nil
 
