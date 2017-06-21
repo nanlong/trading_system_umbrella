@@ -21,6 +21,7 @@ defmodule TradingSystem.Stocks do
     Repo.all(USStockDailyPrices)
   end
 
+  def list_us_stock_daily_prices(symbol, date, limit \\ 2000)
   def list_us_stock_daily_prices(symbol, date, limit) when is_bitstring(date), 
     do: list_us_stock_daily_prices(symbol, Date.from_iso8601!(date), limit)
   def list_us_stock_daily_prices(symbol, date, limit) do
@@ -30,6 +31,7 @@ defmodule TradingSystem.Stocks do
     |> order_by(desc: :date)
     |> limit(^limit)
     |> Repo.all
+    |> Enum.reverse
   end
 
   @doc """
