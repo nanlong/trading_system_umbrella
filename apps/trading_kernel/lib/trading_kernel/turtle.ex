@@ -94,7 +94,7 @@ defmodule TradingKernel.Turtle do
     iex> TradingKernel.Turtle.stop_loss(1000000, 0.02)
     35
   """
-  def stop_loss(account, percent), do: stop_loss(account, percent, 0, account * 0.4)
+  def stop_loss(account, percent), do: stop_loss(account, percent, 0, account * 0.5)
   def stop_loss(account, _percent, time, limit) when account <= limit, do: time
   def stop_loss(account, percent, time, limit), do: stop_loss(account * (1 - percent), percent, time + 1, limit)
 

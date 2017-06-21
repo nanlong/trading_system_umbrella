@@ -1,4 +1,4 @@
-defmodule TradingKernel.TurtleBaseTest do
+defmodule TradingKernel.TurtleTest do
   use ExUnit.Case
   use TradingKernel.Sample
   doctest TradingKernel.Turtle
