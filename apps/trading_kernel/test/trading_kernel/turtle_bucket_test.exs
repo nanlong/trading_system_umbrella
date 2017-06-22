@@ -5,12 +5,14 @@ defmodule TradingKernel.TurtleBucketTest do
     alias TradingKernel.TurtleBucket
 
     test "stores values by key" do
-      assert TurtleBucket.get("milk") == nil
+      assert TurtleBucket.get(:symbol) == nil
 
-      TurtleBucket.put("milk", 3)
-      assert TurtleBucket.get("milk") == 3
+      TurtleBucket.put(:symbol, "FB")
+      assert TurtleBucket.get(:symbol) == "FB"
 
-      assert TurtleBucket.state() == %{"milk" => 3}
+      assert TurtleBucket.state() == %TradingKernel.TurtleState{account: nil, breakout: nil,
+             donchian: nil, history: nil, min_history: nil, n: nil, status: nil,
+             symbol: "FB", today: nil, unit: nil}
     end
   end
 end

@@ -12,11 +12,13 @@ defmodule TradingKernel.Turtle do
   def init(opts \\ []) do
     symbol = Keyword.get(opts, :symbol, "")
     history = Keyword.get(opts, :history, [])
+    min_history = Keyword.get(opts, :min_history, [])
     
     put_state(:symbol, symbol)
     put_state(:today, Date.utc_today |> Date.to_string)
     put_state(:account, 100000)
     put_state(:history, history)
+    put_state(:min_history, min_history)
     put_state(:status, TrendPortfolioFilter.execute(history))
     put_state(:donchian, DonchianChannel.execute(history, 20))
     put_state(:breakout, get_state(:donchian) |> List.last |> elem(1))

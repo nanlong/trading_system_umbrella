@@ -1,10 +1,26 @@
+defmodule TradingKernel.TurtleState do
+  defstruct [
+    :symbol, 
+    :today, 
+    :account, 
+    :history, 
+    :min_history, 
+    :status, 
+    :donchian, 
+    :breakout,
+    :n,
+    :unit
+  ]
+end
+
 defmodule TradingKernel.TurtleBucket do
   @moduledoc false
 
   use GenServer
-  
+  alias TradingKernel.TurtleState
+
   @name :trutle_bucket
-  @initial_value %{}
+  @initial_value %TurtleState{}
 
   def start_link do
     GenServer.start_link(__MODULE__, @initial_value, name: @name)
