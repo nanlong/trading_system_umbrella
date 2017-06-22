@@ -13,6 +13,8 @@ defmodule TradingKernel.TurtleBucketTest do
       assert TurtleBucket.state() == %TradingKernel.TurtleState{account: nil, breakout: nil,
              donchian: nil, history: nil, min_history: nil, n: nil, status: nil,
              symbol: "FB", today: nil, unit: nil}
+
+      assert TurtleBucket.has_key?(:symbol)
     end
   end
 end

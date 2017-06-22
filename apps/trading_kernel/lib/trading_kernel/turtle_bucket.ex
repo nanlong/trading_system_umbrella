@@ -38,6 +38,10 @@ defmodule TradingKernel.TurtleBucket do
     GenServer.call(@name, {:put, key, value})
   end
 
+  def has_key?(key) do
+    GenServer.call(@name, {:has_key, key})
+  end
+
   def handle_call(:state, _from, state) do
     {:reply, state, state}
   end
@@ -50,4 +54,9 @@ defmodule TradingKernel.TurtleBucket do
     state = Map.put(state, key, value)
     {:reply, state, state}
   end
+
+  def handle_call({:has_key, key}, _from, state) do
+    {:reply, Map.has_key?(state, key), state}
+  end
+  
 end

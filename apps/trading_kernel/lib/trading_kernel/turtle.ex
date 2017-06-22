@@ -3,6 +3,7 @@ defmodule TradingKernel.Turtle do
   alias TradingKernel.DonchianChannel
   alias TradingKernel.TurtleBucket
   alias TradingKernel.TrendPortfolioFilter
+  alias TradingKernel.MockTrading
 
   @s1_in_duration 20
   @s1_out_duration 10
@@ -28,11 +29,13 @@ defmodule TradingKernel.Turtle do
     put_state(:stop_2, stop(get_state(:status), get_state(:breakout), 2, get_state(:n)))
     put_state(:stop_3, stop(get_state(:status), get_state(:breakout), 3, get_state(:n)))
     put_state(:stop_4, stop(get_state(:status), get_state(:breakout), 4, get_state(:n)))
+    put_state(:trading?, MockTrading.execute())
   end
   
   def state, do: TurtleBucket.state()    
   def get_state(key), do: TurtleBucket.get(key)
   def put_state(key, value), do: TurtleBucket.put(key, value)
+  def state_has_key?(key), do: TurtleBucket.has_key?(key)
 
   # 止损
   def stop(status, breakout, position_size, n) do
