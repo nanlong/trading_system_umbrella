@@ -5,11 +5,12 @@ defmodule TradingKernel.TurtleState do
     :account, 
     :history, 
     :min_history, 
-    :status, 
+    :status_50_300, 
     :donchian, 
     :breakout,
     :n,
-    :unit
+    :unit,
+    :trading?
   ]
 end
 

@@ -5,7 +5,8 @@ defmodule TradingSystem.Web.PageController do
   alias TradingKernel.Turtle
 
   def index(conn, _params) do
-    symbol = "FB"
+    # ["TSLA", "FB", "BABA", "GOOG", "MSFT", "AAPL", "NVDA", "BRK.B"]
+    symbol = "TSLA"
     today = Date.utc_today |> Date.to_string
     
     history = Stocks.list_us_stock_daily_prices(symbol, today)
@@ -15,6 +16,7 @@ defmodule TradingSystem.Web.PageController do
       history: history,
     )
 
+    IO.inspect Turtle.state()
     render conn, "index.html"
   end
 end

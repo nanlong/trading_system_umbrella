@@ -20,15 +20,11 @@ defmodule TradingKernel.Turtle do
     put_state(:account, 100000)
     put_state(:history, history)
     put_state(:min_history, min_history)
-    put_state(:status, TrendPortfolioFilter.execute(history))
     put_state(:donchian, DonchianChannel.execute(history, 20))
     put_state(:breakout, get_state(:donchian) |> List.last |> elem(1))
     put_state(:n, n(history, 20) |> Decimal.to_float |> Float.floor(2))
-    put_state(:unit, unit(get_state(:status), get_state(:account), get_state(:n), get_state(:breakout)))
-    put_state(:stop_1, stop(get_state(:status), get_state(:breakout), 1, get_state(:n)))
-    put_state(:stop_2, stop(get_state(:status), get_state(:breakout), 2, get_state(:n)))
-    put_state(:stop_3, stop(get_state(:status), get_state(:breakout), 3, get_state(:n)))
-    put_state(:stop_4, stop(get_state(:status), get_state(:breakout), 4, get_state(:n)))
+    put_state(:unit, Base.unit(get_state(:account), get_state(:n)))
+    put_state(:status_50_300, TrendPortfolioFilter.execute(history))
     put_state(:trading?, MockTrading.execute())
   end
   
@@ -37,23 +33,6 @@ defmodule TradingKernel.Turtle do
   def put_state(key, value), do: TurtleBucket.put(key, value)
   def state_has_key?(key), do: TurtleBucket.has_key?(key)
 
-  # 止损
-  def stop(status, breakout, position_size, n) do
-    case status do
-      :long -> (Map.get(breakout, :max_price) - 2 / position_size * n) |> Float.floor(2)
-      :short -> (Map.get(breakout, :min_price) + 2 / position_size * n) |> Float.floor(2)
-      :nothing -> 0
-    end
-  end
-
-  # 头寸规模
-  def unit(status, account, n, breakout) do
-    case status do
-      :long -> unit_price(account, n, Map.get(breakout, :max_price)) |> Float.floor(2)
-      :short -> unit_price(account, n, Map.get(breakout, :min_price)) |> Float.floor(2)
-      :nothing -> 0
-    end
-  end
   @doc """
   20天短线
   """
@@ -66,13 +45,9 @@ defmodule TradingKernel.Turtle do
         true -> n(results ++ [stock])
       end
     
-    up = unit_price(status.account, n, stock.bid_price)
-    action = action(status, stock, dc, up, n)
-
     %{
       status: status,
       stock: stock,
-      action: action,
     }
   end
 
@@ -162,14 +137,6 @@ defmodule TradingKernel.Turtle do
       #  默认
       true -> :nothing
     end
-  end
-
-  defp unit_price(account, n, price) do
-    # 计算头寸资金
-    # account 总资金
-    # n 当天n值
-    # price 股票价格
-    Base.unit(account, n) * price
   end
 
   def n(results, days \\ 20)

@@ -10,14 +10,15 @@ defmodule TradingKernel.MockTrading do
   false -> 放弃交易
   """
   def execute do
-    if Turtle.state_has_key?(:trading?) do
-      Turtle.get_state(:trading?)
-    else
-      history = Turtle.get_state(:history)
-      min_history = Turtle.get_state(:min_history)
-      donchian_20 = Turtle.get_state(:donchian)
-      donchian_10 = DonchianChannel.execute(history, 10)
-      execute(history, Enum.reverse(min_history), donchian_20, donchian_10)
+    cond do
+      Turtle.get_state(:status_50_300) != :long -> False
+      not is_nil(Turtle.get_state(:trading?)) -> Turtle.get_state(:trading?)
+      true ->
+        history = Turtle.get_state(:history)
+        min_history = Turtle.get_state(:min_history)
+        donchian_20 = Turtle.get_state(:donchian)
+        donchian_10 = DonchianChannel.execute(history, 10)
+        execute(history, Enum.reverse(min_history), donchian_20, donchian_10)
     end
   end
 

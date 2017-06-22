@@ -20,6 +20,8 @@ defmodule TradingKernel.TrendPortfolioFilter do
   def execute(results) do
     tr_50 = avg_tr(results, @min)
     tr_300 = avg_tr(results, @max)
+    IO.inspect tr_50
+    IO.inspect tr_300
     if tr_50 > tr_300, do: :long, else: :short
   end
 
