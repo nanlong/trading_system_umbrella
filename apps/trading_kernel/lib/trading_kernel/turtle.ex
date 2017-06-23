@@ -37,9 +37,9 @@ defmodule TradingKernel.Turtle do
   20天短线
   """
   def system(:one, status, stock, results) do
-    {_, dc} = DonchianChannel.system(:one, results) |> Enum.at(-1)
+    {_, _dc} = DonchianChannel.system(:one, results) |> Enum.at(-1)
 
-    n =
+    _n =
       cond do
         status.position_size > 0 -> status.n
         true -> n(results ++ [stock])
@@ -120,27 +120,27 @@ defmodule TradingKernel.Turtle do
   def stop_loss(account, _percent, time, limit) when account <= limit, do: time
   def stop_loss(account, percent, time, limit), do: stop_loss(account * (1 - percent), percent, time + 1, limit)
 
-  defp action(status, stock, dc, up, n) do
-    # dc 唐奇安数据
-    # up 单位价格
-    # n
+  # defp action(status, stock, dc, up, n) do
+  #   # dc 唐奇安数据
+  #   # up 单位价格
+  #   # n
 
-    cond do
-      # 建仓
-      status.position_size == 0 and stock.bid_price > dc.max_price -> :op
-      # 加仓
-      status.position_size > 0 and status.position_size < status.max_position_size and stock.bid_price > (dc.max_price + 0.5 * n) and status.account > up -> :ap
-      # 止损平仓
-      status.position_size > 0 and stock.ask_price < (status.avg_price - 2 / status.position_size * n) -> :cp
-      # 止盈平仓
-      status.position_size > 0 and stock.ask_price < dc.min_price -> :cp
-      #  默认
-      true -> :nothing
-    end
-  end
+  #   cond do
+  #     # 建仓
+  #     status.position_size == 0 and stock.bid_price > dc.max_price -> :op
+  #     # 加仓
+  #     status.position_size > 0 and status.position_size < status.max_position_size and stock.bid_price > (dc.max_price + 0.5 * n) and status.account > up -> :ap
+  #     # 止损平仓
+  #     status.position_size > 0 and stock.ask_price < (status.avg_price - 2 / status.position_size * n) -> :cp
+  #     # 止盈平仓
+  #     status.position_size > 0 and stock.ask_price < dc.min_price -> :cp
+  #     #  默认
+  #     true -> :nothing
+  #   end
+  # end
 
   def n(results, days \\ 20)
-  def n(results, _days) when length(results) <= 20, do: Decimal.new(0)
+  def n(results, _days) when length(results) <= 20, do: Decimal.new(0.1)
   def n(results, days), do: n(results, days, 0, 0)
   defp n(results, days, index, pre_n) when index <= days - 1, do: n(results, days, index + 1, pre_n)
   defp n(results, _days, index, n) when index >= length(results), do: n

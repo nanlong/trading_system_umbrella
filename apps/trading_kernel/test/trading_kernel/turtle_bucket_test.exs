@@ -11,8 +11,9 @@ defmodule TradingKernel.TurtleBucketTest do
       assert TurtleBucket.get(:symbol) == "FB"
 
       assert TurtleBucket.state() == %TradingKernel.TurtleState{account: nil, breakout: nil,
-             donchian: nil, history: nil, min_history: nil, n: nil, status: nil,
-             symbol: "FB", today: nil, unit: nil}
+             donchian: nil, history: nil, min_history: nil, n: nil,
+             status_50_300: nil, symbol: "FB", today: nil, trading?: nil,
+             unit: nil}
 
       assert TurtleBucket.has_key?(:symbol)
     end

@@ -16,7 +16,6 @@ defmodule TradingSystem.Web.PageController do
       history: history,
     )
 
-    IO.inspect Turtle.state()
     render conn, "index.html"
   end
 end
