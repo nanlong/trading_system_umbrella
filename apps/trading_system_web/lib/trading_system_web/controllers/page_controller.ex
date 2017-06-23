@@ -12,6 +12,7 @@ defmodule TradingSystem.Web.PageController do
     history = Stocks.list_us_stock_daily_prices(symbol, today)
 
     Turtle.init(
+      account: 100000,
       symbol: symbol,
       history: history,
     )

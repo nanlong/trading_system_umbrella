@@ -11,15 +11,16 @@ defmodule TradingKernel.Turtle do
   @s2_out_duration 20
 
   def init(opts \\ []) do
+    account = Keyword.get(opts, :account, 0)
     symbol = Keyword.get(opts, :symbol, "")
     history = Keyword.get(opts, :history, [])
     min_history = Keyword.get(opts, :min_history, [])
     
     put_state(:symbol, symbol)
-    put_state(:today, Date.utc_today |> Date.to_string)
-    put_state(:account, 100000)
+    put_state(:account, account)
     put_state(:history, history)
     put_state(:min_history, min_history)
+    put_state(:today, Date.utc_today |> Date.to_string)
     put_state(:donchian, DonchianChannel.execute(history, 20))
     put_state(:breakout, get_state(:donchian) |> List.last |> elem(1))
     put_state(:n, n(history, 20) |> Decimal.to_float |> Float.floor(2))
