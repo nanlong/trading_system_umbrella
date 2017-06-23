@@ -19,6 +19,12 @@ defmodule TradingSystem.Web.Router do
     get "/", PageController, :index
   end
 
+  forward "/api", Absinthe.Plug,
+    schema: TradingSystem.Graphql.Schema
+
+  forward "/graphiql", Absinthe.Plug.GraphiQL,
+    schema: TradingSystem.Graphql.Schema
+
   # Other scopes may use custom stacks.
   # scope "/api", TradingSystem.Web do
   #   pipe_through :api
