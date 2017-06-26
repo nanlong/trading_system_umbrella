@@ -22,7 +22,7 @@ defmodule TradingKernel.Turtle do
     put_state(:min_history, min_history)
     put_state(:today, Date.utc_today |> Date.to_string)
     put_state(:donchian, DonchianChannel.execute(history, 20))
-    put_state(:breakout, get_state(:donchian) |> List.last |> elem(1))
+    put_state(:breakout, get_state(:donchian) |> List.last)
     put_state(:n, n(history, 20) |> Decimal.to_float |> Float.floor(2))
     put_state(:unit, Base.unit(get_state(:account), get_state(:n)))
     put_state(:status_50_300, TrendPortfolioFilter.execute(history))

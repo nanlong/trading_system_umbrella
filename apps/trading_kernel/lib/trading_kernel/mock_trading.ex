@@ -24,7 +24,7 @@ defmodule TradingKernel.MockTrading do
 
   def execute(_, [], _, _), do: false
   def execute(history, [min_data | rest], donchian_20, donchian_10) do
-    %{max_price: max_price, min_price: min_price} = Keyword.get(donchian_20, min_data.date)
+    %{max_price: max_price, min_price: min_price} = Enum.find(donchian_20, fn(x) -> x.date == min_data.date end)
     
     # 这个时间点之后的分钟数据
     {_, after_data} = Enum.split_with(Turtle.get_state(:min_history), &(&1.datetime < min_data.datetime))
@@ -51,8 +51,8 @@ defmodule TradingKernel.MockTrading do
   def trading(:long, _date, _position_price, _n, _history, [], _donchian_10), do: false
   def trading(:long, date, position_price, n, history, [min_data, rest], donchian_10) do
     sp = position_price - 2 * n
-    cp = Keyword.get(donchian_10, date) |> elem(1) |> Map.get(:min_price)
-
+    cp = Enum.find(donchian_10, fn(x) -> x.date == date end) |> Map.get(:min_price)
+    
     cond do
       min_data.price < cp -> position_price < cp and cp - position_price >= 2 * n
       min_data.price < sp -> true
@@ -66,7 +66,7 @@ defmodule TradingKernel.MockTrading do
   def trading(:short, _date, _position_price, _n, _history, [], _donchian_10), do: false
   def trading(:short, date, position_price, n, history, [min_data, rest], donchian_10) do
     sp = position_price - 2 * n
-    cp = Keyword.get(donchian_10, date) |> elem(1) |> Map.get(:min_price)
+    cp = Enum.find(donchian_10, fn(x) -> x.date == date end) |> Map.get(:min_price)
     
     cond do
       min_data.price > cp -> position_price > cp and position_price - cp >= 2 * n

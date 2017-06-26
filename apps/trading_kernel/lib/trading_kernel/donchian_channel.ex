@@ -12,9 +12,9 @@ defmodule TradingKernel.DonchianChannel do
 
   ## Examples:
     iex> TradingKernel.DonchianChannel.execute([], 20)
-    [{:date, %{max_price: 0, mid_price: 0, min_price: 0}}]
+    [%{date: ~D[0000-01-01], max_price: 0, mid_price: 0, min_price: 0}]
   """
-  def execute(results, days) when length(results) <= days, do: [{:date, %{max_price: 0, min_price: 0, mid_price: 0}}]
+  def execute(results, days) when length(results) <= days, do: [%{date: ~D[0000-01-01], max_price: 0, min_price: 0, mid_price: 0}]
   def execute(results, days), do: execute(results, days, 0, [])
   defp execute(results, days, index, resp) when index <= days - 1, do: execute(results, days, index + 1, resp)
   defp execute(results, _days, index, resp) when index == length(results), do: resp
@@ -26,7 +26,7 @@ defmodule TradingKernel.DonchianChannel do
     max = max_highest_price(before_results) |> Decimal.to_float
     min = min_lowest_price(before_results) |> Decimal.to_float
     mid = mid_price(max, min) |> Decimal.to_float
-    resp = resp ++ [{current.date, %{max_price: max, min_price: min, mid_price: mid}}]
+    resp = resp ++ [%{date: current.date, max_price: max, min_price: min, mid_price: mid}]
     execute(results, days, index + 1, resp)
   end
   
