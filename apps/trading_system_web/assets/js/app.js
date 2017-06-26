@@ -1,7 +1,7 @@
 import "phoenix_html"
 import ApolloClient, { createNetworkInterface } from "apollo-client"
 import gql from "graphql-tag"
-import echarts from "echarts"
+import chart from "./chart"
 
 const client = new ApolloClient({
   networkInterface: createNetworkInterface({
@@ -14,15 +14,21 @@ client.query({
     query {
       usStocks(symbol: "FB") {
         date
-        open_price
-        close_price
-        lowest_price
-        highest_price
-        turnover_vol
+        openPrice
+        closePrice
+        lowestPrice
+        highestPrice
+        turnoverVol
+      }
+      donchianChannel(symbol: "FB", duration: 20) {
+        date
+        maxPrice
+        midPrice
+        minPrice
       }
     }
   `
 })
-.then(resp => console.log(resp.data.usStocks))
+.then(resp => chart('chart', resp.data))
 .catch(error => console.error(error))
 
