@@ -1,4 +1,4 @@
-defmodule TradingKernel.TurtleState do
+defmodule TradingKernel.Turtle.State do
   defstruct [
     :symbol, 
     :today, 
@@ -14,14 +14,14 @@ defmodule TradingKernel.TurtleState do
   ]
 end
 
-defmodule TradingKernel.TurtleBucket do
+defmodule TradingKernel.Turtle.Bucket do
   @moduledoc false
 
   use GenServer
-  alias TradingKernel.TurtleState
+  alias TradingKernel.Turtle.State
 
   @name :trutle_bucket
-  @initial_value %TurtleState{}
+  @initial_value %State{}
 
   def start_link do
     GenServer.start_link(__MODULE__, @initial_value, name: @name)

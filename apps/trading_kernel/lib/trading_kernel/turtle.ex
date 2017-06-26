@@ -1,9 +1,9 @@
 defmodule TradingKernel.Turtle do
   alias TradingKernel.Base
   alias TradingKernel.DonchianChannel
-  alias TradingKernel.TurtleBucket
   alias TradingKernel.TrendPortfolioFilter
-  alias TradingKernel.MockTrading
+  alias TradingKernel.Turtle.Bucket
+  alias TradingKernel.Turtle.MockTrading
 
   @s1_in_duration 20
   @s1_out_duration 10
@@ -29,10 +29,10 @@ defmodule TradingKernel.Turtle do
     put_state(:trading?, MockTrading.execute())
   end
   
-  def state, do: TurtleBucket.state()    
-  def get_state(key), do: TurtleBucket.get(key)
-  def put_state(key, value), do: TurtleBucket.put(key, value)
-  def state_has_key?(key), do: TurtleBucket.has_key?(key)
+  def state, do: Bucket.state()    
+  def get_state(key), do: Bucket.get(key)
+  def put_state(key, value), do: Bucket.put(key, value)
+  def state_has_key?(key), do: Bucket.has_key?(key)
 
   @doc """
   20天短线

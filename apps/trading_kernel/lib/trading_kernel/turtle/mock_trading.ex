@@ -1,4 +1,4 @@
-defmodule TradingKernel.MockTrading do
+defmodule TradingKernel.Turtle.MockTrading do
   @moduledoc """
   模拟交易 使用s1系统规则，s2系统不需要模拟交易
   """
