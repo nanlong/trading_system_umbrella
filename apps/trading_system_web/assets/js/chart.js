@@ -14,7 +14,6 @@ function data_handler(data) {
 function chart(element_id, data) {
   const my_chart = echarts.init(document.getElementById(element_id))
   const my_data = data_handler(data)
-  console.log(my_data)
 
   my_chart.setOption({
     title: {
