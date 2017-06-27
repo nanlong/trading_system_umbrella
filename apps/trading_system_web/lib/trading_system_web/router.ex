@@ -17,6 +17,7 @@ defmodule TradingSystem.Web.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/status/:symbol", PageController, :status
   end
 
   forward "/api", Absinthe.Plug,

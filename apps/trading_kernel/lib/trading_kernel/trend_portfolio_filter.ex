@@ -18,8 +18,8 @@ defmodule TradingKernel.TrendPortfolioFilter do
   @spec execute(list) :: :long | :short | :nothing
   def execute(results) when length(results) < @max, do: :nothing
   def execute(results) do
-    tr_50 = avg_tr(results, @min)
-    tr_300 = avg_tr(results, @max)
+    tr_50 = avg_tr(results, @min) |> Decimal.to_float
+    tr_300 = avg_tr(results, @max) |> Decimal.to_float
     if tr_50 > tr_300, do: :long, else: :short
   end
 

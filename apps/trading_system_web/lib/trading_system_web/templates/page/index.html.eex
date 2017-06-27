@@ -1,4 +1,10 @@
+<!--<div id="chart" style="width: 800px; height: 600px;"></div>-->
 
-<div id="chart" style="width: 800px; height: 600px;"> 
-  
+<div>
+  <p><strong>股票列表</strong><i>日线最后更新时间: <%= List.first(@stocks).date %></i></p>
+  <ul>
+    <%= for stock <- @stocks do %>
+    <li><a href="<%= page_path(@conn, :status, stock.symbol) %>" target="_blank"><%= stock.symbol %></a></li>
+    <%= end %>
+  </ul>
 </div>

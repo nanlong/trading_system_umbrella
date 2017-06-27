@@ -27,6 +27,12 @@ defmodule TradingKernel.Turtle do
     put_state(:unit, Base.unit(get_state(:account), get_state(:n)))
     put_state(:status_50_300, TrendPortfolioFilter.execute(history))
     put_state(:trading?, MockTrading.execute())
+
+    put_state(:donchian_20, DonchianChannel.execute(history, 20))
+    put_state(:donchian_60, DonchianChannel.execute(history, 60))
+    put_state(:breakout_10, DonchianChannel.execute(history, 10) |> List.last)
+    put_state(:breakout_20, get_state(:donchian_20) |> List.last)
+    put_state(:breakout_60, get_state(:donchian_60) |> List.last)
   end
   
   def state, do: Bucket.state()    

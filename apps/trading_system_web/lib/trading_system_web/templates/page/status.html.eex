@@ -1,0 +1,101 @@
+<div>
+
+
+  <article class="message">
+    <div class="message-header">
+      <p>60日长线</p>
+    </div>
+    <div class="message-body">
+      <ul>
+        <li>当前时间: <%= @state.today %></li>
+        <li>股票代码: <%= @state.symbol %></li>
+        <li>交易方向: <%= if @state.status_50_300 == :long, do: "长线", else: "短线"%> (短线不可操作)</li>
+        <li>N值: <%= @state.n %></li>
+        <li>头寸单位: <%= @state.unit %>股／(1万美元)</li>
+      </ul>
+    </div>
+  </article>
+
+
+  <table class="table is-bordered is-striped is-narrow">
+    <thead>
+      <tr>
+        <th colspan="1">做多方向</th>
+        <th colspan="3">今日做多止盈点（有仓情况下）: <%= @state.breakout_20.min_price %></th>
+      </tr>
+      <tr>
+        <th width="25%">操作</th>
+        <th width="25%">价格</th>
+        <th width="25%">操作</th>
+        <th width="25%">价格</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>1单位建仓</th>
+        <td><%= @state.breakout_60.max_price %></td>
+        <th>1单位止损</th>
+        <td><%= @state.breakout_60.max_price - @state.n * 2 %></td>
+      </tr>
+      <tr>
+        <th>2单位加仓</th>
+        <td><%= @state.breakout_60.max_price + @state.n * 0.5 %></td>
+        <th>2单位止损</th>
+        <td><%= @state.breakout_60.max_price - @state.n %></td>
+      </tr>
+      <tr>
+        <th>3单位加仓</th>
+        <td><%= @state.breakout_60.max_price + @state.n %></td>
+        <th>3单位止损</th>
+        <td><%= @state.breakout_60.max_price - @state.n * 0.66 %></td>
+      </tr>
+      <tr>
+        <th>4单位加仓</th>
+        <td><%= @state.breakout_60.max_price + @state.n * 1.5 %></td>
+        <th>4单位止损</th>
+        <td><%= @state.breakout_60.max_price - @state.n * 0.5 %></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <table class="table is-bordered is-striped is-narrow">
+    <thead>
+      <tr>
+        <th colspan="1">做空方向</th>
+        <th colspan="3">今日做空止盈点（有仓情况下）: <%= @state.breakout_20.max_price %></th>
+      </tr>
+      <tr>
+        <th width="25%">操作</th>
+        <th width="25%">价格</th>
+        <th width="25%">操作</th>
+        <th width="25%">价格</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th>1单位建仓</th>
+        <td><%= @state.breakout_60.min_price %></td>
+        <th>1单位止损</th>
+        <td><%= @state.breakout_60.min_price + @state.n * 2 %></td>
+      </tr>
+      <tr>
+        <th>2单位加仓</th>
+        <td><%= @state.breakout_60.min_price - @state.n * 0.5 %></td>
+        <th>2单位止损</th>
+        <td><%= @state.breakout_60.min_price + @state.n %></td>
+      </tr>
+      <tr>
+        <th>3单位加仓</th>
+        <td><%= @state.breakout_60.min_price - @state.n %></td>
+        <th>3单位止损</th>
+        <td><%= @state.breakout_60.min_price + @state.n * 0.66 %></td>
+      </tr>
+      <tr>
+        <th>4单位加仓</th>
+        <td><%= @state.breakout_60.min_price - @state.n * 1.5 %></td>
+        <th>4单位止损</th>
+        <td><%= @state.breakout_60.min_price + @state.n * 0.5 %></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -17,6 +17,11 @@ defmodule TradingSystem.Stocks do
       [%USStockDailyPrices{}, ...]
 
   """
+  def stock_list do
+    query = from(USStockDailyPrices, distinct: :symbol, order_by: [desc: :date])
+    Repo.all(query)
+  end
+
   def list_us_stock_daily_prices do
     Repo.all(USStockDailyPrices)
   end
