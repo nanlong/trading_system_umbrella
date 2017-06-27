@@ -11,7 +11,9 @@
         <li>股票代码: <%= @state.symbol %></li>
         <li>交易方向: <%= if @state.status_50_300 == :long, do: "长线", else: "短线"%> (短线不可操作)</li>
         <li>N值: <%= @state.n %></li>
-        <li>头寸单位: <%= @state.unit %>股／(1万美元)</li>
+        <li>账户总额: 1万美元</li>
+        <li>头寸单位: <%= @state.unit %>股</li>
+        <li>建仓成本: <%= (@state.unit * @state.breakout_60.max_price) |> currency %> 美元</li>
       </ul>
     </div>
   </article>
@@ -35,25 +37,25 @@
         <th>1单位建仓</th>
         <td><%= @state.breakout_60.max_price %></td>
         <th>1单位止损</th>
-        <td><%= @state.breakout_60.max_price - @state.n * 2 %></td>
+        <td><%= (@state.breakout_60.max_price - @state.n * 2) |> currency %></td>
       </tr>
       <tr>
         <th>2单位加仓</th>
-        <td><%= @state.breakout_60.max_price + @state.n * 0.5 %></td>
+        <td><%= (@state.breakout_60.max_price + @state.n * 0.5) |> currency %></td>
         <th>2单位止损</th>
-        <td><%= @state.breakout_60.max_price - @state.n %></td>
+        <td><%= (@state.breakout_60.max_price - @state.n) |> currency %></td>
       </tr>
       <tr>
         <th>3单位加仓</th>
-        <td><%= @state.breakout_60.max_price + @state.n %></td>
+        <td><%= (@state.breakout_60.max_price + @state.n) |> currency %></td>
         <th>3单位止损</th>
-        <td><%= @state.breakout_60.max_price - @state.n * 0.66 %></td>
+        <td><%= (@state.breakout_60.max_price - @state.n * 0.66) |> currency %></td>
       </tr>
       <tr>
         <th>4单位加仓</th>
-        <td><%= @state.breakout_60.max_price + @state.n * 1.5 %></td>
+        <td><%= (@state.breakout_60.max_price + @state.n * 1.5) |> currency %></td>
         <th>4单位止损</th>
-        <td><%= @state.breakout_60.max_price - @state.n * 0.5 %></td>
+        <td><%= (@state.breakout_60.max_price - @state.n * 0.5) |> currency %></td>
       </tr>
     </tbody>
   </table>
@@ -76,25 +78,25 @@
         <th>1单位建仓</th>
         <td><%= @state.breakout_60.min_price %></td>
         <th>1单位止损</th>
-        <td><%= @state.breakout_60.min_price + @state.n * 2 %></td>
+        <td><%= (@state.breakout_60.min_price + @state.n * 2) |> currency %></td>
       </tr>
       <tr>
         <th>2单位加仓</th>
-        <td><%= @state.breakout_60.min_price - @state.n * 0.5 %></td>
+        <td><%= (@state.breakout_60.min_price - @state.n * 0.5) |> currency %></td>
         <th>2单位止损</th>
-        <td><%= @state.breakout_60.min_price + @state.n %></td>
+        <td><%= (@state.breakout_60.min_price + @state.n) |> currency %></td>
       </tr>
       <tr>
         <th>3单位加仓</th>
-        <td><%= @state.breakout_60.min_price - @state.n %></td>
+        <td><%= (@state.breakout_60.min_price - @state.n) |> currency %></td>
         <th>3单位止损</th>
-        <td><%= @state.breakout_60.min_price + @state.n * 0.66 %></td>
+        <td><%= (@state.breakout_60.min_price + @state.n * 0.66) |> currency %></td>
       </tr>
       <tr>
         <th>4单位加仓</th>
-        <td><%= @state.breakout_60.min_price - @state.n * 1.5 %></td>
+        <td><%= (@state.breakout_60.min_price - @state.n * 1.5) |> currency %></td>
         <th>4单位止损</th>
-        <td><%= @state.breakout_60.min_price + @state.n * 0.5 %></td>
+        <td><%= (@state.breakout_60.min_price + @state.n * 0.5) |> currency %></td>
       </tr>
     </tbody>
   </table>
