@@ -4,7 +4,7 @@
 </script>
 <div class="columns">
   <div class="column">
-    <div id="chart" style="width: 565px; height: 600px;"></div>
+    <div id="chart" style="width: 565px; height: 400px;"></div>
   </div>
   <div class="column">
     <article class="message">
@@ -60,47 +60,6 @@
           <td><%= (@state.breakout_60.max_price + @state.n * 1.5) |> currency %></td>
           <th>4单位止损</th>
           <td><%= (@state.breakout_60.max_price - @state.n * 0.5) |> currency %></td>
-        </tr>
-      </tbody>
-    </table>
-
-    <table class="table is-bordered is-striped is-narrow">
-      <thead>
-        <tr>
-          <th colspan="1">做空方向</th>
-          <th colspan="3">今日做空止盈点（有仓情况下）: <%= @state.breakout_20.max_price %></th>
-        </tr>
-        <tr>
-          <th width="25%">操作</th>
-          <th width="25%">价格</th>
-          <th width="25%">操作</th>
-          <th width="25%">价格</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th>1单位建仓</th>
-          <td><%= @state.breakout_60.min_price %></td>
-          <th>1单位止损</th>
-          <td><%= (@state.breakout_60.min_price + @state.n * 2) |> currency %></td>
-        </tr>
-        <tr>
-          <th>2单位加仓</th>
-          <td><%= (@state.breakout_60.min_price - @state.n * 0.5) |> currency %></td>
-          <th>2单位止损</th>
-          <td><%= (@state.breakout_60.min_price + @state.n) |> currency %></td>
-        </tr>
-        <tr>
-          <th>3单位加仓</th>
-          <td><%= (@state.breakout_60.min_price - @state.n) |> currency %></td>
-          <th>3单位止损</th>
-          <td><%= (@state.breakout_60.min_price + @state.n * 0.66) |> currency %></td>
-        </tr>
-        <tr>
-          <th>4单位加仓</th>
-          <td><%= (@state.breakout_60.min_price - @state.n * 1.5) |> currency %></td>
-          <th>4单位止损</th>
-          <td><%= (@state.breakout_60.min_price + @state.n * 0.5) |> currency %></td>
         </tr>
       </tbody>
     </table>

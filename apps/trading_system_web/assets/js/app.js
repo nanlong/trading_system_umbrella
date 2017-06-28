@@ -12,8 +12,8 @@ const client = new ApolloClient({
 function render_chart(symbol, duration) {
   client.query({
     query: gql`
-      query {
-        usStocks(symbol: "${symbol}") {
+      query Stocks($symbol: String) {
+        stocks: usStocks(symbol: $symbol) {
           date
           openPrice
           closePrice
@@ -21,14 +21,24 @@ function render_chart(symbol, duration) {
           highestPrice
           turnoverVol
         }
-        donchianChannel(symbol: "${symbol}", duration: ${duration}) {
-          date
-          maxPrice
-          midPrice
-          minPrice
+        dc20: donchianChannel(symbol: $symbol, duration: 20) {
+          ...dc
+        }
+        dc60: donchianChannel(symbol: $symbol, duration: 60) {
+          ...dc
         }
       }
-    `
+
+      fragment dc on DonchianChannel {
+        date
+        maxPrice
+        midPrice
+        minPrice
+      }
+    `,
+    variables: {
+      symbol: symbol
+    }
   })
   .then(resp => chart('chart', resp.data))
   .catch(error => console.error(error))

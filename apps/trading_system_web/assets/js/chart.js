@@ -1,13 +1,13 @@
 import echarts from "echarts"
 
 function data_handler(data) {
-  let stocks = data.usStocks.slice(data.usStocks.length - data.donchianChannel.length)
-
+  let stocks = data.stocks.slice(data.stocks.length - data.dc60.length)
+  let dc20 = data.dc20.slice(data.dc20.length - data.dc60.length)
   return {
-    category: Array.from(data.donchianChannel, (x) => x.date),
+    category: Array.from(data.dc60, (x) => x.date),
     values: Array.from(stocks, (x) => [x.openPrice, x.closePrice, x.lowestPrice, x.highestPrice]),
-    donchianChannelMax20: Array.from(data.donchianChannel, (x) => x.maxPrice),
-    donchianChannelMin20: Array.from(data.donchianChannel, (x) => x.minPrice)
+    dc60Max: Array.from(data.dc60, (x) => x.maxPrice),
+    dc20Min: Array.from(dc20, (x) => x.minPrice),
   }
 }
 
@@ -22,9 +22,9 @@ function chart(element_id, data) {
       left: 'center'
     },
     legend: {
-      bottom: 10,
+      bottom: 0,
       left: 'center',
-      data: ['日K', 'DC Max 20', 'DC Min 20']
+      data: ['日K', 'DC 60 Max', 'DC 20 Min']
     },
     tooltip: {
       trigger: 'axis'
@@ -40,7 +40,7 @@ function chart(element_id, data) {
       }
     },
     grid: {
-      height: '70%'
+      height: '60%'
     },
     dataZoom: [
       {
@@ -51,7 +51,7 @@ function chart(element_id, data) {
       {
           show: true,
           type: 'slider',
-          top: '88%',
+          top: '85%',
           start: 90,
           end: 100
       }
@@ -61,17 +61,17 @@ function chart(element_id, data) {
         name: "日K",
         type: "candlestick",
         data: my_data.values
-      },
+      },      
       {
-       name: "DC Max 20",
+       name: "DC 60 Max",
        type: 'line',
-       data: my_data.donchianChannelMax20
+       data: my_data.dc60Max
       },
       {
-        name: "DC Min 20",
+        name: "DC 20 Min",
         type: 'line',
-        data: my_data.donchianChannelMin20
-      }
+        data: my_data.dc20Min
+      },
     ]
   })
 }
