@@ -32,14 +32,14 @@ defmodule TradingKernel.DonchianChannel do
   
   # 获取一段时间内的最高价
   defp max_highest_price(results) do
-    (for item <- results, do: item.highest_price)
+    (for item <- results, do: Decimal.to_float(item.highest_price))
     |> Enum.max
     |> Decimal.new
   end
 
   # 获取一段时间内的最低价
   defp min_lowest_price(results) do
-    (for item <- results, do: item.lowest_price)
+    (for item <- results, do: Decimal.to_float(item.lowest_price))
     |> Enum.min
     |> Decimal.new
   end

@@ -45,14 +45,14 @@ function chart(element_id, data) {
     dataZoom: [
       {
           type: 'inside',
-          start: 98,
+          start: 90,
           end: 100
       },
       {
           show: true,
           type: 'slider',
           top: '88%',
-          start: 98,
+          start: 90,
           end: 100
       }
     ],

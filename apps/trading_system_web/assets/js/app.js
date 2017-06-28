@@ -9,26 +9,31 @@ const client = new ApolloClient({
   }),
 });
 
-client.query({
-  query: gql`
-    query {
-      usStocks(symbol: "FB") {
-        date
-        openPrice
-        closePrice
-        lowestPrice
-        highestPrice
-        turnoverVol
+function render_chart(symbol, duration) {
+  client.query({
+    query: gql`
+      query {
+        usStocks(symbol: "${symbol}") {
+          date
+          openPrice
+          closePrice
+          lowestPrice
+          highestPrice
+          turnoverVol
+        }
+        donchianChannel(symbol: "${symbol}", duration: ${duration}) {
+          date
+          maxPrice
+          midPrice
+          minPrice
+        }
       }
-      donchianChannel(symbol: "FB", duration: 20) {
-        date
-        maxPrice
-        midPrice
-        minPrice
-      }
-    }
-  `
-})
-.then(resp => chart('chart', resp.data))
-.catch(error => console.error(error))
+    `
+  })
+  .then(resp => chart('chart', resp.data))
+  .catch(error => console.error(error))
+}
+
+render_chart(CONFIG['symbol'], 60)
+
 
