@@ -110,8 +110,14 @@ defmodule USStockMinK do
     save(rest)
   end
 
-  def get_data(symbol, type) do
-    SinaUSStock.get("getMinK", symbol: symbol, type: type).body
+  def get_data(symbol, type), do: get_data(symbol, type, 0, 9)
+  def get_data(_symbol, _type, retry_num, retry_max) when retry_num > retry_max, do: []
+  def get_data(symbol, type, retry_num, retry_max) do
+    case SinaUSStock.get("getMinK", symbol: symbol, type: type) do
+      %{body: body} -> body
+      %{message: "req_timedout"} -> get_data(symbol, type, retry_num + 1, retry_max)
+      _ -> []
+    end
   end
 
   def save_data([], _type), do: nil
