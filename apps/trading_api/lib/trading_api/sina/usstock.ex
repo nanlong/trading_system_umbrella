@@ -13,25 +13,32 @@ defmodule TradingApi.Sina.USStock do
   end
 
   def process_response_body(body) do
+    data =
       body
       |> IO.iodata_to_binary
       |> String.slice(10..-3)
+    
+    if data == "null" do
+      []
+    else
+      data
       |> String.replace("{", "{\"")
       |> String.replace("\",", "\",\"")
       |> String.replace(":\"", "\":\"")
       |> Poison.decode
       |> update_key
+    end
   end
 
   defp update_key({:ok, data}) do
     Enum.map(data, fn(x) -> 
       %{
-        "date" => String.slice(Map.get(x, "d"), 0..9),
         "datetime" => Map.get(x, "d"),
         "open_price" => Map.get(x, "o"),
         "close_price" => Map.get(x, "c"),
         "lowest_price" => Map.get(x, "l"),
         "highest_price" => Map.get(x, "h"),
+        "volume" => Map.get(x, "v"),
       }
     end)
   end

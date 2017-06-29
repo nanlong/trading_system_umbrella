@@ -1,5 +1,6 @@
 alias TradingSystem.Stocks
 alias TradingApi.LiangYee.USStock, as: USSTockApi
+alias TradingApi.Sina.USStock, as: SinaUSStock
 
 NimbleCSV.define(CSVParser, separator: ",", escape: "\"")
 
@@ -91,6 +92,46 @@ defmodule USStockDailyK do
 end
 
 
+defmodule USStockMinK do
+  @types [5]
+  
+  def save do
+    stocks =  Stocks.list_usstocks()
+    args = for stock <- stocks, type <- @types, do: {stock, type}
+    save(args)
+  end
+  defp save([]), do: nil
+  defp save([{stock, type} | rest]) do
+    data = 
+      get_data(stock.symbol, type)
+      |> Enum.map(&Map.put_new(&1, "symbol", stock.symbol))
+
+    save_data(data, type)
+    save(rest)
+  end
+
+  def get_data(symbol, type) do
+    SinaUSStock.get("getMinK", symbol: symbol, type: type).body
+  end
+
+  def save_data([], _type), do: nil
+  def save_data([attrs | rest], type) do
+    with false <- Stocks.get_usstock_5mink?(to_keyword(attrs)) do
+      case type do
+        5 -> Stocks.create_usstock_5mink(attrs)
+        true -> nil
+      end
+    end
+    
+    save_data(rest, type)
+  end
+
+  def to_keyword(map) do
+    Enum.map(map, fn({key, value}) -> {String.to_atom(key), value} end)
+  end
+end
+
+
 USStockList.save()
 USStockDailyK.save()
-
+USStockMinK.save()

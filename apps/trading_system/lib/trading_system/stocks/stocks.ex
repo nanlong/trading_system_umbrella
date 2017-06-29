@@ -181,8 +181,12 @@ defmodule TradingSystem.Stocks do
       ** (Ecto.NoResultsError)
 
   """
-  def get_us_stock5_min_k!(id), do: Repo.get!(USStock5MinK, id)
-
+  def get_usstock_5mink?(attrs) do
+    case Repo.get_by(USStock5MinK, attrs) do
+      nil -> false
+      _ -> true
+    end
+  end
   @doc """
   Creates a us_stock5_min_k.
 
@@ -195,56 +199,9 @@ defmodule TradingSystem.Stocks do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_us_stock5_min_k(attrs \\ %{}) do
+  def create_usstock_5mink(attrs \\ %{}) do
     %USStock5MinK{}
     |> USStock5MinK.changeset(attrs)
     |> Repo.insert()
-  end
-
-  @doc """
-  Updates a us_stock5_min_k.
-
-  ## Examples
-
-      iex> update_us_stock5_min_k(us_stock5_min_k, %{field: new_value})
-      {:ok, %USStock5MinK{}}
-
-      iex> update_us_stock5_min_k(us_stock5_min_k, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_us_stock5_min_k(%USStock5MinK{} = us_stock5_min_k, attrs) do
-    us_stock5_min_k
-    |> USStock5MinK.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a USStock5MinK.
-
-  ## Examples
-
-      iex> delete_us_stock5_min_k(us_stock5_min_k)
-      {:ok, %USStock5MinK{}}
-
-      iex> delete_us_stock5_min_k(us_stock5_min_k)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_us_stock5_min_k(%USStock5MinK{} = us_stock5_min_k) do
-    Repo.delete(us_stock5_min_k)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking us_stock5_min_k changes.
-
-  ## Examples
-
-      iex> change_us_stock5_min_k(us_stock5_min_k)
-      %Ecto.Changeset{source: %USStock5MinK{}}
-
-  """
-  def change_us_stock5_min_k(%USStock5MinK{} = us_stock5_min_k) do
-    USStock5MinK.changeset(us_stock5_min_k, %{})
   end
 end

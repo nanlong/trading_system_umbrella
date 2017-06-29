@@ -128,71 +128,40 @@ defmodule TradingSystem.StocksTest do
     alias TradingSystem.Stocks.USStock5MinK
 
     @valid_attrs %{close_price: "120.5", datetime: ~N[2010-04-17 14:00:00.000000], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", volume: 42}
-    @update_attrs %{close_price: "456.7", datetime: ~N[2011-05-18 15:01:01.000000], highest_price: "456.7", lowest_price: "456.7", open_price: "456.7", symbol: "some updated symbol", volume: 43}
     @invalid_attrs %{close_price: nil, datetime: nil, highest_price: nil, lowest_price: nil, open_price: nil, symbol: nil, volume: nil}
 
-    def us_stock5_min_k_fixture(attrs \\ %{}) do
-      {:ok, us_stock5_min_k} =
+    def usstock_5mink_fixture(attrs \\ %{}) do
+      {:ok, usstock_5mink} =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Stocks.create_us_stock5_min_k()
+        |> Stocks.create_usstock_5mink()
 
-      us_stock5_min_k
+      usstock_5mink
     end
 
     test "list_usstock_5mink/0 returns all usstock_5mink" do
-      us_stock5_min_k = us_stock5_min_k_fixture()
-      assert Stocks.list_usstock_5mink() == [us_stock5_min_k]
+      usstock_5mink = usstock_5mink_fixture()
+      assert Stocks.list_usstock_5mink() == [usstock_5mink]
     end
 
-    test "get_us_stock5_min_k!/1 returns the us_stock5_min_k with given id" do
-      us_stock5_min_k = us_stock5_min_k_fixture()
-      assert Stocks.get_us_stock5_min_k!(us_stock5_min_k.id) == us_stock5_min_k
+    test "get_usstock_5mink?/1 returns the us_stock5_min_k with given id" do
+      usstock_5mink_fixture()
+      assert Stocks.get_usstock_5mink?(@valid_attrs)
     end
 
-    test "create_us_stock5_min_k/1 with valid data creates a us_stock5_min_k" do
-      assert {:ok, %USStock5MinK{} = us_stock5_min_k} = Stocks.create_us_stock5_min_k(@valid_attrs)
-      assert us_stock5_min_k.close_price == 120.5
-      assert us_stock5_min_k.datetime == ~N[2010-04-17 14:00:00.000000]
-      assert us_stock5_min_k.highest_price == 120.5
-      assert us_stock5_min_k.lowest_price == 120.5
-      assert us_stock5_min_k.open_price == 120.5
-      assert us_stock5_min_k.symbol == "some symbol"
-      assert us_stock5_min_k.volume == 42
+    test "create_usstock_5mink/1 with valid data creates a usstock_5mink" do
+      assert {:ok, %USStock5MinK{} = usstock_5mink} = Stocks.create_usstock_5mink(@valid_attrs)
+      assert usstock_5mink.close_price == 120.5
+      assert usstock_5mink.datetime == ~N[2010-04-17 14:00:00.000000]
+      assert usstock_5mink.highest_price == 120.5
+      assert usstock_5mink.lowest_price == 120.5
+      assert usstock_5mink.open_price == 120.5
+      assert usstock_5mink.symbol == "some symbol"
+      assert usstock_5mink.volume == 42
     end
 
-    test "create_us_stock5_min_k/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Stocks.create_us_stock5_min_k(@invalid_attrs)
-    end
-
-    test "update_us_stock5_min_k/2 with valid data updates the us_stock5_min_k" do
-      us_stock5_min_k = us_stock5_min_k_fixture()
-      assert {:ok, us_stock5_min_k} = Stocks.update_us_stock5_min_k(us_stock5_min_k, @update_attrs)
-      assert %USStock5MinK{} = us_stock5_min_k
-      assert us_stock5_min_k.close_price == 456.7
-      assert us_stock5_min_k.datetime == ~N[2011-05-18 15:01:01.000000]
-      assert us_stock5_min_k.highest_price == 456.7
-      assert us_stock5_min_k.lowest_price == 456.7
-      assert us_stock5_min_k.open_price == 456.7
-      assert us_stock5_min_k.symbol == "some updated symbol"
-      assert us_stock5_min_k.volume == 43
-    end
-
-    test "update_us_stock5_min_k/2 with invalid data returns error changeset" do
-      us_stock5_min_k = us_stock5_min_k_fixture()
-      assert {:error, %Ecto.Changeset{}} = Stocks.update_us_stock5_min_k(us_stock5_min_k, @invalid_attrs)
-      assert us_stock5_min_k == Stocks.get_us_stock5_min_k!(us_stock5_min_k.id)
-    end
-
-    test "delete_us_stock5_min_k/1 deletes the us_stock5_min_k" do
-      us_stock5_min_k = us_stock5_min_k_fixture()
-      assert {:ok, %USStock5MinK{}} = Stocks.delete_us_stock5_min_k(us_stock5_min_k)
-      assert_raise Ecto.NoResultsError, fn -> Stocks.get_us_stock5_min_k!(us_stock5_min_k.id) end
-    end
-
-    test "change_us_stock5_min_k/1 returns a us_stock5_min_k changeset" do
-      us_stock5_min_k = us_stock5_min_k_fixture()
-      assert %Ecto.Changeset{} = Stocks.change_us_stock5_min_k(us_stock5_min_k)
+    test "create_usstock_5mink/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stocks.create_usstock_5mink(@invalid_attrs)
     end
   end
 end
