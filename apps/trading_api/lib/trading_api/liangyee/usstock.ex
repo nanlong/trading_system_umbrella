@@ -64,22 +64,5 @@ defmodule TradingApi.LiangYee.USStock do
     data_map
     |> Map.get("result")
     |> Enum.map(fn x -> Enum.zip(data_keys, String.split(x, ",")) |> Enum.into(%{}) end)
-    |> pre_close_price
-  end
-
-  @doc """
-  为数据加上‘昨收盘’字段
-  """
-  def pre_close_price(data) do
-    len = length(data)
-
-    pre_data = Enum.slice(data, 0, len - 1)
-    now_data = Enum.slice(data, 1, len - 1)
-
-    pre_data
-    |> Enum.zip(now_data)
-    |> Enum.map(fn {pre_item, now_item} -> 
-      Map.put_new(now_item, :pre_close_price, Map.get(pre_item, :close_price))
-    end)
   end
 end

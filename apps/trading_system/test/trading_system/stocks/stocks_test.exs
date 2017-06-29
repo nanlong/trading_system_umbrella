@@ -29,6 +29,10 @@ defmodule TradingSystem.StocksTest do
       assert Stocks.get_us_stock_daily_prices!(us_stock_daily_prices.id) == us_stock_daily_prices
     end
 
+    test "get_last_usstockdailyk/1 with symbol" do
+      usstock = us_stock_daily_prices_fixture()
+      assert Stocks.get_last_usstockdailyk("some symbol") == usstock
+    end
     test "create_us_stock_daily_prices/1 with valid data creates a us_stock_daily_prices" do
       assert {:ok, %USStockDailyK{} = us_stock_daily_prices} = Stocks.create_us_stock_daily_prices(@valid_attrs)
       assert us_stock_daily_prices.chg_pct == 120.5

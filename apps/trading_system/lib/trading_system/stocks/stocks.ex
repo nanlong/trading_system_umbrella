@@ -55,7 +55,25 @@ defmodule TradingSystem.Stocks do
   """
   def get_us_stock_daily_prices!(id), do: Repo.get!(USStockDailyK, id)
   def get_us_stock_daily_prices(attrs \\ []), do: Repo.get_by(USStockDailyK, attrs)
+  def get_last_usstockdailyk(symbol) do
+    USStockDailyK
+    |> where([s], s.symbol == ^symbol)
+    |> order_by(desc: :date)
+    |> first
+    |> Repo.one
+  end
 
+  def get_pre_close_price(symbol, date) do
+    usstock =
+      USStockDailyK
+      |> where([s], s.symbol == ^symbol)
+      |> where([s], s.date < ^date)
+      |> order_by(desc: :date)
+      |> first
+      |> Repo.one
+    
+    if usstock, do: usstock.close_price, else: 0
+  end
   @doc """
   Creates a us_stock_daily_prices.
 
