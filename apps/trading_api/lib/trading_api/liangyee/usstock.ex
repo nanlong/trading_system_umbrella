@@ -43,8 +43,7 @@ defmodule TradingApi.LiangYee.USStock do
     data =
       body
       |> IO.iodata_to_binary
-      |> :jsx.decode
-      |> Enum.into(%{})
+      |> Poison.decode!
     
     case data do
       %{"code" => "999999"} -> []
