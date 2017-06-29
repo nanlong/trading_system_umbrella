@@ -32,7 +32,8 @@ defmodule TradingSystem.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [{:postgrex, ">= 0.0.0"},
-     {:ecto, "~> 2.1"}]
+     {:ecto, "~> 2.1"},
+     {:nimble_csv, "~> 0.1.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

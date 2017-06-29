@@ -79,65 +79,44 @@ defmodule TradingSystem.StocksTest do
     end
   end
 
-  describe "usstocks" do
-    alias TradingSystem.Stocks.USStocks
+  describe "usstock" do
+    alias TradingSystem.Stocks.USStock
 
-    @valid_attrs %{name: "some name", symbol: "some symbol"}
-    @update_attrs %{name: "some updated name", symbol: "some updated symbol"}
+    @valid_attrs %{name: "22nd Century Group, Inc", symbol: "XXII"}
     @invalid_attrs %{name: nil, symbol: nil}
 
-    def us_stocks_fixture(attrs \\ %{}) do
-      {:ok, us_stocks} =
+    def usstock_fixture(attrs \\ %{}) do
+      {:ok, usstock} =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Stocks.create_us_stocks()
+        |> Stocks.create_usstock()
 
-      us_stocks
+      usstock
     end
 
-    test "list_usstocks/0 returns all usstocks" do
-      us_stocks = us_stocks_fixture()
-      assert Stocks.list_usstocks() == [us_stocks]
+    test "list_usstocks/0 returns all usstock" do
+      usstock = usstock_fixture()
+      assert Stocks.list_usstocks() == [usstock]
     end
 
-    test "get_us_stocks!/1 returns the us_stocks with given id" do
-      us_stocks = us_stocks_fixture()
-      assert Stocks.get_us_stocks!(us_stocks.id) == us_stocks
+    test "count_usstocks/0 returns number" do
+      usstock_fixture()
+      assert Stocks.count_usstocks() == 1
     end
 
-    test "create_us_stocks/1 with valid data creates a us_stocks" do
-      assert {:ok, %USStocks{} = us_stocks} = Stocks.create_us_stocks(@valid_attrs)
-      assert us_stocks.name == "some name"
-      assert us_stocks.symbol == "some symbol"
+    test "get_usstock!/1 returns the us_stocks with given id" do
+      usstock = usstock_fixture()
+      assert Stocks.get_usstock!(@valid_attrs) == usstock
     end
 
-    test "create_us_stocks/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Stocks.create_us_stocks(@invalid_attrs)
+    test "create_usstock/1 with valid data creates a usstock" do
+      assert {:ok, %USStock{} = usstock} = Stocks.create_usstock(@valid_attrs)
+      assert usstock.name == "22nd Century Group, Inc"
+      assert usstock.symbol == "XXII"
     end
 
-    test "update_us_stocks/2 with valid data updates the us_stocks" do
-      us_stocks = us_stocks_fixture()
-      assert {:ok, us_stocks} = Stocks.update_us_stocks(us_stocks, @update_attrs)
-      assert %USStocks{} = us_stocks
-      assert us_stocks.name == "some updated name"
-      assert us_stocks.symbol == "some updated symbol"
-    end
-
-    test "update_us_stocks/2 with invalid data returns error changeset" do
-      us_stocks = us_stocks_fixture()
-      assert {:error, %Ecto.Changeset{}} = Stocks.update_us_stocks(us_stocks, @invalid_attrs)
-      assert us_stocks == Stocks.get_us_stocks!(us_stocks.id)
-    end
-
-    test "delete_us_stocks/1 deletes the us_stocks" do
-      us_stocks = us_stocks_fixture()
-      assert {:ok, %USStocks{}} = Stocks.delete_us_stocks(us_stocks)
-      assert_raise Ecto.NoResultsError, fn -> Stocks.get_us_stocks!(us_stocks.id) end
-    end
-
-    test "change_us_stocks/1 returns a us_stocks changeset" do
-      us_stocks = us_stocks_fixture()
-      assert %Ecto.Changeset{} = Stocks.change_us_stocks(us_stocks)
+    test "create_usstock/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stocks.create_usstock(@invalid_attrs)
     end
   end
 end

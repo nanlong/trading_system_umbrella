@@ -1,7 +1,7 @@
-defmodule TradingSystem.Stocks.USStocks do
+defmodule TradingSystem.Stocks.USStock do
   use Ecto.Schema
   import Ecto.Changeset
-  alias TradingSystem.Stocks.USStocks
+  alias TradingSystem.Stocks.USStock
 
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -14,8 +14,8 @@ defmodule TradingSystem.Stocks.USStocks do
   end
 
   @doc false
-  def changeset(%USStocks{} = us_stocks, attrs) do
-    us_stocks
+  def changeset(%USStock{} = usstock, attrs) do
+    usstock
     |> cast(attrs, [:name, :symbol])
     |> validate_required([:name, :symbol])
   end

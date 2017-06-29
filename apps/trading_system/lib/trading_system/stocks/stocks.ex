@@ -121,99 +121,16 @@ defmodule TradingSystem.Stocks do
     USStockDailyK.changeset(us_stock_daily_prices, %{})
   end
 
-  alias TradingSystem.Stocks.USStocks
+  alias TradingSystem.Stocks.USStock
 
-  @doc """
-  Returns the list of usstocks.
+  def list_usstocks, do: Repo.all(USStock)
+  def count_usstocks, do: from(s in USStock, select: count(s.id)) |> Repo.one!
 
-  ## Examples
+  def get_usstock!(attrs), do: Repo.get_by!(USStock, attrs)
 
-      iex> list_usstocks()
-      [%USStocks{}, ...]
-
-  """
-  def list_usstocks do
-    Repo.all(USStocks)
-  end
-
-  @doc """
-  Gets a single us_stocks.
-
-  Raises `Ecto.NoResultsError` if the Us stocks does not exist.
-
-  ## Examples
-
-      iex> get_us_stocks!(123)
-      %USStocks{}
-
-      iex> get_us_stocks!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_us_stocks!(id), do: Repo.get!(USStocks, id)
-
-  @doc """
-  Creates a us_stocks.
-
-  ## Examples
-
-      iex> create_us_stocks(%{field: value})
-      {:ok, %USStocks{}}
-
-      iex> create_us_stocks(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def create_us_stocks(attrs \\ %{}) do
-    %USStocks{}
-    |> USStocks.changeset(attrs)
+  def create_usstock(attrs \\ %{}) do
+    %USStock{}
+    |> USStock.changeset(attrs)
     |> Repo.insert()
-  end
-
-  @doc """
-  Updates a us_stocks.
-
-  ## Examples
-
-      iex> update_us_stocks(us_stocks, %{field: new_value})
-      {:ok, %USStocks{}}
-
-      iex> update_us_stocks(us_stocks, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def update_us_stocks(%USStocks{} = us_stocks, attrs) do
-    us_stocks
-    |> USStocks.changeset(attrs)
-    |> Repo.update()
-  end
-
-  @doc """
-  Deletes a USStocks.
-
-  ## Examples
-
-      iex> delete_us_stocks(us_stocks)
-      {:ok, %USStocks{}}
-
-      iex> delete_us_stocks(us_stocks)
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def delete_us_stocks(%USStocks{} = us_stocks) do
-    Repo.delete(us_stocks)
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking us_stocks changes.
-
-  ## Examples
-
-      iex> change_us_stocks(us_stocks)
-      %Ecto.Changeset{source: %USStocks{}}
-
-  """
-  def change_us_stocks(%USStocks{} = us_stocks) do
-    USStocks.changeset(us_stocks, %{})
   end
 end
