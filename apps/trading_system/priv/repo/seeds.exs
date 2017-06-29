@@ -9,18 +9,28 @@ defmodule USStockList do
   @files ["AMEX.csv", "NASDAQ.csv", "NYSE.csv"]
 
   def save do
-    if length(Enum.to_list(data())) != Stocks.count_usstocks() do
-      Enum.map(data(), fn(attrs) -> 
-        try do
-          Stocks.get_usstock!(attrs)
-        rescue
-          _ in Ecto.NoResultsError ->
-            Stocks.create_usstock(attrs)
-        end
-      end)
+    data = data()
+    total = length(Enum.to_list(data))
+    IO.puts "加载美股列表数据，合计： #{total} 个股票"
+    if total != Stocks.count_usstocks() do
+      save(data, 1, total)
+    else
+      ProgressBar.render(100, 100)
     end
   end
+  defp save([], _current, _total), do: nil
+  defp save([attrs | rest], current, total) do
+    try do
+      Stocks.get_usstock!(attrs)
+    rescue
+      _ in Ecto.NoResultsError ->
+        Stocks.create_usstock(attrs)
+    end
 
+    ProgressBar.render(current, total)
+    save(rest, current + 1, total)
+  end
+  
   def count(data), do: count(Enum.to_list(data), [])
   def count([], cache), do: Enum.filter(cache, fn({_, value}) -> value > 1 end)
   def count([item | rest], cache) do
@@ -55,16 +65,24 @@ defmodule USStockDailyK do
   @start_date "1900-01-01"
   @end_date Date.utc_today |> Date.to_string
 
-  def save do
-    Enum.map(@symbols, fn symbol -> \
-      start_date = get_start_date(symbol)
+  def save do 
+    total = length(@symbols)
+    IO.puts "加载美股日K数据，合计： #{total} 个股票"
+    IO.puts "#{inspect @symbols}"
+    save(@symbols, 1, total)
+  end
+  defp save([], _current, _total), do: nil
+  defp save([symbol | rest], current, total) do
+    start_date = get_start_date(symbol)
       
-      if start_date < @end_date do
-        resp = get_data(symbol, start_date)
-        save_data(symbol, resp)
-        :timer.sleep(1000)
-      end
-    end)
+    if start_date < @end_date do
+      resp = get_data(symbol, start_date)
+      save_data(symbol, resp)
+    end
+    
+    ProgressBar.render(current, total)
+    :timer.sleep(1000)
+    save(rest, current + 1, total)
   end
 
   defp get_data(symbol, start_date) do
@@ -96,19 +114,22 @@ defmodule USStockMinK do
   @types [5]
   
   def save do
-    stocks =  Stocks.list_usstocks()
+    stocks = Stocks.list_usstocks()
     args = for stock <- stocks, type <- @types, do: {stock, type}
-    save(args)
+    total = length(args)
+    IO.puts "加载美股5分钟K数据，合计： #{length(stocks)} 个股票 | #{total} 个请求"
+    save(args, 1, total)
   end
-  defp save([]), do: nil
-  defp save([{stock, type} | rest]) do
+  defp save([], _current, _total), do: nil
+  defp save([{stock, type} | rest], current, total) do
     data = 
       get_data(stock.symbol, type)
       |> Enum.map(&Map.put_new(&1, "symbol", stock.symbol))
 
     save_data(data, type)
+    ProgressBar.render(current, total)
     :timer.sleep(1000)
-    save(rest)
+    save(rest, current + 1, total)
   end
 
   def get_data(symbol, type), do: get_data(symbol, type, 0, 9)

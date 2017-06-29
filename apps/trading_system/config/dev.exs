@@ -8,3 +8,5 @@ config :trading_system, TradingSystem.Repo,
   database: "trading_system_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :logger, level: :info
