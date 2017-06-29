@@ -151,4 +151,100 @@ defmodule TradingSystem.Stocks do
     |> USStock.changeset(attrs)
     |> Repo.insert()
   end
+
+  alias TradingSystem.Stocks.USStock5MinK
+
+  @doc """
+  Returns the list of usstock_5mink.
+
+  ## Examples
+
+      iex> list_usstock_5mink()
+      [%USStock5MinK{}, ...]
+
+  """
+  def list_usstock_5mink do
+    Repo.all(USStock5MinK)
+  end
+
+  @doc """
+  Gets a single us_stock5_min_k.
+
+  Raises `Ecto.NoResultsError` if the Us stock5 min k does not exist.
+
+  ## Examples
+
+      iex> get_us_stock5_min_k!(123)
+      %USStock5MinK{}
+
+      iex> get_us_stock5_min_k!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_us_stock5_min_k!(id), do: Repo.get!(USStock5MinK, id)
+
+  @doc """
+  Creates a us_stock5_min_k.
+
+  ## Examples
+
+      iex> create_us_stock5_min_k(%{field: value})
+      {:ok, %USStock5MinK{}}
+
+      iex> create_us_stock5_min_k(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_us_stock5_min_k(attrs \\ %{}) do
+    %USStock5MinK{}
+    |> USStock5MinK.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a us_stock5_min_k.
+
+  ## Examples
+
+      iex> update_us_stock5_min_k(us_stock5_min_k, %{field: new_value})
+      {:ok, %USStock5MinK{}}
+
+      iex> update_us_stock5_min_k(us_stock5_min_k, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_us_stock5_min_k(%USStock5MinK{} = us_stock5_min_k, attrs) do
+    us_stock5_min_k
+    |> USStock5MinK.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a USStock5MinK.
+
+  ## Examples
+
+      iex> delete_us_stock5_min_k(us_stock5_min_k)
+      {:ok, %USStock5MinK{}}
+
+      iex> delete_us_stock5_min_k(us_stock5_min_k)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_us_stock5_min_k(%USStock5MinK{} = us_stock5_min_k) do
+    Repo.delete(us_stock5_min_k)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking us_stock5_min_k changes.
+
+  ## Examples
+
+      iex> change_us_stock5_min_k(us_stock5_min_k)
+      %Ecto.Changeset{source: %USStock5MinK{}}
+
+  """
+  def change_us_stock5_min_k(%USStock5MinK{} = us_stock5_min_k) do
+    USStock5MinK.changeset(us_stock5_min_k, %{})
+  end
 end
