@@ -2,7 +2,7 @@ defmodule TradingSystem.Repo.Migrations.CreateTradingSystem.Stocks.USStockDailyP
   use Ecto.Migration
 
   def change do
-    create table(:us_stock_daily_prices, primary_key: false) do
+    create table(:usstock_dailyk, primary_key: false) do
       add :id, :binary_id, primary_key: true
       add :symbol, :string
       add :date, :date
@@ -17,8 +17,8 @@ defmodule TradingSystem.Repo.Migrations.CreateTradingSystem.Stocks.USStockDailyP
       timestamps()
     end
 
-    create index(:us_stock_daily_prices, [:symbol])
-    create index(:us_stock_daily_prices, [:date])
-    create unique_index(:us_stock_daily_prices, [:symbol, :date])
+    create index(:usstock_dailyk, [:symbol])
+    create index(:usstock_dailyk, [:date])
+    create unique_index(:usstock_dailyk, [:symbol, :date])
   end
 end

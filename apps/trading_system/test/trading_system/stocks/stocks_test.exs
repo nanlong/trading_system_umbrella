@@ -4,7 +4,7 @@ defmodule TradingSystem.StocksTest do
   alias TradingSystem.Stocks
 
   describe "us_stock_daily_prices" do
-    alias TradingSystem.Stocks.USStockDailyPrices
+    alias TradingSystem.Stocks.USStockDailyK
 
     @valid_attrs %{chg_pct: "120.5", close_price: "120.5", date: ~D[2010-04-17], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", turnover_vol: 42, pre_close_price: "120.8"}
     @update_attrs %{chg_pct: "456.7", close_price: "456.7", date: ~D[2011-05-18], highest_price: "456.7", lowest_price: "456.7", open_price: "456.7", symbol: "some updated symbol", turnover_vol: 43, pre_close_price: "480.5"}
@@ -30,7 +30,7 @@ defmodule TradingSystem.StocksTest do
     end
 
     test "create_us_stock_daily_prices/1 with valid data creates a us_stock_daily_prices" do
-      assert {:ok, %USStockDailyPrices{} = us_stock_daily_prices} = Stocks.create_us_stock_daily_prices(@valid_attrs)
+      assert {:ok, %USStockDailyK{} = us_stock_daily_prices} = Stocks.create_us_stock_daily_prices(@valid_attrs)
       assert us_stock_daily_prices.chg_pct == 120.5
       assert us_stock_daily_prices.close_price == Decimal.new("120.5")
       assert us_stock_daily_prices.date == ~D[2010-04-17]
@@ -49,7 +49,7 @@ defmodule TradingSystem.StocksTest do
     test "update_us_stock_daily_prices/2 with valid data updates the us_stock_daily_prices" do
       us_stock_daily_prices = us_stock_daily_prices_fixture()
       assert {:ok, us_stock_daily_prices} = Stocks.update_us_stock_daily_prices(us_stock_daily_prices, @update_attrs)
-      assert %USStockDailyPrices{} = us_stock_daily_prices
+      assert %USStockDailyK{} = us_stock_daily_prices
       assert us_stock_daily_prices.chg_pct == 456.7
       assert us_stock_daily_prices.close_price == Decimal.new("456.7")
       assert us_stock_daily_prices.date == ~D[2011-05-18]
@@ -69,7 +69,7 @@ defmodule TradingSystem.StocksTest do
 
     test "delete_us_stock_daily_prices/1 deletes the us_stock_daily_prices" do
       us_stock_daily_prices = us_stock_daily_prices_fixture()
-      assert {:ok, %USStockDailyPrices{}} = Stocks.delete_us_stock_daily_prices(us_stock_daily_prices)
+      assert {:ok, %USStockDailyK{}} = Stocks.delete_us_stock_daily_prices(us_stock_daily_prices)
       assert_raise Ecto.NoResultsError, fn -> Stocks.get_us_stock_daily_prices!(us_stock_daily_prices.id) end
     end
 

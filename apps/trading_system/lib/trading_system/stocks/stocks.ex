@@ -6,7 +6,7 @@ defmodule TradingSystem.Stocks do
   import Ecto.Query, warn: false
   alias TradingSystem.Repo
 
-  alias TradingSystem.Stocks.USStockDailyPrices
+  alias TradingSystem.Stocks.USStockDailyK
 
   @doc """
   Returns the list of us_stock_daily_prices.
@@ -14,23 +14,23 @@ defmodule TradingSystem.Stocks do
   ## Examples
 
       iex> list_us_stock_daily_prices()
-      [%USStockDailyPrices{}, ...]
+      [%USStockDailyK{}, ...]
 
   """
   def stock_list do
-    query = from(USStockDailyPrices, distinct: :symbol, order_by: [desc: :date])
+    query = from(USStockDailyK, distinct: :symbol, order_by: [desc: :date])
     Repo.all(query)
   end
 
   def list_us_stock_daily_prices do
-    Repo.all(USStockDailyPrices)
+    Repo.all(USStockDailyK)
   end
 
   def list_us_stock_daily_prices(symbol, date, limit \\ 2000)
   def list_us_stock_daily_prices(symbol, date, limit) when is_bitstring(date), 
     do: list_us_stock_daily_prices(symbol, Date.from_iso8601!(date), limit)
   def list_us_stock_daily_prices(symbol, date, limit) do
-    USStockDailyPrices
+    USStockDailyK
     |> where(symbol: ^symbol)
     |> where([s], s.date < ^date)
     |> order_by(desc: :date)
@@ -47,14 +47,14 @@ defmodule TradingSystem.Stocks do
   ## Examples
 
       iex> get_us_stock_daily_prices!(123)
-      %USStockDailyPrices{}
+      %USStockDailyK{}
 
       iex> get_us_stock_daily_prices!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_us_stock_daily_prices!(id), do: Repo.get!(USStockDailyPrices, id)
-  def get_us_stock_daily_prices(attrs \\ []), do: Repo.get_by(USStockDailyPrices, attrs)
+  def get_us_stock_daily_prices!(id), do: Repo.get!(USStockDailyK, id)
+  def get_us_stock_daily_prices(attrs \\ []), do: Repo.get_by(USStockDailyK, attrs)
 
   @doc """
   Creates a us_stock_daily_prices.
@@ -62,15 +62,15 @@ defmodule TradingSystem.Stocks do
   ## Examples
 
       iex> create_us_stock_daily_prices(%{field: value})
-      {:ok, %USStockDailyPrices{}}
+      {:ok, %USStockDailyK{}}
 
       iex> create_us_stock_daily_prices(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
   def create_us_stock_daily_prices(attrs \\ %{}) do
-    %USStockDailyPrices{}
-    |> USStockDailyPrices.changeset(attrs)
+    %USStockDailyK{}
+    |> USStockDailyK.changeset(attrs)
     |> Repo.insert()
   end
 
@@ -80,31 +80,31 @@ defmodule TradingSystem.Stocks do
   ## Examples
 
       iex> update_us_stock_daily_prices(us_stock_daily_prices, %{field: new_value})
-      {:ok, %USStockDailyPrices{}}
+      {:ok, %USStockDailyK{}}
 
       iex> update_us_stock_daily_prices(us_stock_daily_prices, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_us_stock_daily_prices(%USStockDailyPrices{} = us_stock_daily_prices, attrs) do
+  def update_us_stock_daily_prices(%USStockDailyK{} = us_stock_daily_prices, attrs) do
     us_stock_daily_prices
-    |> USStockDailyPrices.changeset(attrs)
+    |> USStockDailyK.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a USStockDailyPrices.
+  Deletes a USStockDailyK.
 
   ## Examples
 
       iex> delete_us_stock_daily_prices(us_stock_daily_prices)
-      {:ok, %USStockDailyPrices{}}
+      {:ok, %USStockDailyK{}}
 
       iex> delete_us_stock_daily_prices(us_stock_daily_prices)
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_us_stock_daily_prices(%USStockDailyPrices{} = us_stock_daily_prices) do
+  def delete_us_stock_daily_prices(%USStockDailyK{} = us_stock_daily_prices) do
     Repo.delete(us_stock_daily_prices)
   end
 
@@ -114,10 +114,10 @@ defmodule TradingSystem.Stocks do
   ## Examples
 
       iex> change_us_stock_daily_prices(us_stock_daily_prices)
-      %Ecto.Changeset{source: %USStockDailyPrices{}}
+      %Ecto.Changeset{source: %USStockDailyK{}}
 
   """
-  def change_us_stock_daily_prices(%USStockDailyPrices{} = us_stock_daily_prices) do
-    USStockDailyPrices.changeset(us_stock_daily_prices, %{})
+  def change_us_stock_daily_prices(%USStockDailyK{} = us_stock_daily_prices) do
+    USStockDailyK.changeset(us_stock_daily_prices, %{})
   end
 end

@@ -1,12 +1,12 @@
-defmodule TradingSystem.Stocks.USStockDailyPrices do
+defmodule TradingSystem.Stocks.USStockDailyK do
   use Ecto.Schema
   import Ecto.Changeset
-  alias TradingSystem.Stocks.USStockDailyPrices
+  alias TradingSystem.Stocks.USStockDailyK
 
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
-  schema "us_stock_daily_prices" do
+  schema "usstock_dailyk" do
     field :chg_pct, :float
     field :close_price, :decimal
     field :date, :date
@@ -24,7 +24,7 @@ defmodule TradingSystem.Stocks.USStockDailyPrices do
     :lowest_price, :turnover_vol, :chg_pct, :pre_close_price]
 
   @doc false
-  def changeset(%USStockDailyPrices{} = us_stock_daily_prices, attrs) do
+  def changeset(%USStockDailyK{} = us_stock_daily_prices, attrs) do
     us_stock_daily_prices
     |> cast(attrs, @required_options)
     |> validate_required(@required_options)
