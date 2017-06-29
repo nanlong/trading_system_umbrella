@@ -107,6 +107,7 @@ defmodule USStockMinK do
       |> Enum.map(&Map.put_new(&1, "symbol", stock.symbol))
 
     save_data(data, type)
+    :timer.sleep(1000)
     save(rest)
   end
 
@@ -115,7 +116,9 @@ defmodule USStockMinK do
   def get_data(symbol, type, retry_num, retry_max) do
     case SinaUSStock.get("getMinK", symbol: symbol, type: type) do
       %{body: body} -> body
-      %{message: "req_timedout"} -> get_data(symbol, type, retry_num + 1, retry_max)
+      %{message: "req_timedout"} -> 
+        :timer.sleep(1000)
+        get_data(symbol, type, retry_num + 1, retry_max)
       _ -> []
     end
   end
