@@ -1,6 +1,6 @@
-defmodule TradingCrawlerTest do
+defmodule TradingJobTest do
   use ExUnit.Case
-  doctest TradingCrawler
+  doctest TradingJob
 
   test "the truth" do
     assert 1 + 1 == 2

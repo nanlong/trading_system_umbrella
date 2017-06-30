@@ -1,6 +1,6 @@
-defmodule TradingCrawler do
+defmodule TradingJob do
   @moduledoc """
-  Documentation for TradingCrawler.
+  Documentation for TradingJob.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule TradingCrawler do
 
   ## Examples
 
-      iex> TradingCrawler.hello
+      iex> TradingJob.hello
       :world
 
   """

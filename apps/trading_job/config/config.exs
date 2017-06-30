@@ -10,11 +10,11 @@ use Mix.Config
 
 # You can configure for your application as:
 #
-#     config :trading_crawler, key: :value
+#     config :trading_job, key: :value
 #
 # And access this configuration in your application as:
 #
-#     Application.get_env(:trading_crawler, :key)
+#     Application.get_env(:trading_job, :key)
 #
 # Or configure a 3rd-party app:
 #
