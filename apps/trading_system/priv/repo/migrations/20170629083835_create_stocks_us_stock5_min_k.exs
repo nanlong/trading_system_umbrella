@@ -16,6 +16,6 @@ defmodule TradingSystem.Repo.Migrations.CreateTradingSystem.Stocks.USStock5MinK 
     end
 
     create index(:usstock_5mink, [:symbol])
-
+    create unique_index(:usstock_5mink, [:symbol, :datetime])
   end
 end
