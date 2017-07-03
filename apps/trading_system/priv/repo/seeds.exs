@@ -10,8 +10,8 @@ defmodule USStockList do
   @files ["AMEX.csv", "NASDAQ.csv", "NYSE.csv"]
 
   def save do
-    data = data()
-    total = length(Enum.to_list(data))
+    data = data() 
+    total = length(data)
     IO.puts "加载美股列表数据，合计： #{total} 个股票"
     if total != Stocks.count_usstocks() do
       save(data, 1, total)
@@ -43,6 +43,7 @@ defmodule USStockList do
     read(@files, [])
     |> Stream.concat
     |> Stream.filter(fn(x) -> not String.contains?(x.symbol, "^") end)
+    |> Enum.to_list
   end
 
   defp read([], data), do: data
@@ -169,6 +170,6 @@ defmodule USStockMinK do
 end
 
 
-# USStockList.save()
-# USStockDailyK.save()
+USStockList.save()
+USStockDailyK.save()
 USStockMinK.save()
