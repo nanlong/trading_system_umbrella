@@ -1,6 +1,7 @@
 alias TradingSystem.Stocks
 alias TradingApi.LiangYee.USStock, as: USSTockApi
 alias TradingApi.Sina.USStock, as: SinaUSStock
+require Logger
 
 NimbleCSV.define(CSVParser, separator: ",", escape: "\"")
 
@@ -61,15 +62,14 @@ end
 
 
 defmodule USStockDailyK do
-  @symbols ["TSLA", "FB", "BABA", "GOOG", "MSFT", "AAPL", "NVDA", "BRK.B"]
   @start_date "1900-01-01"
   @end_date Date.utc_today |> Date.to_string
 
   def save do 
-    total = length(@symbols)
+    symbols = Stocks.stock_list(:dailyk)
+    total = length(symbols)
     IO.puts "加载美股日K数据，合计： #{total} 个股票"
-    IO.puts "#{inspect @symbols}"
-    save(@symbols, 1, total)
+    save(symbols, 1, total)
   end
   defp save([], _current, _total), do: nil
   defp save([symbol | rest], current, total) do
@@ -125,6 +125,12 @@ defmodule USStockMinK do
     data = 
       get_data(stock.symbol, type)
       |> Enum.map(&Map.put_new(&1, "symbol", stock.symbol))
+      
+    data =
+      case Stocks.get_last_usstock_5mink(stock.symbol) do
+        nil -> data
+        stock -> Enum.filter(data, &(Map.get(&1, "datetime") > stock.datetime))
+      end
 
     save_data(data, type)
     ProgressBar.render(current, total)
@@ -133,7 +139,10 @@ defmodule USStockMinK do
   end
 
   def get_data(symbol, type), do: get_data(symbol, type, 0, 9)
-  def get_data(_symbol, _type, retry_num, retry_max) when retry_num > retry_max, do: []
+  def get_data(symbol, _type, retry_num, retry_max) when retry_num > retry_max do
+    Logger.info "操作超时，股票代码：#{symbol}"
+    []
+  end
   def get_data(symbol, type, retry_num, retry_max) do
     case SinaUSStock.get("getMinK", symbol: symbol, type: type) do
       %{body: body} -> body
@@ -146,13 +155,11 @@ defmodule USStockMinK do
 
   def save_data([], _type), do: nil
   def save_data([attrs | rest], type) do
-    with false <- Stocks.get_usstock_5mink?(to_keyword(attrs)) do
-      case type do
-        5 -> Stocks.create_usstock_5mink(attrs)
-        true -> nil
-      end
+    case type do
+      5 -> Stocks.create_usstock_5mink(attrs)
+      true -> nil
     end
-    
+
     save_data(rest, type)
   end
 
@@ -162,6 +169,6 @@ defmodule USStockMinK do
 end
 
 
-USStockList.save()
-USStockDailyK.save()
+# USStockList.save()
+# USStockDailyK.save()
 USStockMinK.save()

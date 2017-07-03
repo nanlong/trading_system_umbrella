@@ -47,6 +47,7 @@ defmodule TradingApi.LiangYee.USStock do
     
     case data do
       %{"code" => "999999"} -> []
+      %{"code" => "100005"} -> []
       data -> parse_data(data)
     end
   end

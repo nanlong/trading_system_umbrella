@@ -6,6 +6,7 @@ defmodule TradingSystem.Stocks do
   import Ecto.Query, warn: false
   alias TradingSystem.Repo
 
+  alias TradingSystem.Stocks.USStock
   alias TradingSystem.Stocks.USStockDailyK
 
   @doc """
@@ -20,6 +21,38 @@ defmodule TradingSystem.Stocks do
   def stock_list do
     query = from(USStockDailyK, distinct: :symbol, order_by: [desc: :date])
     Repo.all(query)
+  end
+
+  def stock_list(:dailyk) do
+    s1_count =
+      from(s in USStock, 
+        select: count(s.id)) 
+      |> Repo.one
+
+    s2_count =
+      from(s in USStockDailyK, 
+        distinct: :symbol, 
+        group_by: s.symbol, 
+        select: s.symbol) 
+      |> Repo.all 
+      |> length
+    
+    query =
+      if s2_count < s1_count do
+        USStock
+        |> join(:inner, [s1], s2 in USStockDailyK, s2.symbol != s1.symbol)
+        |> limit(200)
+      else
+        USStockDailyK
+        |> select([s], %{max: max(s.date), symbol: s.symbol})
+        |> group_by([s], s.symbol)
+        |> order_by(fragment("max"))
+        |> limit(200)
+      end
+    
+    query
+    |> Repo.all
+    |> Enum.map(&(&1.symbol))
   end
 
   def list_us_stock_daily_prices do
@@ -187,6 +220,14 @@ defmodule TradingSystem.Stocks do
       _ -> true
     end
   end
+
+  def get_last_usstock_5mink(symbol) do
+    USStock5MinK
+    |> where([s], s.symbol == ^symbol)
+    |> order_by(desc: :datetime)
+    |> first
+    |> Repo.one
+  end
   @doc """
   Creates a us_stock5_min_k.
 
@@ -204,4 +245,6 @@ defmodule TradingSystem.Stocks do
     |> USStock5MinK.changeset(attrs)
     |> Repo.insert()
   end
+
+  def create_all_usstock_5mink(data), do: Repo.insert_all(USStock5MinK, data)
 end

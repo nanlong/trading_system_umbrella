@@ -21,7 +21,7 @@ defmodule TradingSystem.Web.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {TradingSystem.Web.Application, []},
-     extra_applications: [:logger, :runtime_tools, :exq]]
+     extra_applications: [:logger, :runtime_tools]]
   end
 
   # Specifies which paths to compile per environment.
@@ -43,9 +43,7 @@ defmodule TradingSystem.Web.Mixfile do
      {:absinthe, "~> 1.3.1"},
      {:absinthe_plug, "~> 1.3.0"},
      {:absinthe_ecto, git: "https://github.com/absinthe-graphql/absinthe_ecto.git"},
-     {:poison, "~> 3.1"},
-     {:exq, "~> 0.9.0"},
-     {:exq_ui, "~> 0.9.0"}]
+     {:poison, "~> 3.1"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

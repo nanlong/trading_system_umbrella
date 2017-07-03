@@ -149,6 +149,11 @@ defmodule TradingSystem.StocksTest do
       assert Stocks.get_usstock_5mink?(@valid_attrs)
     end
 
+    test "get_last_usstock_5mink/1 returns the us_stock5_min_k with given symbol" do
+      item = usstock_5mink_fixture()
+      assert Stocks.get_last_usstock_5mink("some symbol") == item
+    end
+
     test "create_usstock_5mink/1 with valid data creates a usstock_5mink" do
       assert {:ok, %USStock5MinK{} = usstock_5mink} = Stocks.create_usstock_5mink(@valid_attrs)
       assert usstock_5mink.close_price == 120.5
