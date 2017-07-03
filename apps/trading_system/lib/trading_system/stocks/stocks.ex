@@ -40,7 +40,8 @@ defmodule TradingSystem.Stocks do
     query =
       if s2_count < s1_count do
         USStock
-        |> join(:inner, [s1], s2 in USStockDailyK, s2.symbol != s1.symbol)
+        |> join(:left, [s1], s2 in USStockDailyK, s1.symbol == s2.symbol)
+        |> where([s1, s2], is_nil(s2.symbol))
         |> limit(200)
       else
         USStockDailyK
