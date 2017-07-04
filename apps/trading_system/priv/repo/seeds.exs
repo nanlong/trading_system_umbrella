@@ -126,17 +126,32 @@ defmodule USStockMinK do
     data = 
       get_data(stock.symbol, type)
       |> Enum.map(&Map.put_new(&1, "symbol", stock.symbol))
-      
+
     data =
       case Stocks.get_last_usstock_5mink(stock.symbol) do
         nil -> data
-        stock -> Enum.filter(data, &(Map.get(&1, "datetime") > stock.datetime))
+        stock_5mink -> Enum.filter(data, &(compare_5mink?(&1, stock_5mink)))
       end
 
     save_data(data, type)
     ProgressBar.render(current, total)
     :timer.sleep(1000)
     save(rest, current + 1, total)
+  end
+
+  defp compare_5mink?(%{"datetime" => d1}, %{datetime: d2}) do
+    d1 =
+      d1
+      |> NaiveDateTime.from_iso8601!
+      |> NaiveDateTime.to_erl
+      |> :calendar.datetime_to_gregorian_seconds
+    
+    d2 =
+      d2
+      |> NaiveDateTime.to_erl
+      |> :calendar.datetime_to_gregorian_seconds
+    
+    d1 > d2
   end
 
   def get_data(symbol, type), do: get_data(symbol, type, 0, 9)
