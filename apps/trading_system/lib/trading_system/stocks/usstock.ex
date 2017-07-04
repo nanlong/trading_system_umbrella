@@ -9,14 +9,18 @@ defmodule TradingSystem.Stocks.USStock do
   schema "usstocks" do
     field :name, :string
     field :symbol, :string
+    field :last_sale, :decimal
+    field :market_cap, :decimal
 
     timestamps()
   end
 
+  @required_fields [:name, :symbol, :last_sale, :market_cap]
+
   @doc false
   def changeset(%USStock{} = usstock, attrs) do
     usstock
-    |> cast(attrs, [:name, :symbol])
-    |> validate_required([:name, :symbol])
+    |> cast(attrs, @required_fields)
+    |> validate_required(@required_fields)
   end
 end

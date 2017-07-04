@@ -7,11 +7,11 @@ defmodule TradingSystem.Stocks.USStock5MinK do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "usstock_5mink" do
-    field :close_price, :float
+    field :close_price, :decimal
     field :datetime, :naive_datetime
-    field :highest_price, :float
-    field :lowest_price, :float
-    field :open_price, :float
+    field :highest_price, :decimal
+    field :lowest_price, :decimal
+    field :open_price, :decimal
     field :symbol, :string
     field :volume, :integer
 

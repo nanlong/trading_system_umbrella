@@ -5,9 +5,10 @@ defmodule TradingSystem.StocksTest do
 
   describe "us_stock_daily_prices" do
     alias TradingSystem.Stocks.USStockDailyK
+    alias Decimal, as: D
 
-    @valid_attrs %{chg_pct: "120.5", close_price: "120.5", date: ~D[2010-04-17], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", turnover_vol: 42, pre_close_price: "120.8"}
-    @update_attrs %{chg_pct: "456.7", close_price: "456.7", date: ~D[2011-05-18], highest_price: "456.7", lowest_price: "456.7", open_price: "456.7", symbol: "some updated symbol", turnover_vol: 43, pre_close_price: "480.5"}
+    @valid_attrs %{chg_pct: "120.5", close_price: "120.5", date: ~D[2010-04-17], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", volume: 42, pre_close_price: "120.8"}
+    @update_attrs %{chg_pct: "456.7", close_price: "456.7", date: ~D[2011-05-18], highest_price: "456.7", lowest_price: "456.7", open_price: "456.7", symbol: "some updated symbol", volume: 43, pre_close_price: "480.5"}
     @invalid_attrs %{chg_pct: nil, close_price: nil, date: nil, highest_price: nil, lowest_price: nil, open_price: nil, symbol: nil, turnover_vol: nil}
 
     def us_stock_daily_prices_fixture(attrs \\ %{}) do
@@ -35,15 +36,15 @@ defmodule TradingSystem.StocksTest do
     end
     test "create_us_stock_daily_prices/1 with valid data creates a us_stock_daily_prices" do
       assert {:ok, %USStockDailyK{} = us_stock_daily_prices} = Stocks.create_us_stock_daily_prices(@valid_attrs)
-      assert us_stock_daily_prices.chg_pct == 120.5
-      assert us_stock_daily_prices.close_price == Decimal.new("120.5")
+      assert us_stock_daily_prices.chg_pct == D.new(120.5)
+      assert us_stock_daily_prices.close_price == D.new("120.5")
       assert us_stock_daily_prices.date == ~D[2010-04-17]
-      assert us_stock_daily_prices.highest_price == Decimal.new("120.5")
-      assert us_stock_daily_prices.lowest_price == Decimal.new("120.5")
-      assert us_stock_daily_prices.open_price == Decimal.new("120.5")
+      assert us_stock_daily_prices.highest_price == D.new("120.5")
+      assert us_stock_daily_prices.lowest_price == D.new("120.5")
+      assert us_stock_daily_prices.open_price == D.new("120.5")
       assert us_stock_daily_prices.symbol == "some symbol"
-      assert us_stock_daily_prices.turnover_vol == 42
-      assert us_stock_daily_prices.pre_close_price == Decimal.new("120.8")
+      assert us_stock_daily_prices.volume == 42
+      assert us_stock_daily_prices.pre_close_price == D.new("120.8")
     end
 
     test "create_us_stock_daily_prices/1 with invalid data returns error changeset" do
@@ -54,15 +55,15 @@ defmodule TradingSystem.StocksTest do
       us_stock_daily_prices = us_stock_daily_prices_fixture()
       assert {:ok, us_stock_daily_prices} = Stocks.update_us_stock_daily_prices(us_stock_daily_prices, @update_attrs)
       assert %USStockDailyK{} = us_stock_daily_prices
-      assert us_stock_daily_prices.chg_pct == 456.7
-      assert us_stock_daily_prices.close_price == Decimal.new("456.7")
+      assert us_stock_daily_prices.chg_pct == D.new(456.7)
+      assert us_stock_daily_prices.close_price == D.new("456.7")
       assert us_stock_daily_prices.date == ~D[2011-05-18]
-      assert us_stock_daily_prices.highest_price == Decimal.new("456.7")
-      assert us_stock_daily_prices.lowest_price == Decimal.new("456.7")
-      assert us_stock_daily_prices.open_price == Decimal.new("456.7")
+      assert us_stock_daily_prices.highest_price == D.new("456.7")
+      assert us_stock_daily_prices.lowest_price == D.new("456.7")
+      assert us_stock_daily_prices.open_price == D.new("456.7")
       assert us_stock_daily_prices.symbol == "some updated symbol"
-      assert us_stock_daily_prices.turnover_vol == 43
-      assert us_stock_daily_prices.pre_close_price == Decimal.new("480.5")
+      assert us_stock_daily_prices.volume == 43
+      assert us_stock_daily_prices.pre_close_price == D.new("480.5")
     end
 
     test "update_us_stock_daily_prices/2 with invalid data returns error changeset" do
@@ -85,8 +86,9 @@ defmodule TradingSystem.StocksTest do
 
   describe "usstock" do
     alias TradingSystem.Stocks.USStock
+    alias Decimal, as: D
 
-    @valid_attrs %{name: "22nd Century Group, Inc", symbol: "XXII"}
+    @valid_attrs %{name: "22nd Century Group, Inc", symbol: "XXII", last_sale: "12.7", market_cap: "90000000000"}
     @invalid_attrs %{name: nil, symbol: nil}
 
     def usstock_fixture(attrs \\ %{}) do
@@ -126,6 +128,7 @@ defmodule TradingSystem.StocksTest do
 
   describe "usstock_5mink" do
     alias TradingSystem.Stocks.USStock5MinK
+    alias Decimal, as: D
 
     @valid_attrs %{close_price: "120.5", datetime: ~N[2010-04-17 14:00:00.000000], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", volume: 42}
     @invalid_attrs %{close_price: nil, datetime: nil, highest_price: nil, lowest_price: nil, open_price: nil, symbol: nil, volume: nil}
@@ -156,11 +159,11 @@ defmodule TradingSystem.StocksTest do
 
     test "create_usstock_5mink/1 with valid data creates a usstock_5mink" do
       assert {:ok, %USStock5MinK{} = usstock_5mink} = Stocks.create_usstock_5mink(@valid_attrs)
-      assert usstock_5mink.close_price == 120.5
+      assert usstock_5mink.close_price == D.new(120.5)
       assert usstock_5mink.datetime == ~N[2010-04-17 14:00:00.000000]
-      assert usstock_5mink.highest_price == 120.5
-      assert usstock_5mink.lowest_price == 120.5
-      assert usstock_5mink.open_price == 120.5
+      assert usstock_5mink.highest_price == D.new(120.5)
+      assert usstock_5mink.lowest_price == D.new(120.5)
+      assert usstock_5mink.open_price == D.new(120.5)
       assert usstock_5mink.symbol == "some symbol"
       assert usstock_5mink.volume == 42
     end

@@ -6,10 +6,10 @@ defmodule TradingSystem.Repo.Migrations.CreateTradingSystem.Stocks.USStock5MinK 
       add :id, :binary_id, primary_key: true
       add :symbol, :string
       add :datetime, :naive_datetime
-      add :open_price, :float
-      add :close_price, :float
-      add :lowest_price, :float
-      add :highest_price, :float
+      add :open_price, :decimal
+      add :close_price, :decimal
+      add :lowest_price, :decimal
+      add :highest_price, :decimal
       add :volume, :integer
 
       timestamps()

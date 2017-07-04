@@ -1,6 +1,7 @@
 alias TradingSystem.Stocks
 alias TradingApi.LiangYee.USStock, as: USSTockApi
 alias TradingApi.Sina.USStock, as: SinaUSStock
+alias Decimal, as: D
 require Logger
 
 NimbleCSV.define(CSVParser, separator: ",", escape: "\"")
@@ -11,6 +12,7 @@ defmodule USStockList do
 
   def save do
     data = data() 
+    # IO.inspect data
     total = length(data)
     IO.puts "加载美股列表数据，合计： #{total} 个股票"
     if total != Stocks.count_usstocks() do
@@ -22,10 +24,12 @@ defmodule USStockList do
   defp save([], _current, _total), do: nil
   defp save([attrs | rest], current, total) do
     try do
-      Stocks.get_usstock!(attrs)
+      attrs.symbol
+      |> Stocks.get_usstock!()
+      |> Stocks.update_usstock(attrs)
     rescue
       _ in Ecto.NoResultsError ->
-        Stocks.create_usstock(attrs)
+        {:ok, _} = Stocks.create_usstock(attrs)
     end
 
     ProgressBar.render(current, total)
@@ -53,12 +57,27 @@ defmodule USStockList do
       |> Path.absname
       |> File.stream!
       |> CSVParser.parse_stream
-      |> Stream.map(fn [symbol, name | _] ->
-        %{symbol: String.strip(symbol), name: String.strip(name)}
+      |> Stream.map(fn [symbol, name, lastSale, marketCap | _] ->
+        %{
+          symbol: String.strip(symbol), 
+          name: String.strip(name),
+          last_sale: to_decimal(lastSale),
+          market_cap: market_cap(marketCap)
+        }
       end)
 
       read(rest, data ++ [file_data])
   end
+
+  defp to_decimal("n/a"), do: D.new(0)
+  defp to_decimal(value), do: D.new(value)
+
+  # 计算市值
+  defp market_cap("n/a"), do: D.new(0)
+  defp market_cap("$" <> value), do: market_cap(String.split_at(value, -1))
+  defp market_cap({value, "M"}), do: D.mult(D.new(value), D.new(1_000_000))
+  defp market_cap({value, "B"}), do: D.mult(D.new(value), D.new(1_000_000_000))
+  defp market_cap(_), do: D.new(0)
 end
 
 
@@ -172,7 +191,7 @@ defmodule USStockMinK do
   def save_data([], _type), do: nil
   def save_data([attrs | rest], type) do
     case type do
-      5 -> Stocks.create_usstock_5mink(attrs)
+      5 -> {:ok, _} = Stocks.create_usstock_5mink(attrs)
       true -> nil
     end
 

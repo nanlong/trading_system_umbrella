@@ -178,12 +178,19 @@ defmodule TradingSystem.Stocks do
   def list_usstocks, do: Repo.all(USStock)
   def count_usstocks, do: from(s in USStock, select: count(s.id)) |> Repo.one!
 
-  def get_usstock!(attrs), do: Repo.get_by!(USStock, attrs)
+  def get_usstock!(attrs) when is_map(attrs), do: Repo.get_by!(USStock, attrs)
+  def get_usstock!(symbol) when is_bitstring(symbol), do: Repo.get_by!(USStock, symbol: symbol)
 
   def create_usstock(attrs \\ %{}) do
     %USStock{}
     |> USStock.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def update_usstock(usstock, attrs) do
+    usstock
+    |> USStock.changeset(attrs)
+    |> Repo.update()
   end
 
   alias TradingSystem.Stocks.USStock5MinK
