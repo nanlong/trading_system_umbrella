@@ -86,7 +86,9 @@ defmodule USStockDailyK do
   @end_date Date.utc_today |> Date.to_string
 
   def save do 
-    symbols = Stocks.stock_list(:dailyk)
+    symbols = 
+      Stocks.stock_list(:dailyk, 4000)
+      |> Enum.map(&(&1.symbol))
     total = length(symbols)
     IO.puts "加载美股日K数据，合计： #{total} 个股票"
     save(symbols, 1, total)
@@ -204,6 +206,6 @@ defmodule USStockMinK do
 end
 
 
-USStockList.save()
+# USStockList.save()
 USStockDailyK.save()
-USStockMinK.save()
+# USStockMinK.save()

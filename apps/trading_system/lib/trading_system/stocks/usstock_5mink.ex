@@ -13,7 +13,7 @@ defmodule TradingSystem.Stocks.USStock5MinK do
     field :lowest_price, :decimal
     field :open_price, :decimal
     field :symbol, :string
-    field :volume, :integer
+    field :volume, :decimal
 
     timestamps()
   end

@@ -43,7 +43,7 @@ defmodule TradingSystem.StocksTest do
       assert us_stock_daily_prices.lowest_price == D.new("120.5")
       assert us_stock_daily_prices.open_price == D.new("120.5")
       assert us_stock_daily_prices.symbol == "some symbol"
-      assert us_stock_daily_prices.volume == 42
+      assert us_stock_daily_prices.volume == D.new(42)
       assert us_stock_daily_prices.pre_close_price == D.new("120.8")
     end
 
@@ -62,7 +62,7 @@ defmodule TradingSystem.StocksTest do
       assert us_stock_daily_prices.lowest_price == D.new("456.7")
       assert us_stock_daily_prices.open_price == D.new("456.7")
       assert us_stock_daily_prices.symbol == "some updated symbol"
-      assert us_stock_daily_prices.volume == 43
+      assert us_stock_daily_prices.volume == D.new(43)
       assert us_stock_daily_prices.pre_close_price == D.new("480.5")
     end
 
@@ -165,7 +165,7 @@ defmodule TradingSystem.StocksTest do
       assert usstock_5mink.lowest_price == D.new(120.5)
       assert usstock_5mink.open_price == D.new(120.5)
       assert usstock_5mink.symbol == "some symbol"
-      assert usstock_5mink.volume == 42
+      assert usstock_5mink.volume == D.new(42)
     end
 
     test "create_usstock_5mink/1 with invalid data returns error changeset" do

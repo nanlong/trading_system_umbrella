@@ -11,7 +11,7 @@ defmodule TradingSystem.Repo.Migrations.CreateTradingSystem.Stocks.USStockDailyP
       add :highest_price, :decimal
       add :lowest_price, :decimal
       add :pre_close_price, :decimal
-      add :volume, :integer
+      add :volume, :decimal
       add :chg_pct, :decimal
 
       timestamps()

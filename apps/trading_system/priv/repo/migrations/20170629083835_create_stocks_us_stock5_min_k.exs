@@ -10,7 +10,7 @@ defmodule TradingSystem.Repo.Migrations.CreateTradingSystem.Stocks.USStock5MinK 
       add :close_price, :decimal
       add :lowest_price, :decimal
       add :highest_price, :decimal
-      add :volume, :integer
+      add :volume, :decimal
 
       timestamps()
     end

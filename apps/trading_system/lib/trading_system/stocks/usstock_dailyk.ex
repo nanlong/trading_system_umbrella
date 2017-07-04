@@ -14,7 +14,7 @@ defmodule TradingSystem.Stocks.USStockDailyK do
     field :lowest_price, :decimal
     field :open_price, :decimal
     field :symbol, :string
-    field :volume, :integer
+    field :volume, :decimal
     field :pre_close_price, :decimal
 
     timestamps()

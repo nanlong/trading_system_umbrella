@@ -56,9 +56,9 @@ defmodule TradingApi.LiangYee.USStock do
     data_keys =
       case Map.get(data_map, "columns") do
         "交易时间,开盘价,最高价,最低价,收盘价,成交量" ->
-          [:datetime, :open_price, :highest_price, :lowest_price, :close_price, :turnover_vol]
+          [:datetime, :open_price, :highest_price, :lowest_price, :close_price, :volume]
         "交易日,开盘价,收盘价,最高价,最低价,成交量,涨跌幅%" ->
-          [:date, :open_price, :close_price, :highest_price, :lowest_price, :turnover_vol, :chg_pct]
+          [:date, :open_price, :close_price, :highest_price, :lowest_price, :volume, :chg_pct]
         _ -> []
       end
 

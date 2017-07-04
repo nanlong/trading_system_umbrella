@@ -23,37 +23,15 @@ defmodule TradingSystem.Stocks do
     Repo.all(query)
   end
 
-  def stock_list(:dailyk) do
-    s1_count =
-      from(s in USStock, 
-        select: count(s.id)) 
-      |> Repo.one
-
-    s2_count =
-      from(s in USStockDailyK, 
-        distinct: :symbol, 
-        group_by: s.symbol, 
-        select: s.symbol) 
-      |> Repo.all 
-      |> length
-    
-    query =
-      if s2_count < s1_count do
-        USStock
-        |> join(:left, [s1], s2 in USStockDailyK, s1.symbol == s2.symbol)
-        |> where([s1, s2], is_nil(s2.symbol))
-        |> limit(200)
-      else
-        USStockDailyK
-        |> select([s], %{max: max(s.date), symbol: s.symbol})
-        |> group_by([s], s.symbol)
-        |> order_by(fragment("max"))
-        |> limit(200)
-      end
-    
-    query
+  @doc """
+  总资产大于1亿8千万的 前4000个股票列表
+  """
+  def stock_list(:dailyk, 4000) do
+    USStock
+    |> where([s], s.market_cap > 1_800_000_00)
+    |> order_by(desc: :market_cap)
+    |> limit(4000)
     |> Repo.all
-    |> Enum.map(&(&1.symbol))
   end
 
   def list_us_stock_daily_prices do
