@@ -1,13 +1,13 @@
 defmodule TradingSystem.Graphql.DonchianChannel do
   alias TradingSystem.Repo
-  alias TradingSystem.Stocks.USStockDailyPrices
+  alias TradingSystem.Stocks.USStockDailyK
   alias TradingKernel.DonchianChannel
 
   import Ecto.Query
 
   def all(%{symbol: symbol, duration: duration}, _info) do
     data =
-      USStockDailyPrices
+      USStockDailyK
       |> where([s], s.symbol == ^symbol)
       |> order_by(asc: :date)
       |> Repo.all
