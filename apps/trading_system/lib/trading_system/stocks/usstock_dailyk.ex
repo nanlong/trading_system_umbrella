@@ -7,7 +7,6 @@ defmodule TradingSystem.Stocks.USStockDailyK do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "usstock_dailyk" do
-    field :chg_pct, :decimal
     field :close_price, :decimal
     field :date, :date
     field :highest_price, :decimal

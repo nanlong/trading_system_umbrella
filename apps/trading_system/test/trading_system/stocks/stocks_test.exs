@@ -7,9 +7,9 @@ defmodule TradingSystem.StocksTest do
     alias TradingSystem.Stocks.USStockDailyK
     alias Decimal, as: D
 
-    @valid_attrs %{chg_pct: "120.5", close_price: "120.5", date: ~D[2010-04-17], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", volume: 42, pre_close_price: "120.8"}
-    @update_attrs %{chg_pct: "456.7", close_price: "456.7", date: ~D[2011-05-18], highest_price: "456.7", lowest_price: "456.7", open_price: "456.7", symbol: "some updated symbol", volume: 43, pre_close_price: "480.5"}
-    @invalid_attrs %{chg_pct: nil, close_price: nil, date: nil, highest_price: nil, lowest_price: nil, open_price: nil, symbol: nil, turnover_vol: nil}
+    @valid_attrs %{close_price: "120.5", date: ~D[2010-04-17], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", volume: 42, pre_close_price: "120.8"}
+    @update_attrs %{close_price: "456.7", date: ~D[2011-05-18], highest_price: "456.7", lowest_price: "456.7", open_price: "456.7", symbol: "some updated symbol", volume: 43, pre_close_price: "480.5"}
+    @invalid_attrs %{close_price: nil, date: nil, highest_price: nil, lowest_price: nil, open_price: nil, symbol: nil, turnover_vol: nil}
 
     def us_stock_daily_prices_fixture(attrs \\ %{}) do
       {:ok, us_stock_daily_prices} =
@@ -36,7 +36,6 @@ defmodule TradingSystem.StocksTest do
     end
     test "create_us_stock_daily_prices/1 with valid data creates a us_stock_daily_prices" do
       assert {:ok, %USStockDailyK{} = us_stock_daily_prices} = Stocks.create_us_stock_daily_prices(@valid_attrs)
-      assert us_stock_daily_prices.chg_pct == D.new(120.5)
       assert us_stock_daily_prices.close_price == D.new("120.5")
       assert us_stock_daily_prices.date == ~D[2010-04-17]
       assert us_stock_daily_prices.highest_price == D.new("120.5")
@@ -55,7 +54,6 @@ defmodule TradingSystem.StocksTest do
       us_stock_daily_prices = us_stock_daily_prices_fixture()
       assert {:ok, us_stock_daily_prices} = Stocks.update_us_stock_daily_prices(us_stock_daily_prices, @update_attrs)
       assert %USStockDailyK{} = us_stock_daily_prices
-      assert us_stock_daily_prices.chg_pct == D.new(456.7)
       assert us_stock_daily_prices.close_price == D.new("456.7")
       assert us_stock_daily_prices.date == ~D[2011-05-18]
       assert us_stock_daily_prices.highest_price == D.new("456.7")
@@ -88,8 +86,8 @@ defmodule TradingSystem.StocksTest do
     alias TradingSystem.Stocks.USStock
     alias Decimal, as: D
 
-    @valid_attrs %{name: "22nd Century Group, Inc", symbol: "XXII", last_sale: "12.7", market_cap: "90000000000"}
-    @invalid_attrs %{name: nil, symbol: nil}
+    @valid_attrs %{symbol: "AAPL", name: "Apple Inc.", cname: "苹果公司"}
+    @invalid_attrs %{symbol: nil, name: nil, cname: nil}
 
     def usstock_fixture(attrs \\ %{}) do
       {:ok, usstock} =
@@ -117,8 +115,9 @@ defmodule TradingSystem.StocksTest do
 
     test "create_usstock/1 with valid data creates a usstock" do
       assert {:ok, %USStock{} = usstock} = Stocks.create_usstock(@valid_attrs)
-      assert usstock.name == "22nd Century Group, Inc"
-      assert usstock.symbol == "XXII"
+      assert usstock.symbol == "AAPL"
+      assert usstock.name == "Apple Inc."
+      assert usstock.cname == "苹果公司"
     end
 
     test "create_usstock/1 with invalid data returns error changeset" do
