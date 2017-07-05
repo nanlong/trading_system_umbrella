@@ -206,6 +206,6 @@ defmodule USStockMinK do
 end
 
 
-# USStockList.save()
+USStockList.save()
 USStockDailyK.save()
-# USStockMinK.save()
+USStockMinK.save()
