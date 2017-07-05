@@ -87,34 +87,35 @@ defmodule USStockDailyK do
 
   def save do 
     symbols = 
-      Stocks.stock_list(:dailyk, 4000)
+      Stocks.list_usstocks()
       |> Enum.map(&(&1.symbol))
+
     total = length(symbols)
     IO.puts "加载美股日K数据，合计： #{total} 个股票"
     save(symbols, 1, total)
   end
   defp save([], _current, _total), do: nil
   defp save([symbol | rest], current, total) do
-    start_date = get_start_date(symbol)
-      
-    if start_date < @end_date do
-      resp = get_data(symbol, start_date)
-      save_data(symbol, resp)
-    end
+    data = get_data(symbol)
+    save_data(symbol, data)
     
     ProgressBar.render(current, total)
     :timer.sleep(1000)
     save(rest, current + 1, total)
   end
 
-  defp get_data(symbol, start_date) do
-    USSTockApi.get("/getDailyKBar", symbol: symbol, startDate: start_date, endDate: @end_date).body
+  def get_data(symbol), do: get_data(symbol, 0, 9)
+  def get_data(symbol, retry_num, retry_max) when retry_num > retry_max do
+    Logger.info "操作超时，股票代码：#{symbol}"
+    []
   end
-
-  defp get_start_date(symbol) do
-    case Stocks.get_last_usstockdailyk(symbol) do
-      nil -> @start_date
-      usstock -> usstock.date |> Calendar.Date.next_day! |> Date.to_string
+  def get_data(symbol, retry_num, retry_max) do
+    case SinaUSStock.get("getDailyK", symbol: symbol) do
+      %{body: body} -> body
+      %{message: "req_timedout"} -> 
+        :timer.sleep(1000)
+        get_data(symbol, retry_num + 1, retry_max)
+      _ -> []
     end
   end
 
@@ -123,10 +124,10 @@ defmodule USStockDailyK do
   end
 
   defp save_item(symbol, attrs) do
-    attrs = Map.put_new(attrs, :symbol, symbol)
-    unless Stocks.get_us_stock_daily_prices(attrs) do
-      attrs = Map.put_new(attrs, :pre_close_price, Stocks.get_pre_close_price(symbol, attrs.date))
-      Stocks.create_us_stock_daily_prices(attrs)
+    attrs = attrs |> Map.put_new("symbol", symbol)
+    unless Stocks.get_us_stock_daily_prices(symbol: symbol, date: Map.get(attrs, "date")) do
+      attrs = Map.put_new(attrs, "pre_close_price", Stocks.get_pre_close_price(symbol, Map.get(attrs, "date")))
+      {:ok, _} = Stocks.create_us_stock_daily_prices(attrs)
     end
   end
 end

@@ -21,7 +21,7 @@ defmodule TradingSystem.Stocks.USStockDailyK do
   end
 
   @required_options [:symbol, :date, :open_price, :close_price, :highest_price, 
-    :lowest_price, :volume, :chg_pct, :pre_close_price]
+    :lowest_price, :volume, :pre_close_price]
 
   @doc false
   def changeset(%USStockDailyK{} = us_stock_daily_prices, attrs) do
