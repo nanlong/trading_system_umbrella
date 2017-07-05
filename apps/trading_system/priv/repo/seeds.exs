@@ -96,10 +96,11 @@ defmodule USStockDailyK do
   end
   defp save([], _current, _total), do: nil
   defp save([symbol | rest], current, total) do
+    ProgressBar.render(current, total)
+    IO.puts " >> #{symbol}"
     data = get_data(symbol)
     save_data(symbol, data)
     
-    ProgressBar.render(current, total)
     :timer.sleep(1000)
     save(rest, current + 1, total)
   end
@@ -110,7 +111,7 @@ defmodule USStockDailyK do
     []
   end
   def get_data(symbol, retry_num, retry_max) do
-    case SinaUSStock.get("getDailyK", symbol: symbol) do
+    case SinaUSStock.get("daily_k", symbol: symbol) do
       %{body: body} -> body
       %{message: "req_timedout"} -> 
         :timer.sleep(1000)
@@ -182,7 +183,7 @@ defmodule USStockMinK do
     []
   end
   def get_data(symbol, type, retry_num, retry_max) do
-    case SinaUSStock.get("getMinK", symbol: symbol, type: type) do
+    case SinaUSStock.get("min_k", symbol: symbol, type: type) do
       %{body: body} -> body
       %{message: "req_timedout"} -> 
         :timer.sleep(1000)
