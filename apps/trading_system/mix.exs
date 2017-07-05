@@ -33,7 +33,6 @@ defmodule TradingSystem.Mixfile do
   defp deps do
     [{:postgrex, ">= 0.0.0"},
      {:ecto, "~> 2.1"},
-     {:nimble_csv, "~> 0.1.0"},
      {:calendar, "~> 0.17.2"},
      {:progress_bar, "~> 1.6"}]
   end

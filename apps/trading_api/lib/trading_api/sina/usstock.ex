@@ -46,6 +46,7 @@ defmodule TradingApi.Sina.USStock do
     |> String.replace("{", "{\"")
     |> String.replace("\",", "\",\"")
     |> String.replace(":\"", "\":\"")
+    |> String.replace("\\'", "\'")
     |> Poison.decode
   end
 
@@ -60,24 +61,24 @@ defmodule TradingApi.Sina.USStock do
 
   defp update_key({:ok, data}, "List") do
     %{
-      "count" => Map.get(data, "count") |> String.to_integer,
-      "data" => Enum.map(Map.get(data, "data"), fn(x) -> 
+      count: Map.get(data, "count") |> String.to_integer,
+      data: Enum.map(Map.get(data, "data"), fn(x) -> 
         %{
-          "symbol" => Map.get(x, "symbol"),
-          "name" => Map.get(x, "name"),
-          "cname" => Map.get(x, "cname"),
-          "category" => map_get(x, "category"),
-          "pre_close_price" => Map.get(x, "preclose"),
-          "open_price" => Map.get(x, "open"),
-          "highest_price" => Map.get(x, "high"),
-          "lowest_price" => Map.get(x, "low"),
-          "diff" => Map.get(x, "diff"),
-          "chg" => Map.get(x, "chg"),
-          "amplitude" => Map.get(x, "amplitude"),
-          "volume" => Map.get(x, "volume"),
-          "market_cap" => Map.get(x, "mktcap"),
-          "pe" => map_get(x, "pe"),
-          "market" => Map.get(x, "market"),
+          symbol: Map.get(x, "symbol"),
+          name: Map.get(x, "name"),
+          cname: Map.get(x, "cname"),
+          category: map_get(x, "category"),
+          pre_close_price: Map.get(x, "preclose"),
+          open_price: Map.get(x, "open"),
+          highest_price: Map.get(x, "high"),
+          lowest_price: Map.get(x, "low"),
+          diff: Map.get(x, "diff"),
+          chg: Map.get(x, "chg"),
+          amplitude: Map.get(x, "amplitude"),
+          volume: Map.get(x, "volume"),
+          market_cap: Map.get(x, "mktcap"),
+          pe: map_get(x, "pe"),
+          market: Map.get(x, "market"),
         }
       end)
     }
@@ -86,12 +87,12 @@ defmodule TradingApi.Sina.USStock do
   defp update_key({:ok, data}, "DailyK") do
     Enum.map(data, fn(x) -> 
       %{
-        "date" => Map.get(x, "d"),
-        "open_price" => Map.get(x, "o"),
-        "close_price" => Map.get(x, "c"),
-        "lowest_price" => Map.get(x, "l"),
-        "highest_price" => Map.get(x, "h"),
-        "volume" => Map.get(x, "v"),
+        date: Map.get(x, "d"),
+        open_price: Map.get(x, "o"),
+        close_price: Map.get(x, "c"),
+        lowest_price: Map.get(x, "l"),
+        highest_price: Map.get(x, "h"),
+        volume: Map.get(x, "v"),
       }
     end)
   end
@@ -99,12 +100,12 @@ defmodule TradingApi.Sina.USStock do
   defp update_key({:ok, data}, "MinK") do
     Enum.map(data, fn(x) -> 
       %{
-        "datetime" => Map.get(x, "d"),
-        "open_price" => Map.get(x, "o"),
-        "close_price" => Map.get(x, "c"),
-        "lowest_price" => Map.get(x, "l"),
-        "highest_price" => Map.get(x, "h"),
-        "volume" => Map.get(x, "v"),
+        datetime: Map.get(x, "d"),
+        open_price: Map.get(x, "o"),
+        close_price: Map.get(x, "c"),
+        lowest_price: Map.get(x, "l"),
+        highest_price: Map.get(x, "h"),
+        volume: Map.get(x, "v"),
       }
     end)
   end

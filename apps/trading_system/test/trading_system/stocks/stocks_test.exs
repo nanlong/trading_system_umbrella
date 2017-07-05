@@ -9,7 +9,7 @@ defmodule TradingSystem.StocksTest do
 
     @valid_attrs %{close_price: "120.5", date: ~D[2010-04-17], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", volume: 42, pre_close_price: "120.8"}
     @update_attrs %{close_price: "456.7", date: ~D[2011-05-18], highest_price: "456.7", lowest_price: "456.7", open_price: "456.7", symbol: "some updated symbol", volume: 43, pre_close_price: "480.5"}
-    @invalid_attrs %{close_price: nil, date: nil, highest_price: nil, lowest_price: nil, open_price: nil, symbol: nil, turnover_vol: nil}
+    @invalid_attrs %{close_price: "", date: "", highest_price: "", lowest_price: "", open_price: "", symbol: "", turnover_vol: ""}
 
     def us_stock_daily_prices_fixture(attrs \\ %{}) do
       {:ok, us_stock_daily_prices} =
@@ -87,7 +87,7 @@ defmodule TradingSystem.StocksTest do
     alias Decimal, as: D
 
     @valid_attrs %{symbol: "AAPL", name: "Apple Inc.", cname: "苹果公司"}
-    @invalid_attrs %{symbol: nil, name: nil, cname: nil}
+    @invalid_attrs %{symbol: "", name: "", cname: ""}
 
     def usstock_fixture(attrs \\ %{}) do
       {:ok, usstock} =
@@ -130,7 +130,7 @@ defmodule TradingSystem.StocksTest do
     alias Decimal, as: D
 
     @valid_attrs %{close_price: "120.5", datetime: ~N[2010-04-17 14:00:00.000000], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", volume: 42}
-    @invalid_attrs %{close_price: nil, datetime: nil, highest_price: nil, lowest_price: nil, open_price: nil, symbol: nil, volume: nil}
+    @invalid_attrs %{close_price: "", datetime: ~N[2010-04-17 14:00:00.000000], highest_price: "", lowest_price: "", open_price: "", symbol: "", volume: ""}
 
     def usstock_5mink_fixture(attrs \\ %{}) do
       {:ok, usstock_5mink} =

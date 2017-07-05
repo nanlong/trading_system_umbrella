@@ -27,11 +27,13 @@ defmodule TradingSystem.Stocks.USStock do
   end
 
   @required_fields [:symbol, :name, :cname]
+  @optioned_fields [:category, :pre_close_price, :open_price, :highest_price, :lowest_price,
+                    :diff, :chg, :amplitude, :volume, :market_cap, :pe, :market]
 
   @doc false
   def changeset(%USStock{} = usstock, attrs) do
     usstock
-    |> cast(attrs, @required_fields)
+    |> cast(attrs, @required_fields ++ @optioned_fields)
     |> validate_required(@required_fields)
   end
 end

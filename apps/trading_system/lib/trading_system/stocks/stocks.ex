@@ -75,7 +75,7 @@ defmodule TradingSystem.Stocks do
     |> Repo.one
   end
 
-  def get_pre_close_price(symbol, date) do
+  def get_pre_close_price(symbol, date, default \\ 0) do
     usstock =
       USStockDailyK
       |> where([s], s.symbol == ^symbol)
@@ -84,7 +84,7 @@ defmodule TradingSystem.Stocks do
       |> first
       |> Repo.one
     
-    if usstock, do: usstock.close_price, else: 0
+    if usstock, do: usstock.close_price, else: default
   end
   @doc """
   Creates a us_stock_daily_prices.
@@ -102,6 +102,24 @@ defmodule TradingSystem.Stocks do
     %USStockDailyK{}
     |> USStockDailyK.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def get_last_usstock_dailyk(symbol) do
+    USStockDailyK
+    |> where([s], s.symbol == ^symbol)
+    |> order_by(desc: :date)
+    |> first
+    |> Repo.one
+  end
+
+  def create_usstock_dailyk(%{symbol: symbol, date: date, open_price: open_price} = attrs) do
+    unless Repo.get_by(USStockDailyK, symbol: symbol, date: date) do
+      attrs = Map.put_new(attrs, "pre_close_price", get_pre_close_price(symbol, date, open_price))
+
+      %USStockDailyK{}
+      |> USStockDailyK.changeset(attrs)
+      |> Repo.insert()
+    end
   end
 
   @doc """
@@ -160,9 +178,12 @@ defmodule TradingSystem.Stocks do
   def get_usstock!(symbol) when is_bitstring(symbol), do: Repo.get_by!(USStock, symbol: symbol)
 
   def create_usstock(attrs \\ %{}) do
-    %USStock{}
+    case Repo.get_by(USStock, symbol: attrs.symbol) do
+      nil -> %USStock{}
+      stock -> stock |> Map.put(:updated_at, NaiveDateTime.utc_now())
+    end
     |> USStock.changeset(attrs)
-    |> Repo.insert()
+    |> Repo.insert_or_update
   end
 
   def update_usstock(usstock, attrs) do
@@ -226,10 +247,12 @@ defmodule TradingSystem.Stocks do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_usstock_5mink(attrs \\ %{}) do
-    %USStock5MinK{}
-    |> USStock5MinK.changeset(attrs)
-    |> Repo.insert()
+  def create_usstock_5mink(%{symbol: symbol, datetime: datetime} = attrs) do
+    unless Repo.get_by(USStock5MinK, symbol: symbol, datetime: datetime) do
+      %USStock5MinK{}
+      |> USStock5MinK.changeset(attrs)
+      |> Repo.insert()
+    end
   end
 
   def create_all_usstock_5mink(data), do: Repo.insert_all(USStock5MinK, data)
