@@ -83,7 +83,7 @@ defmodule USStockMinK do
   defp save([], _current, _total), do: nil
   defp save([{stock, type} | rest], current, total) do
     ProgressBar.render(current, total)
-
+    IO.inspect stock.symbol
     data = 
       TradingApi.get("min_k", symbol: stock.symbol, type: type)
       |> Enum.map(&Map.put_new(&1, :symbol, stock.symbol))
@@ -178,7 +178,7 @@ defmodule USStockStatus do
   end
 end
 
-USStock.save()
-USStockDailyK.save()
+# USStock.save()
+# USStockDailyK.save()
 USStockMinK.save()
-USStockStatus.save()
+# USStockStatus.save()

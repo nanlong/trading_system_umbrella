@@ -12,7 +12,7 @@ defmodule TradingKernel.DonchianChannel do
 
   ## Examples:
     iex> TradingKernel.DonchianChannel.execute([], 20)
-    [%{date: ~D[0000-01-01], max_price: 0, mid_price: 0, min_price: 0}]
+    [%{date: ~D[0000-01-01], high: 0, avg: 0, low: 0}]
   """
   def execute(results, days) when length(results) <= days, do: [%{date: ~D[0000-01-01], high: 0, low: 0, avg: 0}]
   def execute(results, days), do: execute(results, days, 0, [])

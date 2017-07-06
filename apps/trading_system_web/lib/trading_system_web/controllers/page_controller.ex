@@ -5,7 +5,7 @@ defmodule TradingSystem.Web.PageController do
   alias TradingKernel.Turtle
 
   def index(conn, _params) do
-    stocks = Stocks.stock_list(:dailyk, 4000)
+    stocks = Stocks.list_usstock()
 
     conn
     |> assign(:stocks, stocks)
@@ -15,7 +15,7 @@ defmodule TradingSystem.Web.PageController do
   def status(conn, %{"symbol" => symbol}) do
     today = Date.utc_today |> Date.to_string
     
-    history = Stocks.list_us_stock_daily_prices(symbol, today)
+    history = Stocks.history_usstock_dailyk(%{symbol: symbol, date: today})
 
     Turtle.init(
       account: 10000,

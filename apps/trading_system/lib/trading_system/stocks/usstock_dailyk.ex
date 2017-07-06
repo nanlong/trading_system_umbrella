@@ -19,13 +19,14 @@ defmodule TradingSystem.Stocks.USStockDailyK do
     timestamps()
   end
 
-  @required_options [:symbol, :date, :open_price, :close_price, :highest_price, 
+  @required_fields [:symbol, :date, :open_price, :close_price, :highest_price, 
     :lowest_price, :volume, :pre_close_price]
+  @optional_fields ~w()a
 
   @doc false
   def changeset(%USStockDailyK{} = us_stock_daily_prices, attrs) do
     us_stock_daily_prices
-    |> cast(attrs, @required_options)
-    |> validate_required(@required_options)
+    |> cast(attrs, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
   end
 end

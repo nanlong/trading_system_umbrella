@@ -1,6 +1,7 @@
 defmodule TradingApi do
   alias TradingApi.Sina.USStock, as: SinaUSStock
   
+  def get(method, query \\ [])
   def get(method, query), do: get(method, query, 1, 10)
   defp get(method, query, retry_num, retry_max) when retry_num > retry_max do
     IO.puts "请求失败，超过重试次数 #{retry_max}"

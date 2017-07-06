@@ -1,5 +1,6 @@
 defmodule TradingApi.Sina.USStock do
   @moduledoc """
+  TradingApi.Sina.USStock.get("trade_days")
   TradingApi.Sina.USStock.get("list", page: 1)
   TradingApi.Sina.USStock.get("daily_k", symbol: "fb")
   TradingApi.Sina.USStock.get("min_k", symbol: "fb", type: 5)
@@ -8,7 +9,12 @@ defmodule TradingApi.Sina.USStock do
 
   @k_service "http://stock.finance.sina.com.cn/usstock/api/jsonp_v2.php/<%= @varible %>/US_MinKService.<%= @method %>"
   @category_service "http://stock.finance.sina.com.cn/usstock/api/jsonp.php/List/US_CategoryService.<%= @method %>"
+  @open_api "http://stock.finance.sina.com.cn/usstock/api/openapi.php/US_MinKService.getTradeDays"
   
+  def process_url("trade_days", _query) do
+    process_url(@open_api, [start_day: "2000-01-01", end_day: Date.utc_today |> Date.to_string])
+  end
+
   def process_url("list", query) do
     url = EEx.eval_string(@category_service, assigns: [method: "getList"])
     process_url(url, query)
@@ -24,6 +30,7 @@ defmodule TradingApi.Sina.USStock do
     process_url(url, query)
   end
 
+  
   def process_url(url, query) do
     process_url(url)
     |> prepend_protocol
@@ -33,10 +40,13 @@ defmodule TradingApi.Sina.USStock do
   def process_response_body(body) when is_list(body), do: :iconv.convert("gbk", "utf-8", body) |> process_response_body
   def process_response_body(body), do: body |> IO.iodata_to_binary |> to_json
 
+  defp to_json("List(null);"), do: []
+  defp to_json("DailyK(null);"), do: []
+  defp to_json("MinK(null);"), do: []
   defp to_json("List" <> data), do: data |> decode_json |> update_key("List")
   defp to_json("DailyK" <> data), do: data |> decode_json |> update_key("DailyK")
   defp to_json("MinK" <> data), do: data |> decode_json |> update_key("MinK")
-  defp to_json("(null);"), do: {:ok, []}
+  defp to_json(data), do: data |> Poison.decode |> update_key("TradeDays")
 
   defp decode_json("((" <> data) do
     data
@@ -108,6 +118,10 @@ defmodule TradingApi.Sina.USStock do
         volume: Map.get(x, "v"),
       }
     end)
+  end
+
+  defp update_key({:ok, data}, "TradeDays") do
+    get_in(data, ["result", "data"])
   end
 
   defp map_get(map, key) do
