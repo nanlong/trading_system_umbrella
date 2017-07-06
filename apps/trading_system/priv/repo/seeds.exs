@@ -47,7 +47,7 @@ defmodule USStockDailyK do
     data =
       case Stocks.get_last_usstock_dailyk(stock.symbol) do
         nil -> data
-        last -> Enum.filter(data, &compare_dailyk?(&1, last))
+        last -> Enum.filter(data, &compare_date?(&1, last))
       end
     
     create_all(data)
@@ -61,7 +61,7 @@ defmodule USStockDailyK do
     create_all(rest)
   end
 
-  defp compare_dailyk?(%{date: d1}, %{date: d2}) do
+  defp compare_date?(%{date: d1}, %{date: d2}) do
     case d1 |> Date.from_iso8601! |> Date.compare(d2) do
       :gt -> true
       _ -> false
@@ -91,7 +91,7 @@ defmodule USStockMinK do
     data =
       case Stocks.get_last_usstock_5mink(stock.symbol) do
         nil -> data
-        stock_5mink -> Enum.filter(data, &compare_5mink?(&1, stock_5mink))
+        stock_5mink -> Enum.filter(data, &compare_datetime?(&1, stock_5mink))
       end
 
     create_all(data, type)
@@ -109,7 +109,7 @@ defmodule USStockMinK do
     create_all(rest, type)
   end
 
-  defp compare_5mink?(%{datetime: d1}, %{datetime: d2}) do
+  defp compare_datetime?(%{datetime: d1}, %{datetime: d2}) do
     case d1 |> NaiveDateTime.from_iso8601! |> NaiveDateTime.compare(d2) do
       :gt -> true
       _ -> false
@@ -130,6 +130,12 @@ defmodule USStockStatus do
   def save([stock | rest], current, total) do
     ProgressBar.render(current, total)
     dailyk = Stocks.list_usstock_dailyk(stock.symbol)
+    
+    dailyk =
+      case Stocks.get_last_usstock_status(stock.symbol) do
+        nil -> dailyk
+        last -> Enum.filter(dailyk, &compare_date?(&1, last))
+      end
     create_all(dailyk)
     save(rest, current + 1, total)
   end
@@ -162,6 +168,13 @@ defmodule USStockStatus do
     }
 
     {:ok, _} = Stocks.create_usstock_status(attrs)
+  end
+
+  defp compare_date?(%{date: d1}, %{date: d2}) do
+    case d1 |> Date.from_iso8601! |> Date.compare(d2) do
+      :gt -> true
+      _ -> false
+    end
   end
 end
 

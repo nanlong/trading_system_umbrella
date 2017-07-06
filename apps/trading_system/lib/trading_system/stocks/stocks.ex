@@ -308,6 +308,14 @@ defmodule TradingSystem.Stocks do
     |> Repo.one()
   end
 
+  def get_last_usstock_status(symbol) do
+    USStockStatus
+    |> where([s], s.symbol == ^symbol)
+    |> order_by(desc: :date)
+    |> first()
+    |> Repo.one()
+  end
+
   def create_usstock_status(attrs) do
     %USStockStatus{}
     |> USStockStatus.changeset(attrs)
