@@ -114,7 +114,7 @@ defmodule TradingSystem.Stocks do
 
   def create_usstock_dailyk(%{symbol: symbol, date: date, open_price: open_price} = attrs) do
     unless Repo.get_by(USStockDailyK, symbol: symbol, date: date) do
-      attrs = Map.put_new(attrs, "pre_close_price", get_pre_close_price(symbol, date, open_price))
+      attrs = Map.put_new(attrs, :pre_close_price, get_pre_close_price(symbol, date, open_price))
 
       %USStockDailyK{}
       |> USStockDailyK.changeset(attrs)

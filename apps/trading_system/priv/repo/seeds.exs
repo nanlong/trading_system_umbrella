@@ -39,11 +39,10 @@ defmodule USStockDailyK do
   defp save([], _current, _total), do: nil
   defp save([stock | rest], current, total) do
     ProgressBar.render(current, total)
-    # IO.puts " >> #{stock.symbol}"
     
     data =
       TradingApi.get("daily_k", symbol: stock.symbol)
-      |> Enum.map(&Map.put_new(&1, "symbol", stock.symbol))
+      |> Enum.map(&Map.put_new(&1, :symbol, stock.symbol))
 
     data =
       case Stocks.get_last_usstock_dailyk(stock.symbol) do
@@ -53,7 +52,6 @@ defmodule USStockDailyK do
     
     create_all(data)
 
-    :timer.sleep(1000)
     save(rest, current + 1, total)
   end
 
@@ -85,11 +83,10 @@ defmodule USStockMinK do
   defp save([], _current, _total), do: nil
   defp save([{stock, type} | rest], current, total) do
     ProgressBar.render(current, total)
-    # IO.puts " >> #{stock.symbol}"
 
     data = 
       TradingApi.get("min_k", symbol: stock.symbol, type: type)
-      |> Enum.map(&Map.put_new(&1, "symbol", stock.symbol))
+      |> Enum.map(&Map.put_new(&1, :symbol, stock.symbol))
 
     data =
       case Stocks.get_last_usstock_5mink(stock.symbol) do
@@ -99,7 +96,6 @@ defmodule USStockMinK do
 
     create_all(data, type)
 
-    :timer.sleep(1000)
     save(rest, current + 1, total)
   end
 
