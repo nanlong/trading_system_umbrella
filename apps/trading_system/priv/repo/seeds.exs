@@ -3,7 +3,7 @@ alias TradingApi
 require Logger
 
 
-defmodule USStockList do
+defmodule USStock do
   @per_page 20
 
   def save do
@@ -31,7 +31,7 @@ end
 defmodule USStockDailyK do
 
   def save do 
-    symbols = Stocks.list_usstocks()
+    symbols = Stocks.list_usstock()
     total = length(symbols)
     Logger.info "加载美股日K数据，合计： #{total} 个股票"
     save(symbols, 1, total)
@@ -74,7 +74,7 @@ defmodule USStockMinK do
   @types [5]
   
   def save do
-    stocks = Stocks.list_usstocks()
+    stocks = Stocks.list_usstock()
     args = for stock <- stocks, type <- @types, do: {stock, type}
     total = length(args)
     Logger.info "加载美股5分钟K数据，合计： #{length(stocks)} 个股票"
@@ -118,6 +118,54 @@ defmodule USStockMinK do
 end
 
 
-USStockList.save()
+defmodule USStockStatus do
+  
+  def save do
+    stocks = Stocks.list_usstock()
+    Logger.info "统计美股股票信息，合计： #{length(stocks)} 个股票"
+    save(stocks, 1, length(stocks))
+  end
+
+  def save([], _current, _total), do: nil
+  def save([stock | rest], current, total) do
+    ProgressBar.render(current, total)
+    dailyk = Stocks.list_usstock_dailyk(stock.symbol)
+    create_all(dailyk)
+    save(rest, current + 1, total)
+  end
+
+  def create_all([]), do: nil
+  def create_all([k | rest]) do
+    create_item(k, Stocks.get_usstock_status?(k))
+    create_all(rest)
+  end
+
+  def create_item(_dailyk, true), do: nil
+  def create_item(%{symbol: symbol, date: date} = dailyk, false) do
+    n = TradingKernel.n(dailyk)
+    dc60 = TradingKernel.donchian_channel(dailyk, 60)
+    dc20 = TradingKernel.donchian_channel(dailyk, 20)
+    dc10 = TradingKernel.donchian_channel(dailyk, 10)
+    avg_50_gt_300? = TradingKernel.avg_50_gt_300?(dailyk)
+    
+    attrs = %{
+      date: date,
+      symbol: symbol,
+      high_60: dc60.high,
+      high_20: dc20.high,
+      low_20: dc20.low,
+      low_10: dc10.low,
+      avg_50_gt_300: avg_50_gt_300?,
+      n: n,
+      n_ratio_60: Decimal.div(n, dc60.high) |> Decimal.round(3),
+      n_ratio_20: Decimal.div(n, dc20.high) |> Decimal.round(3),
+    }
+
+    {:ok, _} = Stocks.create_usstock_status(attrs)
+  end
+end
+
+USStock.save()
 USStockDailyK.save()
 USStockMinK.save()
+USStockStatus.save()

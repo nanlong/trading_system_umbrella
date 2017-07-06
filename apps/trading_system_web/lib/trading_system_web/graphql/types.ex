@@ -28,10 +28,10 @@ defmodule TradingSystem.Graphql.Types do
   object :donchian_channel do
     field :date, :string
     @desc "最高价"
-    field :max_price, :string
+    field :high, :string
     @desc "平均价"
-    field :mid_price, :string
+    field :avg, :string
     @desc "最低价"
-    field :min_price, :string
+    field :low, :string
   end
 end

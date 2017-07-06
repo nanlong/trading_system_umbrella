@@ -147,7 +147,19 @@ defmodule TradingKernel.Turtle do
   # end
 
   def n(results, days \\ 20)
-  def n(results, _days) when length(results) <= 20, do: Decimal.new(0.1)
+  def n(results, _days) when length(results) <= 20 do
+    sum =
+      results
+      |> Enum.map(&item_tr(&1))
+      |> Enum.reduce(&Decimal.add(&1, &2))
+    
+    len =
+      results
+      |> length()
+      |> Decimal.new()
+
+    Decimal.div(sum, len)
+  end
   def n(results, days), do: n(results, days, 0, 0)
   defp n(results, days, index, pre_n) when index <= days - 1, do: n(results, days, index + 1, pre_n)
   defp n(results, _days, index, n) when index >= length(results), do: n

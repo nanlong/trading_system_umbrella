@@ -31,9 +31,9 @@ function render_chart(symbol, duration) {
 
       fragment dc on DonchianChannel {
         date
-        maxPrice
-        midPrice
-        minPrice
+        high
+        avg
+        low
       }
     `,
     variables: {

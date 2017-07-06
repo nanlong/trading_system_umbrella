@@ -5,7 +5,7 @@ defmodule TradingSystem.Web.PageController do
   alias TradingKernel.Turtle
 
   def index(conn, _params) do
-    stocks = Stocks.stock_list
+    stocks = Stocks.stock_list(:dailyk, 4000)
 
     conn
     |> assign(:stocks, stocks)

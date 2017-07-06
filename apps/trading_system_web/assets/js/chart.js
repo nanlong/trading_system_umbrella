@@ -6,8 +6,8 @@ function data_handler(data) {
   return {
     category: Array.from(data.dc60, (x) => x.date),
     values: Array.from(stocks, (x) => [x.openPrice, x.closePrice, x.lowestPrice, x.highestPrice]),
-    dc60Max: Array.from(data.dc60, (x) => x.maxPrice),
-    dc20Min: Array.from(dc20, (x) => x.minPrice),
+    dc60Max: Array.from(data.dc60, (x) => x.high),
+    dc20Min: Array.from(dc20, (x) => x.low),
   }
 }
 

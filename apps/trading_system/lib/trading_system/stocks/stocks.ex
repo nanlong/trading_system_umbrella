@@ -8,6 +8,30 @@ defmodule TradingSystem.Stocks do
 
   alias TradingSystem.Stocks.USStock
   alias TradingSystem.Stocks.USStockDailyK
+  alias TradingSystem.Stocks.USStock5MinK
+  alias TradingSystem.Stocks.USStockStatus
+
+
+  def list_usstock, do: Repo.all(USStock)
+  def count_usstocks, do: from(s in USStock, select: count(s.id)) |> Repo.one!
+
+  def get_usstock!(attrs) when is_map(attrs), do: Repo.get_by!(USStock, attrs)
+  def get_usstock!(symbol) when is_bitstring(symbol), do: Repo.get_by!(USStock, symbol: symbol)
+
+  def create_usstock(attrs \\ %{}) do
+    case Repo.get_by(USStock, symbol: attrs.symbol) do
+      nil -> %USStock{}
+      stock -> stock |> Map.put(:updated_at, NaiveDateTime.utc_now())
+    end
+    |> USStock.changeset(attrs)
+    |> Repo.insert_or_update
+  end
+
+  def update_usstock(usstock, attrs) do
+    usstock
+    |> USStock.changeset(attrs)
+    |> Repo.update()
+  end
 
   @doc """
   Returns the list of us_stock_daily_prices.
@@ -32,6 +56,33 @@ defmodule TradingSystem.Stocks do
     |> order_by(desc: :market_cap)
     |> limit(4000)
     |> Repo.all
+  end
+
+
+  def list_usstock_dailyk(symbol) do
+    USStockDailyK
+    |> where([k], k.symbol == ^symbol)
+    |> order_by(asc: :date)
+    |> Repo.all()
+  end
+
+  def history_usstock_dailyk(%{symbol: symbol, date: date}) do
+    USStockDailyK
+    |> where([k], k.symbol == ^symbol)
+    |> where([k], k.date <= ^date)
+    |> order_by(desc: :date)
+    |> Repo.all()
+    |> Enum.reverse()
+  end
+
+  def history_usstock_dailyk(%{symbol: symbol, date: date}, duration) do
+    USStockDailyK
+    |> where([k], k.symbol == ^symbol)
+    |> where([k], k.date <= ^date)
+    |> order_by(desc: :date)
+    |> limit(^duration)
+    |> Repo.all()
+    |> Enum.reverse()
   end
 
   def list_us_stock_daily_prices do
@@ -169,28 +220,9 @@ defmodule TradingSystem.Stocks do
     USStockDailyK.changeset(us_stock_daily_prices, %{})
   end
 
-  alias TradingSystem.Stocks.USStock
+ 
 
-  def list_usstocks, do: Repo.all(USStock)
-  def count_usstocks, do: from(s in USStock, select: count(s.id)) |> Repo.one!
-
-  def get_usstock!(attrs) when is_map(attrs), do: Repo.get_by!(USStock, attrs)
-  def get_usstock!(symbol) when is_bitstring(symbol), do: Repo.get_by!(USStock, symbol: symbol)
-
-  def create_usstock(attrs \\ %{}) do
-    case Repo.get_by(USStock, symbol: attrs.symbol) do
-      nil -> %USStock{}
-      stock -> stock |> Map.put(:updated_at, NaiveDateTime.utc_now())
-    end
-    |> USStock.changeset(attrs)
-    |> Repo.insert_or_update
-  end
-
-  def update_usstock(usstock, attrs) do
-    usstock
-    |> USStock.changeset(attrs)
-    |> Repo.update()
-  end
+  
 
   alias TradingSystem.Stocks.USStock5MinK
 
@@ -256,4 +288,30 @@ defmodule TradingSystem.Stocks do
   end
 
   def create_all_usstock_5mink(data), do: Repo.insert_all(USStock5MinK, data)
+
+
+
+  def get_usstock_status(%{symbol: symbol, date: date}) do
+    Repo.get_by(USStockStatus, symbol: symbol, date: date)
+  end
+
+  def get_usstock_status?(attrs) do
+    if get_usstock_status(attrs), do: true, else: false
+  end
+
+  def get_pre_usstock_status(%{symbol: symbol, date: date}) do
+    USStockStatus
+    |> where([s], s.symbol == ^symbol)
+    |> where([s], s.date < ^date)
+    |> order_by(desc: :date)
+    |> first()
+    |> Repo.one()
+  end
+
+  def create_usstock_status(attrs) do
+    %USStockStatus{}
+    |> USStockStatus.changeset(attrs)
+    |> Repo.insert()
+  end
+
 end
