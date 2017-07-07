@@ -2,7 +2,7 @@ defmodule TradingSystem.Stocks.USStockStatus do
   use Ecto.Schema
   import Ecto.Changeset
   alias TradingSystem.Stocks.USStockStatus
-
+  alias TradingSystem.Stocks.USStock
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -19,6 +19,8 @@ defmodule TradingSystem.Stocks.USStockStatus do
     field :symbol, :string
 
     timestamps()
+
+    belongs_to :stock, USStock, define_field: false, foreign_key: :symbol, references: :symbol
   end
 
   @required_fields ~w(date symbol)a

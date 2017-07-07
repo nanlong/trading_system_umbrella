@@ -114,6 +114,23 @@ defmodule TradingSystem.Stocks do
     end
   end
 
+  def list_usstock_status(date) do
+    USStockStatus
+    |> where([s], s.date == ^date)
+    |> where([s], s.avg_50_gt_300 == true)
+    |> where([s], s.n_ratio_60 > 0.01)
+    |> order_by(desc: :n_ratio_60)
+    |> preload(:stock)
+    |> Repo.all
+  end
+
+  def get_usstock_status_last_date do
+    query = from(s in USStockStatus, select: s.date, order_by: [desc: :date])
+
+    query
+    |> first()
+    |> Repo.one()
+  end
 
   def get_usstock_status(%{symbol: symbol, date: date}) do
     Repo.get_by(USStockStatus, symbol: symbol, date: date)

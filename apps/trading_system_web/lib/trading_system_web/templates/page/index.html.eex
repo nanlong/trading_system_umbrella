@@ -1,10 +1,11 @@
-<!--<div id="chart" style="width: 800px; height: 600px;"></div>-->
-
-<div>
-  <p><strong>股票列表</strong></p>
-  <ul>
-    <%= for stock <- @stocks do %>
-    <li><a href="<%= page_path(@conn, :status, stock.symbol) %>" target="_blank"><%= stock.symbol %></a></li>
-    <%= end %>
-  </ul>
+<div class="columns">
+  <div class="column is-4">
+    <nav class="panel">
+      <p class="panel-heading">
+        股票
+      </p>
+      <%= link "美股", to: stock_path(@conn, :index), class: "panel-block" %>
+    </nav>
+  </div>
 </div>
+

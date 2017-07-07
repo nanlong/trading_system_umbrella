@@ -1,0 +1,30 @@
+<h1>当前时间 <%= Date.utc_today() %></h1>
+<div class="columns">
+  <div class="column">
+    <h1>股票信息 <i>最后更新 <%= @stock.updated_at |> to_humanize %></i></h1>
+    <ul>
+      <li><%= @stock.cname %> <%= @stock.market %>:<%= @stock.symbol %></li>
+      <li>行业: <%= @stock.category %></li>
+      <li>开盘: <%= @stock.open_price %></li>
+      <li>最高: <%= @stock.highest_price %></li>
+      <li>最低: <%= @stock.lowest_price %></li>
+      <li>昨收: <%= @stock.pre_close_price %></li>
+    </ul>
+  </div>
+  <div class="column">
+    <h1>状态信息 <i><%= @status.date %></i></h1>
+    <ul>
+      <li>市场状态: <%= if @status.avg_50_gt_300, do: "活跃", else: "平静" %></li>
+      <li>N: <%= @status.n %></li>
+      <li>60天N比率: <%= @status.n_ratio_60 %></li>
+    </ul>
+  </div>
+</div>
+
+<div>
+  显示图表
+</div>
+
+
+
+

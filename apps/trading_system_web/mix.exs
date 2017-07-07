@@ -43,7 +43,8 @@ defmodule TradingSystem.Web.Mixfile do
      {:absinthe, "~> 1.3.1"},
      {:absinthe_plug, "~> 1.3.0"},
      {:absinthe_ecto, git: "https://github.com/absinthe-graphql/absinthe_ecto.git"},
-     {:poison, "~> 3.1"}]
+     {:poison, "~> 3.1"},
+     {:timex, "~> 3.1"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
