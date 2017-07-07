@@ -4,8 +4,10 @@
     <table id="stock-list" class="table is-bordered is-striped is-narrow">
       <thead>
         <tr>
-          <th>公司名称</th>
+          <th style="width: 400px;">公司名称</th>
           <th class="has-text-right">股票代码</th>
+          <th class="has-text-right"></th>
+          <th class="has-text-right">开盘价</th>
           <th class="has-text-right">60日最高</th>
           <th class="has-text-right">20日最低</th>
           <th class="has-text-right">20日最高</th>
@@ -23,6 +25,14 @@
           <%= end %>
         </td>
         <td class="has-text-right"><%= status.symbol %></td>
+        <td class="has-text-right">
+          <%= if Decimal.compare(status.stock.open_price, status.high_60) == Decimal.new(-1) do %>
+          <i class="fa fa-close" style="color: brown;"></i>
+          <%= else %>
+          <i class="fa fa-check" style="color: forestgreen;"></i>
+          <%= end %>
+        </td>
+        <td class="has-text-right">$<%= status.stock.open_price %></td>
         <td class="has-text-right">$<%= status.high_60 %></td>
         <td class="has-text-right">$<%= status.low_20 %></td>
         <td class="has-text-right">$<%= status.high_20 %></td>
