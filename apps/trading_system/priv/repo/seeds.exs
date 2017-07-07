@@ -39,7 +39,7 @@ defmodule USStockDailyK do
   defp save([], _current, _total), do: nil
   defp save([stock | rest], current, total) do
     ProgressBar.render(current, total)
-    
+    Logger.info "当前第 #{current} 个，#{stock.symbol} 任务开始执行"
     data =
       TradingApi.get("daily_k", symbol: stock.symbol)
       |> Enum.map(&Map.put_new(&1, :symbol, stock.symbol))
@@ -129,6 +129,7 @@ defmodule USStockStatus do
   def save([], _current, _total), do: nil
   def save([stock | rest], current, total) do
     ProgressBar.render(current, total)
+    IO.inspect stock.symbol
     dailyk = Stocks.list_usstock_dailyk(stock.symbol)
     
     dailyk =
@@ -171,14 +172,14 @@ defmodule USStockStatus do
   end
 
   defp compare_date?(%{date: d1}, %{date: d2}) do
-    case d1 |> Date.from_iso8601! |> Date.compare(d2) do
+    case Date.compare(d1, d2) do
       :gt -> true
       _ -> false
     end
   end
 end
 
-# USStock.save()
-# USStockDailyK.save()
+USStock.save()
+USStockDailyK.save()
 USStockMinK.save()
-# USStockStatus.save()
+USStockStatus.save()
