@@ -16,7 +16,7 @@
           <th class="has-text-right">N60比率</th>
           <th class="has-text-right">20日最低</th>
           <th class="has-text-right">60日最高</th>
-          <th class="has-text-right" style="width: 80px;">当前价</th>
+          <th class="has-text-right" style="width: 80px;">实时(秒)</th>
           <th class="has-text-right" style="width: 37px;"></th>
         </tr>
       </thead>
