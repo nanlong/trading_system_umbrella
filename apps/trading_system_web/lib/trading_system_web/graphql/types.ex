@@ -27,12 +27,10 @@ defmodule TradingSystem.Graphql.Types do
   @desc "唐奇安通道"
   object :donchian_channel do
     field :date, :string
-    @desc "最高价"
-    field :high, :string
-    @desc "平均价"
-    field :avg, :string
-    @desc "最低价"
-    field :low, :string
+    field :high_d60, :float
+    field :high_d20, :float
+    field :low_d20, :float
+    field :low_d10, :float
   end
 
   @desc "美股实时"
