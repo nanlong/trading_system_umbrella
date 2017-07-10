@@ -12,4 +12,9 @@ defmodule TradingSystem.Graphql.USStockResolver do
 
     {:ok, Repo.all(query)}
   end
+
+  def realtime(%{stocks: stocks}, _info) do
+    stocks = stocks |> String.split(",") |> Enum.map(&String.trim(&1))
+    {:ok, TradingApi.get("realtime", stocks: stocks)}
+  end
 end

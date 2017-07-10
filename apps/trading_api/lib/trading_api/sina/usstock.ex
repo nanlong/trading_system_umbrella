@@ -93,7 +93,7 @@ defmodule TradingApi.Sina.USStock do
     # "Jul 07 04:00PM EDT", "142.7300", "892519.00"]
     keys = 
       [:cname, :price, :diff, :datetime, :chg, :open_price,
-      :highest_price, :lowest_price, :week_52_highest, :week_52_lowest, :volume, :volume_10_avg,
+      :highest_price, :lowest_price, :year_highest, :year_lowest, :volume, :volume_10_avg,
       :market_cap, nil, :pe, nil, :beta, :dividend, :yield, :capital,
         nil, nil, nil, nil, nil,
       :pre_close_datetime, :pre_close_price, nil]
@@ -113,6 +113,15 @@ defmodule TradingApi.Sina.USStock do
       |> Enum.zip([symbol] ++ list ) 
       |> Enum.into(%{})
       |> Map.delete(:nil)
+      |> Map.update!(:price, &String.to_float(&1))
+      |> Map.update!(:open_price, &String.to_float(&1))
+      |> Map.update!(:highest_price, &String.to_float(&1))
+      |> Map.update!(:lowest_price, &String.to_float(&1))
+      |> Map.update!(:year_highest, &String.to_float(&1))
+      |> Map.update!(:year_lowest, &String.to_float(&1))
+      |> Map.update!(:volume, &String.to_integer(&1))
+      |> Map.update!(:volume_10_avg, &String.to_integer(&1))
+      |> Map.update!(:market_cap, &String.to_integer(&1))
     end)
   end
   defp to_json("List" <> data), do: data |> decode_json |> update_key("List")

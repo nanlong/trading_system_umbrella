@@ -3,7 +3,7 @@ defmodule TradingSystem.Graphql.Types do
   use Absinthe.Ecto, repo: TradingSystem.Repo
 
   @desc "美股行情"
-  object :us_stock do
+  object :usstock do
     @desc "股票代码"
     field :symbol, :string
     @desc "日期"
@@ -33,5 +33,21 @@ defmodule TradingSystem.Graphql.Types do
     field :avg, :string
     @desc "最低价"
     field :low, :string
+  end
+
+  @desc "美股实时"
+  object :usstock_realtime do
+    field :symbol, :string
+    field :cname, :string
+    field :datetime, :string
+    field :price, :float
+    field :open_price, :float
+    field :highest_price, :float
+    field :lowest_price, :float
+    field :year_highest, :float
+    field :year_lowest, :float
+    field :volume, :integer
+    field :volume_10_avg, :integer
+    field :market_cap, :integer
   end
 end

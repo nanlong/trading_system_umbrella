@@ -3,7 +3,7 @@ defmodule TradingSystem.Graphql.Schema do
   import_types TradingSystem.Graphql.Types
 
   query do
-    field :us_stocks, list_of(:us_stock) do
+    field :usstocks, list_of(:usstock) do
       arg :symbol, :string, description: "股票代码"
       resolve &TradingSystem.Graphql.USStockResolver.all/2
     end
@@ -13,6 +13,11 @@ defmodule TradingSystem.Graphql.Schema do
       arg :duration, :integer, description: "持续时间"
       
       resolve &TradingSystem.Graphql.DonchianChannel.all/2
+    end
+
+    field :usstock_realtime, list_of(:usstock_realtime) do
+      arg :stocks, :string, description: "股票代码，用逗号分隔"
+      resolve &TradingSystem.Graphql.USStockResolver.realtime/2
     end
   end
 end
