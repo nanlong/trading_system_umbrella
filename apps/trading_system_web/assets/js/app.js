@@ -49,14 +49,12 @@ function update_item(data) {
 
   if ($state.data("high60") < data.price) {
     add_break(data.symbol)
-    $state.html(`<i class="fa fa-check" style="color: forestgreen;"></i>`)
+    $state.html(`<i class="fa fa-smile-o" style="color: forestgreen;"></i>`)
   }
   else {
     delete_break(data.symbol)
-    $state.html(`<i class="fa fa-close" style="color: brown;"></i>`)
+    $state.html(`<i class="fa fa-frown-o" style="color: brown;"></i>`)
   }
-
-
 }
 
 function update_realtime(client, stocks) {

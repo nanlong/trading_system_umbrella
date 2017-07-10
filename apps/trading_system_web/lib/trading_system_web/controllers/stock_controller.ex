@@ -8,6 +8,7 @@ defmodule TradingSystem.Web.StockController do
     data = Stocks.list_usstock_status(date)
     
     conn
+    |> assign(:title, "股票列表")
     |> assign(:date, date)
     |> assign(:data, data)
     |> render(:index)
@@ -19,6 +20,7 @@ defmodule TradingSystem.Web.StockController do
     account = 10000
 
     conn
+    |> assign(:title, stock.cname)
     |> assign(:account, account)
     |> assign(:stock, stock)
     |> assign(:status, status)
