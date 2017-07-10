@@ -49,7 +49,11 @@ module.exports = {
   },
   plugins: [
     new ExtractTextPlugin("css/[name].css"),
-    new CopyWebpackPlugin([{ from: "./static" }])
+    new CopyWebpackPlugin([{ from: "./static" }]),
+    new webpack.ProvidePlugin({
+      $: "jquery",
+      jQuery: "jquery"
+    }),
   ],
   devtool: "#cheap-module-source-map"
 };

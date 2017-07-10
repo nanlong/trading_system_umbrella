@@ -1,49 +1,61 @@
 import "phoenix_html"
 import ApolloClient, { createNetworkInterface } from "apollo-client"
 import gql from "graphql-tag"
-import chart from "./chart"
+import $ from "jquery"
 
 const client = new ApolloClient({
   networkInterface: createNetworkInterface({
-    uri: "/api",
+    uri: "/api"
   }),
 });
 
-function render_chart(symbol, duration) {
+function update_item(data) {
+  let symbol = data.symbol.replace("$", "_")
+  let $realtime = $("#" + symbol + "-realtime")
+  let $state = $("#" + symbol + "-state")
+
+  $realtime.text("$" + data.price)
+
+  if ($state.data("high60") < data.price) {
+    $state.html(`<i class="fa fa-check" style="color: forestgreen;"></i>`)
+  }
+  else {
+    $state.html(`<i class="fa fa-close" style="color: brown;"></i>`)
+  }
+}
+
+function update_realtime(client, stocks) {
   client.query({
     query: gql`
-      query Stocks($symbol: String) {
-        stocks: usStocks(symbol: $symbol) {
-          date
+      query USStockRealtime($stocks: String) {
+        usstockRealtime(stocks: $stocks) {
+          datetime
+          symbol
+          cname
+          price
           openPrice
-          closePrice
-          lowestPrice
           highestPrice
-          turnoverVol
+          lowestPrice
+          yearHighest
+          yearLowest
+          volume
+          marketCap
         }
-        dc20: donchianChannel(symbol: $symbol, duration: 20) {
-          ...dc
-        }
-        dc60: donchianChannel(symbol: $symbol, duration: 60) {
-          ...dc
-        }
-      }
-
-      fragment dc on DonchianChannel {
-        date
-        high
-        avg
-        low
       }
     `,
     variables: {
-      symbol: symbol
-    }
+      stocks: stocks
+    },
+    fetchPolicy: "network-only"
   })
-  .then(resp => chart('chart', resp.data))
-  .catch(error => console.error(error))
+  .then(resp => resp.data.usstockRealtime.map(data => update_item(data)))
+  .catch(error => console.log(error))
 }
+update_realtime(client, CONFIG["symbols"])
 
-render_chart(CONFIG['symbol'], 60)
+setTimeout(function st() {
+  update_realtime(client, CONFIG["symbols"])
+  setTimeout(st, 1000)
+}, 1000)
 
 

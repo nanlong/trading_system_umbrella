@@ -1,19 +1,23 @@
+<script>
+  var CONFIG = {};
+  CONFIG["symbols"] = "<%= (for stock <- @data, do: stock.symbol) |> Enum.join(", ") %>";
+</script>
+
 <h1 class="title" style="padding-top: 20px;"><%= length(@data) %>个符合条件的股票 (<%= @date %> )</h1>
 <div class="columns">
   <div class="column">
     <table id="stock-list" class="table is-bordered is-striped is-narrow">
       <thead>
         <tr>
-          <th style="width: 400px;">公司名称</th>
+          <th style="width: 420px;">公司名称</th>
           <th class="has-text-right">股票代码</th>
-          <th class="has-text-right"></th>
           <th class="has-text-right">开盘价</th>
-          <th class="has-text-right">60日最高</th>
-          <th class="has-text-right">20日最低</th>
-          <th class="has-text-right">20日最高</th>
-          <th class="has-text-right">10日最低</th>
           <th class="has-text-right">N值</th>
           <th class="has-text-right">N60比率</th>
+          <th class="has-text-right">20日最低</th>
+          <th class="has-text-right">60日最高</th>
+          <th class="has-text-right" style="width: 80px;">当前价</th>
+          <th class="has-text-right" style="width: 37px;"></th>
         </tr>
       </thead>
       <tbody>
@@ -25,20 +29,13 @@
           <%= end %>
         </td>
         <td class="has-text-right"><%= status.symbol %></td>
-        <td class="has-text-right">
-          <%= if Decimal.compare(status.stock.open_price, status.high_60) == Decimal.new(-1) do %>
-          <i class="fa fa-close" style="color: brown;"></i>
-          <%= else %>
-          <i class="fa fa-check" style="color: forestgreen;"></i>
-          <%= end %>
-        </td>
         <td class="has-text-right">$<%= status.stock.open_price %></td>
-        <td class="has-text-right">$<%= status.high_60 %></td>
-        <td class="has-text-right">$<%= status.low_20 %></td>
-        <td class="has-text-right">$<%= status.high_20 %></td>
-        <td class="has-text-right">$<%= status.low_10 %></td>
         <td class="has-text-right"><%= status.n %></td>
         <td class="has-text-right"><%= status.n_ratio_60 %></td>
+        <td class="has-text-right">$<%= status.low_20 %></td>
+        <td class="has-text-right">$<%= status.high_60 %></td>
+        <td class="has-text-right" id="<%= symbol(status.stock) %>-realtime"></td>
+        <td class="has-text-right" id="<%= symbol(status.stock) %>-state" data-high60="<%= status.high_60 %>"></td>
       </tr>
       <%= end %>
       </tbody>

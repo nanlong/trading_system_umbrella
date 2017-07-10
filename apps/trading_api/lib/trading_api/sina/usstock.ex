@@ -36,8 +36,10 @@ defmodule TradingApi.Sina.USStock do
   stocks: ["AAPL", "BABA"]
   """
   def process_url("realtime", [stocks: stocks]) do
+    # stocks max 932
     list =
       stocks
+      |> Enum.take(932)
       |> Enum.map(fn(x) -> "usr_" <> String.downcase(x) end)
       |> Enum.join(",")
 

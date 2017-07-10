@@ -86,7 +86,6 @@ defmodule TradingSystem.Stocks do
     end
   end
 
-
   def list_usstock_5mink do
     Repo.all(USStock5MinK)
   end
@@ -118,8 +117,8 @@ defmodule TradingSystem.Stocks do
     USStockStatus
     |> where([s], s.date == ^date)
     |> where([s], s.avg_50_gt_300 == true)
-    |> where([s], s.n_ratio_60 > 0.00)
-    |> where([s], s.high_60 > 2)
+    |> where([s], s.n_ratio_60 > 0.01)
+    |> join(:inner, [s1], s2 in USStock, s1.symbol == s2.symbol and s2.volume > 1800000 and s2.open_price > 2)
     |> order_by(desc: :n_ratio_60)
     |> preload(:stock)
     |> Repo.all
