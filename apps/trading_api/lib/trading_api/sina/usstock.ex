@@ -4,13 +4,15 @@ defmodule TradingApi.Sina.USStock do
   TradingApi.Sina.USStock.get("list", page: 1)
   TradingApi.Sina.USStock.get("daily_k", symbol: "fb")
   TradingApi.Sina.USStock.get("min_k", symbol: "fb", type: 5)
+  TradingApi.Sina.USStock.get("realtime", stocks: ["FB", "BABA"])
   """
   use HTTPotion.Base
 
   @k_service "http://stock.finance.sina.com.cn/usstock/api/jsonp_v2.php/<%= @varible %>/US_MinKService.<%= @method %>"
   @category_service "http://stock.finance.sina.com.cn/usstock/api/jsonp.php/List/US_CategoryService.<%= @method %>"
   @open_api "http://stock.finance.sina.com.cn/usstock/api/openapi.php/US_MinKService.getTradeDays"
-  
+  @realtime_api "http://hq.sinajs.cn/"
+
   def process_url("trade_days", _query) do
     process_url(@open_api, [start_day: "2000-01-01", end_day: Date.utc_today |> Date.to_string])
   end
@@ -30,6 +32,17 @@ defmodule TradingApi.Sina.USStock do
     process_url(url, query)
   end
 
+  @doc """
+  stocks: ["AAPL", "BABA"]
+  """
+  def process_url("realtime", [stocks: stocks]) do
+    list =
+      stocks
+      |> Enum.map(fn(x) -> "usr_" <> String.downcase(x) end)
+      |> Enum.join(",")
+
+    @realtime_api <> "/?list=" <> list
+  end
   
   def process_url(url, query) do
     process_url(url)
@@ -43,6 +56,65 @@ defmodule TradingApi.Sina.USStock do
   defp to_json("List(null);"), do: []
   defp to_json("DailyK(null);"), do: []
   defp to_json("MinK(null);"), do: []
+  defp to_json("var hq_str" <> _ = data) do
+    # 中文名称 cname
+    # 价格 price
+    # 涨跌额 diff
+    # 时间 datetime
+    # 涨跌幅 chg
+    # 开盘价 open_price
+    # 最高价 highest_price
+    # 最低价 lowest_price
+    # 52周最高 week_52_highest
+    # 52周最低 week_52_lowest
+    # 成交量 volume
+    # 10日均量 volume_10_avg
+    # 市值 market_cap
+    # 每股收益
+    # 市盈率 pe
+    # --
+    # 贝塔系数 beta
+    # 股息 dividend
+    # 收益率 yield
+    # 股本 capital
+    # --
+    # 盘前价格
+    # 盘前涨跌幅
+    # 盘前涨跌额
+    # 盘前时间
+    # 前日收盘时间
+    # 前收盘价格 
+    # 盘前成交量
+
+    # ["苹果", "144.1800", "1.02", "2017-07-08 08:19:19", "1.4500", "142.9000",
+    # "144.7500", "142.9000", "156.6500", "96.4200", "19201712", "23030822",
+    # "756945000000", "8.33", "17.31", "0.00", "1.44", "2.28", "1.60", "5250000000",
+    # "63.00", "144.2500", "0.05", "0.07", "Jul 07 08:00PM EDT",
+    # "Jul 07 04:00PM EDT", "142.7300", "892519.00"]
+    keys = 
+      [:cname, :price, :diff, :datetime, :chg, :open_price,
+      :highest_price, :lowest_price, :week_52_highest, :week_52_lowest, :volume, :volume_10_avg,
+      :market_cap, nil, :pe, nil, :beta, :dividend, :yield, :capital,
+        nil, nil, nil, nil, nil,
+      :pre_close_datetime, :pre_close_price, nil]
+    
+    symbols = 
+      Regex.scan(~r/usr_(.*)=/, data)
+      |> Enum.map(fn([_, symbol]) -> String.upcase(symbol) end)
+    
+    data_list =
+      Regex.scan(~r/=\"(.*)\";/, data)
+      |> Enum.map(fn([_, str]) -> String.split(str, ",") end)
+    
+    symbols
+    |> Enum.zip(data_list)
+    |> Enum.map(fn({symbol, list}) -> 
+      ([:symbol] ++ keys)
+      |> Enum.zip([symbol] ++ list ) 
+      |> Enum.into(%{})
+      |> Map.delete(:nil)
+    end)
+  end
   defp to_json("List" <> data), do: data |> decode_json |> update_key("List")
   defp to_json("DailyK" <> data), do: data |> decode_json |> update_key("DailyK")
   defp to_json("MinK" <> data), do: data |> decode_json |> update_key("MinK")

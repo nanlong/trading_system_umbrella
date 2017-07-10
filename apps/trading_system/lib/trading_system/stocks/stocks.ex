@@ -118,7 +118,8 @@ defmodule TradingSystem.Stocks do
     USStockStatus
     |> where([s], s.date == ^date)
     |> where([s], s.avg_50_gt_300 == true)
-    |> where([s], s.n_ratio_60 > 0.01)
+    |> where([s], s.n_ratio_60 > 0.00)
+    |> where([s], s.high_60 > 2)
     |> order_by(desc: :n_ratio_60)
     |> preload(:stock)
     |> Repo.all

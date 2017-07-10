@@ -15,13 +15,13 @@ defmodule TradingSystem.Stocks.USStock do
     field :open_price, :decimal
     field :highest_price, :decimal
     field :lowest_price, :decimal
-    field :diff, :decimal
-    field :chg, :decimal
-    field :amplitude, :string
-    field :volume, :decimal
-    field :market_cap, :decimal
-    field :pe, :string
-    field :market, :string
+    field :diff, :decimal # 涨跌额
+    field :chg, :decimal # 涨跌幅
+    field :amplitude, :string # 振幅
+    field :volume, :decimal # 成交量
+    field :market_cap, :decimal # 市值
+    field :pe, :string # 市盈率
+    field :market, :string # 市场
     
     timestamps()
   end
