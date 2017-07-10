@@ -6,6 +6,7 @@
 <h1 class="title" style="padding-top: 20px;"><%= length(@data) %>个符合条件的股票 (<%= @date %> )</h1>
 <div class="columns">
   <div class="column">
+    <div id="break"></div>
     <table id="stock-list" class="table is-bordered is-striped is-narrow">
       <thead>
         <tr>
@@ -24,7 +25,7 @@
       <%= for status <- @data do %>
       <tr>
         <td>
-          <%= link to: stock_path(@conn, :show, status.symbol) do %>
+          <%= link to: stock_path(@conn, :show, status.symbol), target: "_blank" do %>
             <%= status.stock.cname %>
           <%= end %>
         </td>
