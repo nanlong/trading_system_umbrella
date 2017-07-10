@@ -1,3 +1,7 @@
+<script>
+  var CONFIG = {};
+  CONFIG["symbols"] = "<%= @status.symbol %>";
+</script>
 <h1>当前时间 <%= Date.utc_today() %></h1>
 <div class="columns">
   <div class="column">
@@ -17,6 +21,12 @@
       <li>市场状态: <%= if @status.avg_50_gt_300, do: "活跃", else: "平静" %></li>
       <li>N: <%= @status.n %></li>
       <li>60天N比率: <%= @status.n_ratio_60 %></li>
+      <li>实时: <span id="<%= symbol(@stock) %>-realtime"></span></li>
+      <li>60日最高: $<%= @status.high_60 %></li>
+      <li>模拟账户资金: <%= @account %>刀</li>
+      <li>建仓股数: <%= unit(@status, @account) %></li>
+      <li>建仓资金: $<%= unit_price(@status, @account) %></li>
+      <li>止损价格: <%= stop_loss(@status) %></li>
     </ul>
   </div>
 </div>

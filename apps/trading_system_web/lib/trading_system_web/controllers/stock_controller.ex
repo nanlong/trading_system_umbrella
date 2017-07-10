@@ -16,8 +16,10 @@ defmodule TradingSystem.Web.StockController do
   def show(conn, %{"symbol" => symbol}) do
     stock = Stocks.get_usstock!(symbol)
     status = Stocks.get_last_usstock_status(symbol)
+    account = 10000
 
     conn
+    |> assign(:account, account)
     |> assign(:stock, stock)
     |> assign(:status, status)
     |> render(:show)
