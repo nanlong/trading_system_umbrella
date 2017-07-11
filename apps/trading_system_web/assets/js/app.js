@@ -1,6 +1,17 @@
 import React from 'react'
-import { render } from 'react-dom';
-import { DatePicker } from 'antd'
+import { ApolloClient, createNetworkInterface, ApolloProvider } from 'react-apollo';
+import ReactDOM from 'react-dom';
+import USStockStateList from './components/usstock_state_list'
 
+const client = new ApolloClient({
+  networkInterface: createNetworkInterface({
+    uri: '/api',
+  }),
+});
 
-render(<DatePicker />, document.getElementById('main'));
+ReactDOM.render(
+  <ApolloProvider client={client}>
+    <USStockStateList/>
+  </ApolloProvider>,
+  document.getElementById('main'),
+);

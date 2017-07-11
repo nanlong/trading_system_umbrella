@@ -5,7 +5,7 @@ defmodule TradingKernel do
   alias TradingSystem.Stocks
 
   def n(dailyk) do
-    pre_status = Stocks.get_pre_usstock_status(dailyk)
+    pre_status = Stocks.get_pre_usstock_state(dailyk)
 
     if pre_status do
       %{

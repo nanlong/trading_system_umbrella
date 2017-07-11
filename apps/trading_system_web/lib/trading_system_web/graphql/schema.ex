@@ -8,10 +8,8 @@ defmodule TradingSystem.Graphql.Schema do
       resolve &TradingSystem.Graphql.USStockResolver.all/2
     end
 
-    field :donchian_channel, list_of(:donchian_channel) do
-      arg :symbol, :string, description: "股票代码"
-      
-      resolve &TradingSystem.Graphql.DonchianChannel.all/2
+    field :usstock_state, list_of(:usstock_state) do
+      resolve &TradingSystem.Graphql.USStockStateResolver.all/2
     end
 
     field :usstock_realtime, list_of(:usstock_realtime) do

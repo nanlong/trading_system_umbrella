@@ -1,12 +1,1 @@
-<div class="columns">
-  <div class="column is-4">
-    <nav class="panel">
-      <p class="panel-heading">
-        股票
-      </p>
-      <%= link "美股", to: stock_path(@conn, :index), class: "panel-block" %>
-    </nav>
-  </div>
-</div>
-
 <div id="main"></div>

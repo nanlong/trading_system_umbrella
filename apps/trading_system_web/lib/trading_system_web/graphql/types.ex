@@ -6,22 +6,8 @@ defmodule TradingSystem.Graphql.Types do
   object :usstock do
     @desc "股票代码"
     field :symbol, :string
-    @desc "日期"
-    field :date, :string
-    @desc "开盘价"
-    field :open_price, :string
-    @desc "收盘价"
-    field :close_price, :string
-    @desc "最低价"
-    field :lowest_price, :string
-    @desc "最高价"
-    field :highest_price, :string
-    @desc "前一日收盘价"
-    field :pre_close_price, :string
-    @desc "成交量"
-    field :turnover_vol, :string
-    @desc "涨跌幅"
-    field :chg_pct, :string
+    field :cname, :string
+    field :category, :string
   end
 
   @desc "唐奇安通道"
@@ -47,5 +33,22 @@ defmodule TradingSystem.Graphql.Types do
     field :volume, :integer
     field :volume_10_avg, :integer
     field :market_cap, :integer
+  end
+
+  @desc "美股状态"
+  object :usstock_state do
+    field :date, :string
+    field :symbol, :string
+    field :high_d20, :float
+    field :high_d60, :float
+    field :low_d10, :float
+    field :low_d20, :float
+    field :n, :float
+    field :n_ratio_d20, :float
+    field :n_ratio_d60, :float
+    field :avg_d50_gt_d300, :boolean
+    field :price, :float
+    field :random, :string
+    field :stock, :usstock
   end
 end

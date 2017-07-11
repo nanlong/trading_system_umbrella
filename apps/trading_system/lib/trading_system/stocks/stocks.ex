@@ -9,7 +9,7 @@ defmodule TradingSystem.Stocks do
   alias TradingSystem.Stocks.USStock
   alias TradingSystem.Stocks.USStockDailyK
   alias TradingSystem.Stocks.USStock5MinK
-  alias TradingSystem.Stocks.USStockStatus
+  alias TradingSystem.Stocks.USStockState
 
 
   def list_usstock, do: Repo.all(USStock)
@@ -113,8 +113,12 @@ defmodule TradingSystem.Stocks do
     end
   end
 
-  def list_usstock_status(date) do
-    USStockStatus
+  def list_usstock_state do
+    date = get_usstock_state_last_date()
+    list_usstock_state(date)
+  end
+  def list_usstock_state(date) do
+    USStockState
     |> where([s], s.date == ^date)
     |> where([s], s.avg_50_gt_300 == true)
     |> where([s], s.n_ratio_60 > 0.01)
@@ -124,24 +128,24 @@ defmodule TradingSystem.Stocks do
     |> Repo.all
   end
 
-  def get_usstock_status_last_date do
-    query = from(s in USStockStatus, select: s.date, order_by: [desc: :date])
+  def get_usstock_state_last_date do
+    query = from(s in USStockState, select: s.date, order_by: [desc: :date])
 
     query
     |> first()
     |> Repo.one()
   end
 
-  def get_usstock_status(%{symbol: symbol, date: date}) do
-    Repo.get_by(USStockStatus, symbol: symbol, date: date)
+  def get_usstock_state(%{symbol: symbol, date: date}) do
+    Repo.get_by(USStockState, symbol: symbol, date: date)
   end
 
-  def get_usstock_status?(attrs) do
-    if get_usstock_status(attrs), do: true, else: false
+  def get_usstock_state?(attrs) do
+    if get_usstock_state(attrs), do: true, else: false
   end
 
-  def get_pre_usstock_status(%{symbol: symbol, date: date}) do
-    USStockStatus
+  def get_pre_usstock_state(%{symbol: symbol, date: date}) do
+    USStockState
     |> where([s], s.symbol == ^symbol)
     |> where([s], s.date < ^date)
     |> order_by(desc: :date)
@@ -149,17 +153,17 @@ defmodule TradingSystem.Stocks do
     |> Repo.one()
   end
 
-  def get_last_usstock_status(symbol) do
-    USStockStatus
+  def get_last_usstock_state(symbol) do
+    USStockState
     |> where([s], s.symbol == ^symbol)
     |> order_by(desc: :date)
     |> first()
     |> Repo.one()
   end
 
-  def create_usstock_status(attrs) do
-    %USStockStatus{}
-    |> USStockStatus.changeset(attrs)
+  def create_usstock_state(attrs) do
+    %USStockState{}
+    |> USStockState.changeset(attrs)
     |> Repo.insert()
   end
 end

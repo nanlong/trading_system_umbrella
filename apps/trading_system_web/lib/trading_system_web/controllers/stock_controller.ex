@@ -4,8 +4,8 @@ defmodule TradingSystem.Web.StockController do
   alias TradingSystem.Stocks
 
   def index(conn, _params) do
-    date = Stocks.get_usstock_status_last_date()
-    data = Stocks.list_usstock_status(date)
+    date = Stocks.get_usstock_state_last_date()
+    data = Stocks.list_usstock_state(date)
     
     conn
     |> assign(:title, "股票列表")
@@ -16,7 +16,7 @@ defmodule TradingSystem.Web.StockController do
 
   def show(conn, %{"symbol" => symbol}) do
     stock = Stocks.get_usstock!(symbol)
-    status = Stocks.get_last_usstock_status(symbol)
+    status = Stocks.get_last_usstock_state(symbol)
     account = 10000
 
     conn

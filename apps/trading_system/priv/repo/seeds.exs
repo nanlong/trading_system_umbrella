@@ -116,7 +116,7 @@ defmodule USStockMinK do
 end
 
 
-defmodule USStockStatus do
+defmodule USStockState do
   
   def save do
     stocks = Stocks.list_usstock()
@@ -130,7 +130,7 @@ defmodule USStockStatus do
     dailyk = Stocks.list_usstock_dailyk(stock.symbol)
     
     dailyk =
-      case Stocks.get_last_usstock_status(stock.symbol) do
+      case Stocks.get_last_usstock_state(stock.symbol) do
         nil -> dailyk
         last -> Enum.filter(dailyk, &compare_date?(&1, last))
       end
@@ -140,7 +140,7 @@ defmodule USStockStatus do
 
   def create_all([]), do: nil
   def create_all([k | rest]) do
-    create_item(k, Stocks.get_usstock_status?(k))
+    create_item(k, Stocks.get_usstock_state?(k))
     create_all(rest)
   end
 
@@ -165,7 +165,7 @@ defmodule USStockStatus do
       n_ratio_20: Decimal.div(n, dc20.high) |> Decimal.round(3),
     }
 
-    {:ok, _} = Stocks.create_usstock_status(attrs)
+    {:ok, _} = Stocks.create_usstock_state(attrs)
   end
 
   defp compare_date?(%{date: d1}, %{date: d2}) do
@@ -176,7 +176,7 @@ defmodule USStockStatus do
   end
 end
 
-USStock.save()
-USStockDailyK.save()
-USStockMinK.save()
-USStockStatus.save()
+# USStock.save()
+# USStockDailyK.save()
+# USStockMinK.save()
+USStockState.save()
