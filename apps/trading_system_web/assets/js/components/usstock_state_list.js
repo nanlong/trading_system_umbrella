@@ -19,6 +19,7 @@ class USStockStateList extends React.Component {
   }
 
   render() {
+    const dataSource = this.props.data.usstockState
     const columns = [
       {title: '股票代码', dataIndex: 'symbol', key: 'symbol'},
       {title: '公司名称', dataIndex: 'stock.cname', key: 'stock.cname'},
@@ -30,11 +31,13 @@ class USStockStateList extends React.Component {
     ]
 
     return (
-      <Table dataSource={this.props.data.usstockState} columns={columns} rowKey="symbol" />
+      <div>
+        <h1>{dataSource ? dataSource.length : 0} 个符合条件的股票</h1>
+        <Table dataSource={dataSource} columns={columns} rowKey="symbol" />
+      </div>
     )
   }
 }
-
 
 const graphql_query = gql`
   query {

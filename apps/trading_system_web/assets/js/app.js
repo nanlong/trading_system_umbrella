@@ -9,9 +9,12 @@ const client = new ApolloClient({
   }),
 });
 
-ReactDOM.render(
-  <ApolloProvider client={client}>
-    <USStockStateList/>
-  </ApolloProvider>,
-  document.getElementById('main'),
-);
+
+if (document.getElementById('usstock-state-list')) {
+  ReactDOM.render(
+    <ApolloProvider client={client}>
+      <USStockStateList/>
+    </ApolloProvider>,
+    document.getElementById('usstock-state-list'),
+  );
+}
