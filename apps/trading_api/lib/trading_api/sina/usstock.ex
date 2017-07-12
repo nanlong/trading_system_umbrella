@@ -94,11 +94,11 @@ defmodule TradingApi.Sina.USStock do
     # "63.00", "144.2500", "0.05", "0.07", "Jul 07 08:00PM EDT",
     # "Jul 07 04:00PM EDT", "142.7300", "892519.00"]
     keys = 
-      [:cname, :price, :diff, :datetime, :chg, :open_price,
-      :highest_price, :lowest_price, :year_highest, :year_lowest, :volume, :volume_10_avg,
+      [:cname, :price, :diff, :datetime, :chg, :open,
+      :highest, :lowest, :w52_highest, :w52_lowest, :volume, :volume_10_avg,
       :market_cap, nil, :pe, nil, :beta, :dividend, :yield, :capital,
         nil, nil, nil, nil, nil,
-      :pre_close_datetime, :pre_close_price, nil]
+      :pre_close_datetime, :pre_close, nil]
     
     symbols = 
       Regex.scan(~r/usr_(.*)=/, data)
@@ -115,15 +115,6 @@ defmodule TradingApi.Sina.USStock do
       |> Enum.zip([symbol] ++ list ) 
       |> Enum.into(%{})
       |> Map.delete(:nil)
-      |> Map.update!(:price, &String.to_float(&1))
-      |> Map.update!(:open_price, &String.to_float(&1))
-      |> Map.update!(:highest_price, &String.to_float(&1))
-      |> Map.update!(:lowest_price, &String.to_float(&1))
-      |> Map.update!(:year_highest, &String.to_float(&1))
-      |> Map.update!(:year_lowest, &String.to_float(&1))
-      |> Map.update!(:volume, &String.to_integer(&1))
-      |> Map.update!(:volume_10_avg, &String.to_integer(&1))
-      |> Map.update!(:market_cap, &String.to_integer(&1))
     end)
   end
   defp to_json("List" <> data), do: data |> decode_json |> update_key("List")
@@ -161,10 +152,10 @@ defmodule TradingApi.Sina.USStock do
           name: Map.get(x, "name"),
           cname: Map.get(x, "cname"),
           category: map_get(x, "category"),
-          pre_close_price: Map.get(x, "preclose"),
-          open_price: Map.get(x, "open"),
-          highest_price: Map.get(x, "high"),
-          lowest_price: Map.get(x, "low"),
+          pre_close: Map.get(x, "preclose"),
+          open: Map.get(x, "open"),
+          highest: Map.get(x, "high"),
+          lowest: Map.get(x, "low"),
           diff: Map.get(x, "diff"),
           chg: Map.get(x, "chg"),
           amplitude: Map.get(x, "amplitude"),
@@ -181,10 +172,10 @@ defmodule TradingApi.Sina.USStock do
     Enum.map(data, fn(x) -> 
       %{
         date: Map.get(x, "d"),
-        open_price: Map.get(x, "o"),
-        close_price: Map.get(x, "c"),
-        lowest_price: Map.get(x, "l"),
-        highest_price: Map.get(x, "h"),
+        open: Map.get(x, "o"),
+        close: Map.get(x, "c"),
+        lowest: Map.get(x, "l"),
+        highest: Map.get(x, "h"),
         volume: Map.get(x, "v"),
       }
     end)
@@ -194,10 +185,10 @@ defmodule TradingApi.Sina.USStock do
     Enum.map(data, fn(x) -> 
       %{
         datetime: Map.get(x, "d"),
-        open_price: Map.get(x, "o"),
-        close_price: Map.get(x, "c"),
-        lowest_price: Map.get(x, "l"),
-        highest_price: Map.get(x, "h"),
+        open: Map.get(x, "o"),
+        close: Map.get(x, "c"),
+        lowest: Map.get(x, "l"),
+        highest: Map.get(x, "h"),
         volume: Map.get(x, "v"),
       }
     end)
