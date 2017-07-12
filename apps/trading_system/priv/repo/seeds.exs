@@ -176,7 +176,7 @@ defmodule USStockState do
   end
 end
 
-# USStock.save()
-# USStockDailyK.save()
-# USStockMinK.save()
+USStock.save()
+USStockDailyK.save()
+USStockMinK.save()
 USStockState.save()
