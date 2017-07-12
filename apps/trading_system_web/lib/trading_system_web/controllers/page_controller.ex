@@ -4,7 +4,7 @@ defmodule TradingSystem.Web.PageController do
   alias TradingSystem.Stocks
 
   def index(conn, _params) do
-    stocks = Stocks.list_usstock()
+    stocks = Stocks.list_stock()
 
     conn
     |> assign(:stocks, stocks)

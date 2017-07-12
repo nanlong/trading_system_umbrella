@@ -1,12 +1,12 @@
 defmodule TradingSystem.Graphql.USStockResolver do
   alias TradingSystem.Repo
-  alias TradingSystem.Stocks.USStockDailyK
+  alias TradingSystem.Stocks.StockDailyK
 
   import Ecto.Query
 
   def all(%{symbol: symbol}, _info) do
     query =
-      USStockDailyK
+      StockDailyK
       |> where([s], s.symbol == ^symbol)
       |> order_by(asc: :date)
 

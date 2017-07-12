@@ -10,8 +10,8 @@ defmodule TradingSystem.Web.StockController do
   end
 
   def show(conn, %{"symbol" => symbol}) do
-    stock = Stocks.get_usstock!(symbol)
-    status = Stocks.get_last_usstock_state(symbol)
+    stock = Stocks.get_stock!(symbol)
+    status = Stocks.get_last_stock_state(symbol)
     account = 10000
 
     conn

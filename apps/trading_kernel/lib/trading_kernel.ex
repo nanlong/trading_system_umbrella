@@ -5,7 +5,7 @@ defmodule TradingKernel do
   alias TradingSystem.Stocks
 
   def n(dailyk) do
-    pre_status = Stocks.get_pre_usstock_state(dailyk)
+    pre_status = Stocks.get_pre_stock_state(dailyk)
 
     if pre_status do
       %{
@@ -16,14 +16,14 @@ defmodule TradingKernel do
 
       TradingKernel.Base.atr(pre_status.n, TradingKernel.Base.tr(pcp, hp, lp), 20)
     else
-      history = Stocks.history_usstock_dailyk(dailyk)
+      history = Stocks.history_stock_dailyk(dailyk)
       TradingKernel.Turtle.n(history, 20)
     end
     |> Decimal.round(2)
   end
 
   def donchian_channel(dailyk, duration) do
-    history = Stocks.history_usstock_dailyk(dailyk, duration)
+    history = Stocks.history_stock_dailyk(dailyk, duration)
     high = TradingKernel.DonchianChannel.max_highest_price(history)
     low = TradingKernel.DonchianChannel.min_lowest_price(history)
     avg = TradingKernel.DonchianChannel.mid_price(high, low) |> Decimal.round(2)
@@ -32,7 +32,7 @@ defmodule TradingKernel do
   end
 
   def avg_50_gt_300?(dailyk) do
-    history = Stocks.history_usstock_dailyk(dailyk, 300)
+    history = Stocks.history_stock_dailyk(dailyk, 300)
     case TradingKernel.TrendPortfolioFilter.execute(history) do
       :long -> true
       :nothing -> false

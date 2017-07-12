@@ -1,20 +1,20 @@
-defmodule TradingSystem.Stocks.USStock do
+defmodule TradingSystem.Stocks.Stock do
   use Ecto.Schema
   import Ecto.Changeset
-  alias TradingSystem.Stocks.USStock
+  alias TradingSystem.Stocks.Stock
 
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
-  schema "usstocks" do
+  schema "stocks" do
     field :symbol, :string
     field :name, :string
     field :cname, :string
     field :category, :string
-    field :pre_close_price, :decimal
-    field :open_price, :decimal
-    field :highest_price, :decimal
-    field :lowest_price, :decimal
+    field :open, :decimal
+    field :highest, :decimal
+    field :lowest, :decimal
+    field :pre_close, :decimal
     field :diff, :decimal # 涨跌额
     field :chg, :decimal # 涨跌幅
     field :amplitude, :string # 振幅
@@ -26,13 +26,12 @@ defmodule TradingSystem.Stocks.USStock do
     timestamps()
   end
 
-  @required_fields [:symbol, :name, :cname]
-  @optioned_fields [:category, :pre_close_price, :open_price, :highest_price, :lowest_price,
-                    :diff, :chg, :amplitude, :volume, :market_cap, :pe, :market]
+  @required_fields ~w(symbol name cname)a
+  @optioned_fields ~w(category open highest lowest pre_close diff chg amplitude volume market_cap pe market)a
 
   @doc false
-  def changeset(%USStock{} = usstock, attrs) do
-    usstock
+  def changeset(%Stock{} = stock, attrs) do
+    stock
     |> cast(attrs, @required_fields ++ @optioned_fields)
     |> validate_required(@required_fields)
   end

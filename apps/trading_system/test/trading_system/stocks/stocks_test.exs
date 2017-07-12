@@ -3,130 +3,130 @@ defmodule TradingSystem.StocksTest do
 
   alias TradingSystem.Stocks
 
-  describe "usstock" do
-    alias TradingSystem.Stocks.USStock
+  describe "stock" do
+    alias TradingSystem.Stocks.Stock
     alias Decimal, as: D
 
     @valid_attrs %{symbol: "AAPL", name: "Apple Inc.", cname: "苹果公司"}
     @invalid_attrs %{symbol: "", name: "", cname: ""}
 
-    def usstock_fixture(attrs \\ %{}) do
-      {:ok, usstock} =
+    def stock_fixture(attrs \\ %{}) do
+      {:ok, stock} =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Stocks.create_usstock()
+        |> Stocks.create_stock()
 
-      usstock
+      stock
     end
 
-    test "list_usstocks/0 returns all usstock" do
-      usstock = usstock_fixture()
-      assert Stocks.list_usstock() == [usstock]
+    test "list_stocks/0 returns all stock" do
+      stock = stock_fixture()
+      assert Stocks.list_stock() == [stock]
     end
 
-    test "get_usstock!/1 returns the us_stocks with given id" do
-      usstock = usstock_fixture()
-      assert Stocks.get_usstock!(@valid_attrs) == usstock
+    test "get_stock!/1 returns the us_stocks with given id" do
+      stock = stock_fixture()
+      assert Stocks.get_stock!(@valid_attrs) == stock
     end
 
-    test "create_usstock/1 with valid data creates a usstock" do
-      assert {:ok, %USStock{} = usstock} = Stocks.create_usstock(@valid_attrs)
-      assert usstock.symbol == "AAPL"
-      assert usstock.name == "Apple Inc."
-      assert usstock.cname == "苹果公司"
+    test "create_stock/1 with valid data creates a stock" do
+      assert {:ok, %Stock{} = stock} = Stocks.create_stock(@valid_attrs)
+      assert stock.symbol == "AAPL"
+      assert stock.name == "Apple Inc."
+      assert stock.cname == "苹果公司"
     end
 
-    test "create_usstock/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Stocks.create_usstock(@invalid_attrs)
+    test "create_stock/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stocks.create_stock(@invalid_attrs)
     end
   end
 
-  describe "usstock_dailyk" do
-    alias TradingSystem.Stocks.USStockDailyK
+  describe "stock_dailyk" do
+    alias TradingSystem.Stocks.StockDailyK
     alias Decimal, as: D
 
-    @valid_attrs %{close_price: "120.5", date: ~D[2010-04-17], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", volume: 42, pre_close_price: "120.8"}
-    @invalid_attrs %{close_price: "", date: ~D[2011-05-18], highest_price: "", lowest_price: "", open_price: "", symbol: "", turnover_vol: ""}
+    @valid_attrs %{close: "120.5", date: ~D[2010-04-17], highest: "120.5", lowest: "120.5", open: "120.5", symbol: "some symbol", volume: 42, pre_close: "120.8"}
+    @invalid_attrs %{close: "", date: ~D[2011-05-18], highest: "", lowest: "", open: "", symbol: "", turnover_vol: ""}
 
-    def usstock_dailyk_fixture(attrs \\ %{}) do
-      {:ok, usstock_dailyk} =
+    def stock_dailyk_fixture(attrs \\ %{}) do
+      {:ok, stock_dailyk} =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Stocks.create_usstock_dailyk()
+        |> Stocks.create_stock_dailyk()
 
-      usstock_dailyk
+      stock_dailyk
     end
 
-    test "list_usstock_dailyk/0 returns all usstock_dailyk" do
-      usstock_dailyk = usstock_dailyk_fixture()
-      assert Stocks.list_usstock_dailyk() == [usstock_dailyk]
+    test "list_stock_dailyk/0 returns all stock_dailyk" do
+      stock_dailyk = stock_dailyk_fixture()
+      assert Stocks.list_stock_dailyk() == [stock_dailyk]
     end
 
-    test "get_last_usstockdailyk/1 with symbol" do
-      usstock_dailyk = usstock_dailyk_fixture()
-      assert Stocks.get_last_usstock_dailyk("some symbol") == usstock_dailyk
+    test "get_last_stockdailyk/1 with symbol" do
+      stock_dailyk = stock_dailyk_fixture()
+      assert Stocks.get_last_stock_dailyk("some symbol") == stock_dailyk
     end
-    test "create_us_stock_daily_prices/1 with valid data creates a us_stock_daily_prices" do
-      assert {:ok, %USStockDailyK{} = usstock_dailyk} = Stocks.create_usstock_dailyk(@valid_attrs)
-      assert usstock_dailyk.close_price == D.new("120.5")
-      assert usstock_dailyk.date == ~D[2010-04-17]
-      assert usstock_dailyk.highest_price == D.new("120.5")
-      assert usstock_dailyk.lowest_price == D.new("120.5")
-      assert usstock_dailyk.open_price == D.new("120.5")
-      assert usstock_dailyk.symbol == "some symbol"
-      assert usstock_dailyk.volume == D.new(42)
-      assert usstock_dailyk.pre_close_price == D.new("120.8")
+    test "create_us_stock_dailys/1 with valid data creates a us_stock_dailys" do
+      assert {:ok, %StockDailyK{} = stock_dailyk} = Stocks.create_stock_dailyk(@valid_attrs)
+      assert stock_dailyk.close == D.new("120.5")
+      assert stock_dailyk.date == ~D[2010-04-17]
+      assert stock_dailyk.highest == D.new("120.5")
+      assert stock_dailyk.lowest == D.new("120.5")
+      assert stock_dailyk.open == D.new("120.5")
+      assert stock_dailyk.symbol == "some symbol"
+      assert stock_dailyk.volume == D.new(42)
+      assert stock_dailyk.pre_close == D.new("120.8")
     end
 
-    test "create_us_stock_daily_prices/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Stocks.create_usstock_dailyk(@invalid_attrs)
+    test "create_us_stock_dailys/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stocks.create_stock_dailyk(@invalid_attrs)
     end
   end
 
-  describe "usstock_5mink" do
-    alias TradingSystem.Stocks.USStock5MinK
+  describe "stock_5mink" do
+    alias TradingSystem.Stocks.Stock5MinK
     alias Decimal, as: D
 
-    @valid_attrs %{close_price: "120.5", datetime: ~N[2010-04-17 14:00:00.000000], highest_price: "120.5", lowest_price: "120.5", open_price: "120.5", symbol: "some symbol", volume: 42}
-    @invalid_attrs %{close_price: "", datetime: ~N[2010-04-17 14:00:00.000000], highest_price: "", lowest_price: "", open_price: "", symbol: "", volume: ""}
+    @valid_attrs %{close: "120.5", datetime: ~N[2010-04-17 14:00:00.000000], highest: "120.5", lowest: "120.5", open: "120.5", symbol: "some symbol", volume: 42}
+    @invalid_attrs %{close: "", datetime: ~N[2010-04-17 14:00:00.000000], highest: "", lowest: "", open: "", symbol: "", volume: ""}
 
-    def usstock_5mink_fixture(attrs \\ %{}) do
-      {:ok, usstock_5mink} =
+    def stock_5mink_fixture(attrs \\ %{}) do
+      {:ok, stock_5mink} =
         attrs
         |> Enum.into(@valid_attrs)
-        |> Stocks.create_usstock_5mink()
+        |> Stocks.create_stock_5mink()
 
-      usstock_5mink
+      stock_5mink
     end
 
-    test "list_usstock_5mink/0 returns all usstock_5mink" do
-      usstock_5mink = usstock_5mink_fixture()
-      assert Stocks.list_usstock_5mink() == [usstock_5mink]
+    test "list_stock_5mink/0 returns all stock_5mink" do
+      stock_5mink = stock_5mink_fixture()
+      assert Stocks.list_stock_5mink() == [stock_5mink]
     end
 
-    test "get_usstock_5mink?/1 returns the us_stock5_min_k with given id" do
-      usstock_5mink_fixture()
-      assert Stocks.get_usstock_5mink?(@valid_attrs)
+    test "get_stock_5mink?/1 returns the us_stock5_min_k with given id" do
+      stock_5mink_fixture()
+      assert Stocks.get_stock_5mink?(@valid_attrs)
     end
 
-    test "get_last_usstock_5mink/1 returns the us_stock5_min_k with given symbol" do
-      item = usstock_5mink_fixture()
-      assert Stocks.get_last_usstock_5mink("some symbol") == item
+    test "get_last_stock_5mink/1 returns the us_stock5_min_k with given symbol" do
+      item = stock_5mink_fixture()
+      assert Stocks.get_last_stock_5mink("some symbol") == item
     end
 
-    test "create_usstock_5mink/1 with valid data creates a usstock_5mink" do
-      assert {:ok, %USStock5MinK{} = usstock_5mink} = Stocks.create_usstock_5mink(@valid_attrs)
-      assert usstock_5mink.close_price == D.new(120.5)
-      assert usstock_5mink.datetime == ~N[2010-04-17 14:00:00.000000]
-      assert usstock_5mink.highest_price == D.new(120.5)
-      assert usstock_5mink.lowest_price == D.new(120.5)
-      assert usstock_5mink.open_price == D.new(120.5)
-      assert usstock_5mink.symbol == "some symbol"
-      assert usstock_5mink.volume == D.new(42)
+    test "create_stock_5mink/1 with valid data creates a stock_5mink" do
+      assert {:ok, %Stock5MinK{} = stock_5mink} = Stocks.create_stock_5mink(@valid_attrs)
+      assert stock_5mink.close == D.new(120.5)
+      assert stock_5mink.datetime == ~N[2010-04-17 14:00:00.000000]
+      assert stock_5mink.highest == D.new(120.5)
+      assert stock_5mink.lowest == D.new(120.5)
+      assert stock_5mink.open == D.new(120.5)
+      assert stock_5mink.symbol == "some symbol"
+      assert stock_5mink.volume == D.new(42)
     end
 
-    test "create_usstock_5mink/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Stocks.create_usstock_5mink(@invalid_attrs)
+    test "create_stock_5mink/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Stocks.create_stock_5mink(@invalid_attrs)
     end
   end
 end
