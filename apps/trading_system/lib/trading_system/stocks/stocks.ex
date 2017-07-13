@@ -39,9 +39,8 @@ defmodule TradingSystem.Stocks do
     StockDailyK
     |> where([k], k.symbol == ^symbol)
     |> where([k], k.date <= ^date)
-    |> order_by(desc: :date)
+    |> order_by(asc: :date)
     |> Repo.all()
-    |> Enum.reverse()
   end
 
   def history_stock_dailyk(%{symbol: symbol, date: date}, duration) do
@@ -71,7 +70,7 @@ defmodule TradingSystem.Stocks do
       |> first
       |> Repo.one
     
-    if stock, do: stock.close_price, else: default
+    if stock, do: stock.close, else: default
   end
   
   def create_stock_dailyk(%{symbol: symbol, date: date, open: open} = attrs) do
@@ -165,5 +164,18 @@ defmodule TradingSystem.Stocks do
     %StockState{}
     |> StockState.changeset(attrs)
     |> Repo.insert()
+  end
+
+  def get_pre_count_stock_state(%{symbol: symbol, date: date}) do
+    (from s in StockState, 
+    where: s.symbol == ^symbol and s.date < ^date, 
+    select: count(s.id))
+    |> Repo.one()
+  end
+
+  def get_pre_history_stock_state(%{symbol: symbol, date: date}) do
+    StockState
+    |> where([s], s.symbol == ^symbol and s.date < ^date)
+    |> Repo.all()
   end
 end

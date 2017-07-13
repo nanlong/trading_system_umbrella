@@ -9,27 +9,27 @@ defmodule TradingSystem.Stocks.StockState do
   schema "stock_state" do
     field :date, :date
     field :symbol, :string
-    field :DCU10, :decimal
-    field :DCA10, :decimal
-    field :DCL10, :decimal
-    field :DCU20, :decimal
-    field :DCA20, :decimal
-    field :DCL20, :decimal
-    field :DCU60, :decimal
-    field :DCA60, :decimal
-    field :DCL60, :decimal
-    field :MA5, :decimal
-    field :MA10, :decimal
-    field :MA20, :decimal
-    field :MA30, :decimal
-    field :MA50, :decimal
-    field :MA60, :decimal
-    field :MA120, :decimal
-    field :MA150, :decimal
-    field :MA240, :decimal
-    field :MA300, :decimal
-    field :TR, :decimal
-    field :ATR20, :decimal
+    field :dcu10, :decimal
+    field :dca10, :decimal
+    field :dcl10, :decimal
+    field :dcu20, :decimal
+    field :dca20, :decimal
+    field :dcl20, :decimal
+    field :dcu60, :decimal
+    field :dca60, :decimal
+    field :dcl60, :decimal
+    field :ma5, :decimal
+    field :ma10, :decimal
+    field :ma20, :decimal
+    field :ma30, :decimal
+    field :ma50, :decimal
+    field :ma60, :decimal
+    field :ma120, :decimal
+    field :ma150, :decimal
+    field :ma240, :decimal
+    field :ma300, :decimal
+    field :tr, :decimal
+    field :atr20, :decimal
 
     timestamps()
 
@@ -37,8 +37,8 @@ defmodule TradingSystem.Stocks.StockState do
   end
 
   @required_fields ~w(date symbol)a
-  @optional_fields ~w(DCU10 DCA10 DCL10 DCU20 DCA20 DCL20 DCU60 DCA60 DCL60 MA5 MA10 MA20 
-                      MA30 MA50 MA60 MA120 MA150 MA240 MA300 TR ATR20)a
+  @optional_fields ~w(dcu10 dca10 dcl10 dcu20 dca20 dcl20 dcu60 dca60 dcl60 ma5 ma10 ma20 
+                      ma30 ma50 ma60 ma120 ma150 ma240 ma300 tr atr20)a
 
   @doc false
   def changeset(%StockState{} = stock_state, attrs) do

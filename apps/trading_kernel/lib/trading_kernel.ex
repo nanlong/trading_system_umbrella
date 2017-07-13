@@ -4,40 +4,61 @@ defmodule TradingKernel do
   """
   alias TradingSystem.Stocks
 
-  def n(dailyk) do
-    pre_status = Stocks.get_pre_stock_state(dailyk)
+  def tr(%{pre_close: pc, highest: h, lowest: l}) do
+    TradingKernel.Base.tr(pc, h, l)
+  end
 
-    if pre_status do
-      %{
-        pre_close_price: pcp, 
-        highest_price: hp, 
-        lowest_price: lp
-      } = dailyk
+  def atr(dailyk, duration \\ 20) do
+    # 1..20 计算tr
+    # 21 计算 前面tr的平均
+    # 22.. 用前面的atr
+    pre_count = Stocks.get_pre_count_stock_state(dailyk)
 
-      TradingKernel.Base.atr(pre_status.n, TradingKernel.Base.tr(pcp, hp, lp), 20)
-    else
-      history = Stocks.history_stock_dailyk(dailyk)
-      TradingKernel.Turtle.n(history, 20)
+    cond do
+      pre_count < duration -> 
+        tr(dailyk)
+      pre_count == duration ->
+        history = Stocks.get_pre_history_stock_state(dailyk)
+
+        (for item <- history, do: item.atr20)
+        |> Enum.reduce(fn(x, y) -> Decimal.add(x, y) end)
+        |> Decimal.div(Decimal.new(20))
+        |> Decimal.round(2)
+      pre_count > duration -> 
+        tr = tr(dailyk)
+
+        pre_atr = 
+          dailyk
+          |> Stocks.get_pre_stock_state()
+          |> Map.get(String.to_atom("atr" <> Integer.to_string(duration)))
+        
+        TradingKernel.Base.atr(pre_atr, tr, Decimal.new(duration))
     end
+  end
+
+  def dc(history, duration) do
+    data = get_range(history, duration)
+    up = TradingKernel.DonchianChannel.up(data)
+    lower = TradingKernel.DonchianChannel.lower(data)
+    avg = TradingKernel.DonchianChannel.avg(up, lower)
+    
+    %{up: up, avg: avg, lower: lower}
+  end
+
+  def ma(history, duration) do
+    data = get_range(history, duration)
+    len = data |> length() |> Decimal.new()
+
+    (for item <- data, do: item.close)
+    |> Enum.reduce(fn(x, y) -> Decimal.add(x, y) end)
+    |> Decimal.div(len)
     |> Decimal.round(2)
   end
 
-  def donchian_channel(dailyk, duration) do
-    history = Stocks.history_stock_dailyk(dailyk, duration)
-    high = TradingKernel.DonchianChannel.max_highest_price(history)
-    low = TradingKernel.DonchianChannel.min_lowest_price(history)
-    avg = TradingKernel.DonchianChannel.mid_price(high, low) |> Decimal.round(2)
-    
-    %{high: high, avg: avg, low: low}
-  end
-
-  def avg_50_gt_300?(dailyk) do
-    history = Stocks.history_stock_dailyk(dailyk, 300)
-    case TradingKernel.TrendPortfolioFilter.execute(history) do
-      :long -> true
-      :nothing -> false
-      :short -> false
-      _  -> false
-    end
+  defp get_range(list, range_end) do
+    list
+    |> Enum.reverse() 
+    |> Enum.slice(0..range_end) 
+    |> Enum.reverse()
   end
 end
