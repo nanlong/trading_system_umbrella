@@ -65,12 +65,7 @@ defmodule TradingKernel.Common do
   """
   @spec unit(integer, float) :: integer
   def unit(account, atr) do
-    {amount, _} = 
-      (account * 0.01 / atr) 
-      |> Float.to_string 
-      |> Integer.parse
-
-    amount
+    (account * 0.01 / atr) |> round()
   end
 
   @doc """
