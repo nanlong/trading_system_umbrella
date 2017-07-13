@@ -1,4 +1,4 @@
 defmodule TradingKernel.BaseTest do
   use ExUnit.Case
-  doctest TradingKernel.Base
+  doctest TradingKernel.Common
 end

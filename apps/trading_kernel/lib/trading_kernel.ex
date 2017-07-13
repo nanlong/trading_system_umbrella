@@ -2,12 +2,19 @@ defmodule TradingKernel do
   @moduledoc """
   Documentation for TradingKernel.
   """
+  alias TradingKernel.Common
   alias TradingSystem.Stocks
 
+  @doc """
+  真实波幅
+  """
   def tr(%{pre_close: pc, highest: h, lowest: l}) do
-    TradingKernel.Base.tr(pc, h, l)
+    Common.tr(pc, h, l)
   end
 
+  @doc """
+  平均真实波幅
+  """
   def atr(dailyk, duration \\ 20) do
     # 1..20 计算tr
     # 21 计算 前面tr的平均
@@ -32,21 +39,27 @@ defmodule TradingKernel do
           |> Stocks.get_pre_stock_state()
           |> Map.get(String.to_atom("atr" <> Integer.to_string(duration)))
         
-        TradingKernel.Base.atr(pre_atr, tr, Decimal.new(duration))
+        Common.atr(pre_atr, tr, Decimal.new(duration))
     end
   end
 
+  @doc """
+  唐奇安通道
+  """
   def dc(history, duration) do
-    data = get_range(history, duration)
-    up = TradingKernel.DonchianChannel.up(data)
-    lower = TradingKernel.DonchianChannel.lower(data)
-    avg = TradingKernel.DonchianChannel.avg(up, lower)
+    data = list_slice(history, duration)
+    up = Common.dc_up(data)
+    lower = Common.dc_lower(data)
+    avg = Common.dc_avg(up, lower)
     
     %{up: up, avg: avg, lower: lower}
   end
 
+  @doc """
+  移动平均
+  """
   def ma(history, duration) do
-    data = get_range(history, duration)
+    data = list_slice(history, duration)
     len = data |> length() |> Decimal.new()
 
     (for item <- data, do: item.close)
@@ -55,7 +68,7 @@ defmodule TradingKernel do
     |> Decimal.round(2)
   end
 
-  defp get_range(list, range_end) do
+  defp list_slice(list, range_end) do
     list
     |> Enum.reverse() 
     |> Enum.slice(0..range_end) 

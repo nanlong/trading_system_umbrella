@@ -49,9 +49,7 @@ const graphql_query = gql`
       lowD20
       lowD10
       n
-      nRatioD60
-      nRatioD20
-      avgD50GtD300
+
       price
       random
       stock {
