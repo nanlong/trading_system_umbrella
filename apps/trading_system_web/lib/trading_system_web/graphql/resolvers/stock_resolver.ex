@@ -1,16 +1,12 @@
-defmodule TradingSystem.Graphql.USStockResolver do
-  alias TradingSystem.Repo
-  alias TradingSystem.Stocks.StockDailyK
+defmodule TradingSystem.Graphql.StockResolver do
+  alias TradingSystem.Stocks
 
-  import Ecto.Query
+  def all(_args, _info) do
+    {:ok, Stocks.list_stock()}
+  end
 
-  def all(%{symbol: symbol}, _info) do
-    query =
-      StockDailyK
-      |> where([s], s.symbol == ^symbol)
-      |> order_by(asc: :date)
-
-    {:ok, Repo.all(query)}
+  def get(%{symbol: symbol}, _info) do
+    {:ok, Stocks.get_stock!(symbol)}
   end
 
   def realtime(%{stocks: stocks}, _info) do

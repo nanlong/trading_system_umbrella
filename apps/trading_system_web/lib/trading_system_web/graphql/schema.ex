@@ -3,18 +3,22 @@ defmodule TradingSystem.Graphql.Schema do
   import_types TradingSystem.Graphql.Types
 
   query do
-    field :usstocks, list_of(:usstock) do
+    field :stocks, list_of(:stock) do
+      resolve &TradingSystem.Graphql.StockResolver.all/2
+    end
+
+    field :stock, :stock do
       arg :symbol, :string, description: "股票代码"
-      resolve &TradingSystem.Graphql.USStockResolver.all/2
+      resolve &TradingSystem.Graphql.StockResolver.get/2
     end
 
-    field :usstock_state, list_of(:usstock_state) do
-      resolve &TradingSystem.Graphql.USStockStateResolver.all/2
+    field :stock_state, list_of(:stock_state) do
+      resolve &TradingSystem.Graphql.StockStateResolver.all/2
     end
 
-    field :usstock_realtime, list_of(:usstock_realtime) do
+    field :stock_realtime, list_of(:stock_realtime) do
       arg :stocks, :string, description: "股票代码，用逗号分隔"
-      resolve &TradingSystem.Graphql.USStockResolver.realtime/2
+      resolve &TradingSystem.Graphql.StockResolver.realtime/2
     end
   end
 end

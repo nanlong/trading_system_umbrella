@@ -41,7 +41,7 @@ class USStockStateList extends React.Component {
 
 const graphql_query = gql`
   query {
-    usstockState {
+    stockState {
       date
       symbol
       highD60

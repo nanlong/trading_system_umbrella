@@ -119,10 +119,8 @@ defmodule TradingSystem.Stocks do
   def list_stock_state(date) do
     StockState
     |> where([s], s.date == ^date)
-    |> where([s], s.avg_50_gt_300 == true)
-    |> where([s], s.n_ratio_60 > 0.01)
-    |> join(:inner, [s1], s2 in Stock, s1.symbol == s2.symbol and s2.volume > 1800000 and s2.open_price > 2)
-    |> order_by(desc: :n_ratio_60)
+    |> where([s], s.ma50 > s.ma300)
+    |> join(:inner, [s1], s2 in Stock, s1.symbol == s2.symbol and s2.volume > 1800000 and s2.open > 2)
     |> preload(:stock)
     |> Repo.all
   end
