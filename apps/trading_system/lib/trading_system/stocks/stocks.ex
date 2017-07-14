@@ -116,14 +116,22 @@ defmodule TradingSystem.Stocks do
     date = get_stock_state_last_date()
     list_stock_state(date)
   end
+  def list_stock_state([symbol: symbol]) do
+    StockState
+    |> where([s], s.symbol == ^symbol)
+    |> order_by(asc: :inserted_at)
+    |> preload(:stock)
+    |> Repo.all()
+  end
   def list_stock_state(date) do
     StockState
     |> where([s], s.date == ^date)
     |> where([s], s.ma50 > s.ma300)
     |> join(:inner, [s1], s2 in Stock, s1.symbol == s2.symbol and s2.volume > 10000000 and s2.open > 10)
     |> preload(:stock)
-    |> Repo.all
+    |> Repo.all()
   end
+  
 
   def get_stock_state_last_date do
     query = from(s in StockState, select: s.date, order_by: [desc: :date])

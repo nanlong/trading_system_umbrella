@@ -2,11 +2,35 @@ defmodule TradingSystem.Graphql.Types do
   use Absinthe.Schema.Notation
   use Absinthe.Ecto, repo: TradingSystem.Repo
 
-  @desc "美股"
+  @desc "美股详情"
   object :stock do
     field :symbol, :string
+    field :name, :string
     field :cname, :string
     field :category, :string
+    field :open, :float
+    field :highest, :float
+    field :lowest, :float
+    field :pre_close, :float
+    field :diff, :float
+    field :chg, :float
+    field :amplitude, :string
+    field :volume, :float
+    field :market_cap, :float
+    field :pe, :string
+    field :market, :string
+  end
+
+  @desc "美股日k"
+  object :stock_dailyk do
+    field :date, :string
+    field :symbol, :string
+    field :open, :float
+    field :highest, :float
+    field :lowest, :float
+    field :close, :float
+    field :pre_close, :float
+    field :volume, :float
   end
 
   @desc "美股实时"

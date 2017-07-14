@@ -3,16 +3,17 @@ defmodule TradingSystem.Graphql.Schema do
   import_types TradingSystem.Graphql.Types
 
   query do
-    field :stocks, list_of(:stock) do
-      resolve &TradingSystem.Graphql.StockResolver.all/2
-    end
-
-    field :stock, :stock do
+    field :stock_dailyk_line, list_of(:stock_dailyk) do
       arg :symbol, :string, description: "股票代码"
-      resolve &TradingSystem.Graphql.StockResolver.get/2
+      resolve &TradingSystem.Graphql.StockDailyKResolver.all/2
     end
 
     field :stock_state, list_of(:stock_state) do
+      resolve &TradingSystem.Graphql.StockStateResolver.all/2
+    end
+
+    field :stock_state_line, list_of(:stock_state) do
+      arg :symbol, :string, description: "股票代码"
       resolve &TradingSystem.Graphql.StockStateResolver.all/2
     end
 
