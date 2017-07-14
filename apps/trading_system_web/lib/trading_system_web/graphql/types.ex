@@ -52,5 +52,6 @@ defmodule TradingSystem.Graphql.Types do
     field :atr20, :float
     field :stock, :stock
     field :price, :float
+    field :random, :integer
   end
 end

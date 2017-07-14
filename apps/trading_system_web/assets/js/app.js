@@ -1,7 +1,7 @@
 import React from 'react'
 import { ApolloClient, createNetworkInterface, ApolloProvider } from 'react-apollo';
 import ReactDOM from 'react-dom';
-import USStockStateList from './components/usstock_state_list'
+import StockStateList from './components/stock_state_list'
 
 const client = new ApolloClient({
   networkInterface: createNetworkInterface({
@@ -13,7 +13,7 @@ const client = new ApolloClient({
 if (document.getElementById('usstock-state-list')) {
   ReactDOM.render(
     <ApolloProvider client={client}>
-      <USStockStateList/>
+      <StockStateList/>
     </ApolloProvider>,
     document.getElementById('usstock-state-list'),
   );

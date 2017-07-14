@@ -18,7 +18,7 @@ defmodule TradingSystem.Web.Router do
 
     get "/", PageController, :index
 
-    resources "/usstocks", StockController, param: "symbol", only: [:index, :show]
+    resources "/stocks", StockController, param: "symbol", only: [:index, :show]
   end
 
   forward "/api", Absinthe.Plug,

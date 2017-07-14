@@ -121,6 +121,7 @@ defmodule StockState do
   
   def save do
     stocks = Stocks.list_stock()
+    # stocks = [Stocks.get_stock!("VVUS")]
     Logger.info "统计美股股票信息，合计： #{length(stocks)} 个股票"
     save(stocks, 1, length(stocks))
   end
@@ -128,13 +129,14 @@ defmodule StockState do
   def save([], _current, _total), do: nil
   def save([stock | rest], current, total) do
     ProgressBar.render(current, total)
+    IO.inspect stock.symbol
     dailyk = Stocks.list_stock_dailyk(stock.symbol)
-    
     dailyk =
       case Stocks.get_last_stock_state(stock.symbol) do
         nil -> dailyk
         last -> Enum.filter(dailyk, &compare_date?(&1, last))
       end
+    
     create_all(dailyk)
     save(rest, current + 1, total)
   end
@@ -190,7 +192,7 @@ defmodule StockState do
   end
 end
 
-Stock.save()
-StockDailyK.save()
-StockMinK.save()
+# Stock.save()
+# StockDailyK.save()
+# StockMinK.save()
 StockState.save()

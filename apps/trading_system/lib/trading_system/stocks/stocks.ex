@@ -31,7 +31,7 @@ defmodule TradingSystem.Stocks do
   def list_stock_dailyk(symbol) do
     StockDailyK
     |> where([k], k.symbol == ^symbol)
-    |> order_by(asc: :date)
+    |> order_by(asc: :inserted_at)
     |> Repo.all()
   end
 
@@ -39,7 +39,7 @@ defmodule TradingSystem.Stocks do
     StockDailyK
     |> where([k], k.symbol == ^symbol)
     |> where([k], k.date <= ^date)
-    |> order_by(asc: :date)
+    |> order_by(asc: :inserted_at)
     |> Repo.all()
   end
 
@@ -47,7 +47,7 @@ defmodule TradingSystem.Stocks do
     StockDailyK
     |> where([k], k.symbol == ^symbol)
     |> where([k], k.date <= ^date)
-    |> order_by(desc: :date)
+    |> order_by(desc: :inserted_at)
     |> limit(^duration)
     |> Repo.all()
     |> Enum.reverse()
@@ -56,7 +56,7 @@ defmodule TradingSystem.Stocks do
   def get_last_stock_dailyk(symbol) do
     StockDailyK
     |> where([s], s.symbol == ^symbol)
-    |> order_by(desc: :date)
+    |> order_by(desc: :inserted_at)
     |> first
     |> Repo.one
   end
@@ -66,7 +66,7 @@ defmodule TradingSystem.Stocks do
       StockDailyK
       |> where([s], s.symbol == ^symbol)
       |> where([s], s.date < ^date)
-      |> order_by(desc: :date)
+      |> order_by(desc: :inserted_at)
       |> first
       |> Repo.one
     
@@ -99,7 +99,7 @@ defmodule TradingSystem.Stocks do
   def get_last_stock_5mink(symbol) do
     Stock5MinK
     |> where([s], s.symbol == ^symbol)
-    |> order_by(desc: :datetime)
+    |> order_by(desc: :inserted_at)
     |> first
     |> Repo.one
   end
@@ -120,7 +120,7 @@ defmodule TradingSystem.Stocks do
     StockState
     |> where([s], s.date == ^date)
     |> where([s], s.ma50 > s.ma300)
-    |> join(:inner, [s1], s2 in Stock, s1.symbol == s2.symbol and s2.volume > 1800000 and s2.open > 2)
+    |> join(:inner, [s1], s2 in Stock, s1.symbol == s2.symbol and s2.volume > 10000000 and s2.open > 10)
     |> preload(:stock)
     |> Repo.all
   end
@@ -145,7 +145,7 @@ defmodule TradingSystem.Stocks do
     StockState
     |> where([s], s.symbol == ^symbol)
     |> where([s], s.date < ^date)
-    |> order_by(desc: :date)
+    |> order_by(desc: :inserted_at)
     |> first()
     |> Repo.one()
   end
@@ -153,7 +153,7 @@ defmodule TradingSystem.Stocks do
   def get_last_stock_state(symbol) do
     StockState
     |> where([s], s.symbol == ^symbol)
-    |> order_by(desc: :date)
+    |> order_by(desc: :inserted_at)
     |> first()
     |> Repo.one()
   end
