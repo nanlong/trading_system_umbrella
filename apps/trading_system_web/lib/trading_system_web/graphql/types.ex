@@ -50,7 +50,7 @@ defmodule TradingSystem.Graphql.Types do
     field :ma300, :float
     field :tr, :float
     field :atr20, :float
-    field :price, :float
     field :stock, :stock
+    field :price, :float
   end
 end

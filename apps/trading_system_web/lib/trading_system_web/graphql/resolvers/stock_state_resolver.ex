@@ -11,4 +11,6 @@ defmodule TradingSystem.Graphql.StockStateResolver do
       
     {:ok, data}
   end
+
+  defp timestamp, do: :os.system_time(:milli_seconds)
 end
