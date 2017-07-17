@@ -23,7 +23,7 @@ class StockRelatime extends React.Component {
     return newValue > 0 ? '+' + newValue : newValue
   }
 
-  handleRealtime(data) {
+  dataHandler(data) {
     let newData = {
       price: this.currency(data.price),
       chg: this.currency(data.chg),
@@ -43,7 +43,7 @@ class StockRelatime extends React.Component {
   }
 
   render() {
-    const data = this.handleRealtime(this.props.data.stockRealtime ? this.props.data.stockRealtime[0] : {})
+    const data = this.dataHandler(this.props.data.stockRealtime ? this.props.data.stockRealtime[0] : {})
     
     return (
       <div>
