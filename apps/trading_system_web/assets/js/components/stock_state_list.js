@@ -70,4 +70,4 @@ const graphql_options = {
   }
 }
 
-export default graphql(graphql_query, graphql_options)(StockStateList);
+export default graphql(graphql_query, graphql_options)(StockStateList)

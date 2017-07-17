@@ -64,15 +64,15 @@ defmodule TradingApi.Sina.USStock do
     # 涨跌额 diff
     # 时间 datetime
     # 涨跌幅 chg
-    # 开盘价 open_price
-    # 最高价 highest_price
-    # 最低价 lowest_price
+    # 开盘价 open
+    # 最高价 highest
+    # 最低价 lowest
     # 52周最高 week_52_highest
     # 52周最低 week_52_lowest
     # 成交量 volume
     # 10日均量 volume_10_avg
     # 市值 market_cap
-    # 每股收益
+    # 每股收益 eps
     # 市盈率 pe
     # --
     # 贝塔系数 beta
@@ -95,8 +95,8 @@ defmodule TradingApi.Sina.USStock do
     # "Jul 07 04:00PM EDT", "142.7300", "892519.00"]
     keys = 
       [:cname, :price, :diff, :datetime, :chg, :open,
-      :highest, :lowest, :w52_highest, :w52_lowest, :volume, :volume_10_avg,
-      :market_cap, nil, :pe, nil, :beta, :dividend, :yield, :capital,
+      :highest, :lowest, :w52_highest, :w52_lowest, :volume, :volume_d10_avg,
+      :market_cap, :eps, :pe, nil, :beta, :dividend, :yield, :capital,
         nil, nil, nil, nil, nil,
       :pre_close_datetime, :pre_close, nil]
     

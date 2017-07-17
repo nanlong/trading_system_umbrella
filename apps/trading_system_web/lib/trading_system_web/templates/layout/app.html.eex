@@ -10,6 +10,9 @@
     <title>交易系统<%= assigns[:title] && " - " <> assigns[:title] %></title>
     <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
+    <script>
+      var CONFIG = {};
+    </script>
   </head>
 
   <body>

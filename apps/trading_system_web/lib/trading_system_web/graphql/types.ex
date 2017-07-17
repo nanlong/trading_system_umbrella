@@ -21,6 +21,7 @@ defmodule TradingSystem.Graphql.Types do
     field :market, :string
   end
 
+
   @desc "美股日k"
   object :stock_dailyk do
     field :date, :string
@@ -39,14 +40,24 @@ defmodule TradingSystem.Graphql.Types do
     field :cname, :string
     field :datetime, :string
     field :price, :float
+    field :chg, :float
+    field :diff, :float
     field :open, :float
+    field :volume, :integer
+    field :volume_d10_avg, :integer
+    field :pre_close, :float
     field :highest, :float
     field :lowest, :float
     field :w52_highest, :float
     field :w52_lowest, :float
-    field :volume, :integer
-    field :volume_10_avg, :integer
+    field :pe, :integer
+    field :eps, :float
+    field :beta, :float
     field :market_cap, :integer
+    field :capital, :float
+    field :dividend, :float
+    field :yield, :float
+    field :random, :integer
   end
 
   @desc "美股状态"

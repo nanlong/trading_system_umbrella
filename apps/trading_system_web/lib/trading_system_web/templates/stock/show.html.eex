@@ -1,63 +1,104 @@
+<script>
+  var CONFIG = {};
+  CONFIG['symbol'] = '<%= @stock.symbol %>';
+</script>
+<div class="columns">
+  <div class="column is-8">
+    <div>
+      <strong style="font-size: 24px;">
+        <%= @stock.cname %> 
+        <%= @stock.market %>:<%= @stock.symbol %>
+      </strong>
+      <span><%= @stock.name %></span>
+    </div>
+  </div>
+</div>
+
+<!-- react component  -->
+<div id="stock-realtime"></div>
+
 <div class="columns">
   <div class="column">
-    <h1>20日最高价周期</h1>
+    <h1>建仓信息</h1>
     <table class="table">
-      <thead>
-        <tr>
-          <th>开始日期</th>
-          <th>结束日期</th>
-          <th>20日最高价</th>
-        </tr>
-      </thead>
       <tbody>
-        <%= for break <- @break_list_20 do %>
         <tr>
-          <td><%= break.start_date %></td>
-          <td><%= break.end_date %></td>
-          <td>$<%= break.price %></td>
+          <th>状态日期:</th>
+          <td><%= @state.date %></td>
         </tr>
-        <%= end %>
+        <tr>
+          <th>ATR: </th>
+          <td><%= @state.atr20 %></td>
+        </tr>
+        <tr>
+          <th>总资金: </th>
+          <td>$<%= @account %></td>
+        </tr>
+        <tr>
+          <th>突破价: </th>
+          <td>$<%= @state.dcu60 %></td>
+        </tr>
+        <tr>
+          <th>止损价: </th>
+          <td>$<%= stop_loss(@state) %></td>
+        </tr>
+        <tr>
+          <th>单位股数: </th>
+          <td><%= unit(@state, @account) %>股</td>
+        </tr>
+        <tr>
+          <th>单位市值:  </th>
+          <td>$<%= unit_price(@state, @account) %></td>
+        </tr>
       </tbody>
     </table>
+  </div>
+  <div class="column">
+    <h1>20日最高价周期</h1>
+    <div style="height: 342px; overflow-y: auto;"> 
+      <table class="table">
+        <thead>
+          <tr>
+            <th>开始日期</th>
+            <th>结束日期</th>
+            <th>20日最高价</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for break <- @break_list_20 do %>
+          <tr>
+            <td><%= break.start_date %></td>
+            <td><%= break.end_date %></td>
+            <td>$<%= break.price %></td>
+          </tr>
+          <%= end %>
+        </tbody>
+      </table>
+    </div>
   </div>
   <div class="column">
     <h1>60日最高价周期</h1>
-    <table class="table">
-      <thead>
-        <tr>
-          <th>开始日期</th>
-          <th>结束日期</th>
-          <th>60日最高价</th>
-        </tr>
-      </thead>
-      <tbody>
-        <%= for break <- @break_list_60 do %>
-        <tr>
-          <td><%= break.start_date %></td>
-          <td><%= break.end_date %></td>
-          <td>$<%= break.price %></td>
-        </tr>
-        <%= end %>
-      </tbody>
-    </table>
+    <div style="height: 342px; overflow-y: auto;"> 
+      <table class="table">
+        <thead>
+          <tr>
+            <th>开始日期</th>
+            <th>结束日期</th>
+            <th>60日最高价</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for break <- @break_list_60 do %>
+          <tr>
+            <td><%= break.start_date %></td>
+            <td><%= break.end_date %></td>
+            <td>$<%= break.price %></td>
+          </tr>
+          <%= end %>
+        </tbody>
+      </table>
+    </div>
   </div>
-  
-  <div class="column">
-    <h1>股票信息</h1>
-    <ul>
-      <li>状态日期: <%= @state.date %></li>
-      <li>今日日期: <%= Date.utc_today() %></li>
-      <li>股票代码: <%= @stock.symbol %></li>
-      <li>公司名称: <%= @stock.cname %></li>
-      <li>ATR: <%= @state.atr20 %></li>
-      <li>总资金: $<%= @account %></li>
-      <li>突破价: $<%= @state.dcu60 %></li>
-      <li>止损价: $<%= Decimal.sub(@state.dcu60, Decimal.mult(@state.atr20, Decimal.new(2))) %></li>
-      <li>单位股数: <%= Decimal.div(Decimal.new(@account * 0.01), @state.atr20) |> Decimal.round() %>股</li>
-      <li>单位市值: $<%= Decimal.div(Decimal.new(@account * 0.01), @state.atr20) |> Decimal.round() |> Decimal.mult(@state.dcu60) |> Decimal.round(2) %> </li>
-    </ul>
-  </div>
-  
 </div>
 
 
