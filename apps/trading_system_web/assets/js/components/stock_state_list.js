@@ -29,6 +29,8 @@ class StockStateList extends React.Component {
       {title: '行业', dataIndex: 'stock.category', key: 'stock.category', render: (text, record, index) => text ? text : '--'},
       {title: 'ATR', dataIndex: 'atr20', key: 'atr20'},
       {title: '20日最低', dataIndex: 'dcl20', key: 'dcl20', render: (text, record, index) => `$${text}`},
+      {title: '20日最高', dataIndex: 'dcu20', key: 'dcu20', render: (text, record, index) => `$${text}`},
+      {title: '60日最低', dataIndex: 'dcl60', key: 'dcl60', render: (text, record, index) => `$${text}`},
       {title: '60日最高', dataIndex: 'dcu60', key: 'dcu60', render: (text, record, index) => `$${text}`},
       {title: '实时', dataIndex: 'price', key: 'price', 
       sorter: (a, b) => this.diff(b) - this.diff(a), sortOrder: 'ascend', render: (text, record, index) => `$${this.round(text, 2)}`},
@@ -49,6 +51,8 @@ const graphql_query = gql`
       date
       symbol
       dcl20
+      dcu20
+      dcl60
       dcu60
       atr20
       price

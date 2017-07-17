@@ -136,7 +136,6 @@ defmodule StockState do
         nil -> dailyk
         last -> Enum.filter(dailyk, &compare_date?(&1, last))
       end
-    
     create_all(dailyk)
     save(rest, current + 1, total)
   end
@@ -192,7 +191,7 @@ defmodule StockState do
   end
 end
 
-# Stock.save()
-# StockDailyK.save()
-# StockMinK.save()
+Stock.save()
+StockDailyK.save()
+StockMinK.save()
 StockState.save()

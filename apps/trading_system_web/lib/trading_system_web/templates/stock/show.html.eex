@@ -1,0 +1,64 @@
+<div class="columns">
+  <div class="column">
+    <h1>20日最高价周期</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>开始日期</th>
+          <th>结束日期</th>
+          <th>20日最高价</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for break <- @break_list_20 do %>
+        <tr>
+          <td><%= break.start_date %></td>
+          <td><%= break.end_date %></td>
+          <td>$<%= break.price %></td>
+        </tr>
+        <%= end %>
+      </tbody>
+    </table>
+  </div>
+  <div class="column">
+    <h1>60日最高价周期</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>开始日期</th>
+          <th>结束日期</th>
+          <th>60日最高价</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for break <- @break_list_60 do %>
+        <tr>
+          <td><%= break.start_date %></td>
+          <td><%= break.end_date %></td>
+          <td>$<%= break.price %></td>
+        </tr>
+        <%= end %>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="column">
+    <h1>股票信息</h1>
+    <ul>
+      <li>状态日期: <%= @state.date %></li>
+      <li>今日日期: <%= Date.utc_today() %></li>
+      <li>股票代码: <%= @stock.symbol %></li>
+      <li>公司名称: <%= @stock.cname %></li>
+      <li>ATR: <%= @state.atr20 %></li>
+      <li>总资金: $<%= @account %></li>
+      <li>突破价: $<%= @state.dcu60 %></li>
+      <li>止损价: $<%= Decimal.sub(@state.dcu60, Decimal.mult(@state.atr20, Decimal.new(2))) %></li>
+      <li>单位股数: <%= Decimal.div(Decimal.new(@account * 0.01), @state.atr20) |> Decimal.round() %>股</li>
+      <li>单位市值: $<%= Decimal.div(Decimal.new(@account * 0.01), @state.atr20) |> Decimal.round() |> Decimal.mult(@state.dcu60) |> Decimal.round(2) %> </li>
+    </ul>
+  </div>
+  
+</div>
+
+
+

@@ -114,7 +114,7 @@ defmodule TradingSystem.Stocks do
 
   def list_stock_state do
     date = get_stock_state_last_date()
-    list_stock_state(date)
+    list_stock_state(date: date)
   end
   def list_stock_state([symbol: symbol]) do
     StockState
@@ -123,11 +123,12 @@ defmodule TradingSystem.Stocks do
     |> preload(:stock)
     |> Repo.all()
   end
-  def list_stock_state(date) do
+  def list_stock_state([date: date]) do
     StockState
     |> where([s], s.date == ^date)
     |> where([s], s.ma50 > s.ma300)
-    |> join(:inner, [s1], s2 in Stock, s1.symbol == s2.symbol and s2.volume > 10000000 and s2.open > 10)
+    |> where([s], fragment("? / ?", s.atr20, s.dcu60) > 0.02)
+    |> join(:inner, [s1], s2 in Stock, s1.symbol == s2.symbol and s2.volume > 3000000 and s2.open > 10)
     |> preload(:stock)
     |> Repo.all()
   end
