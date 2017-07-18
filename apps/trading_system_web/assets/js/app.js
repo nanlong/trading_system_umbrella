@@ -22,14 +22,14 @@ if (document.getElementById('usstock-state-list')) {
   )
 }
 
-// if (document.getElementById('stock-realtime')) {
-//   ReactDOM.render(
-//     <ApolloProvider client={client}>
-//       <StockRealtime />
-//     </ApolloProvider>,
-//     document.getElementById('stock-realtime'),
-//   )
-// }
+if (document.getElementById('stock-realtime')) {
+  ReactDOM.render(
+    <ApolloProvider client={client}>
+      <StockRealtime />
+    </ApolloProvider>,
+    document.getElementById('stock-realtime'),
+  )
+}
 
 if (document.getElementById('stock-chart')) {
   ReactDOM.render(

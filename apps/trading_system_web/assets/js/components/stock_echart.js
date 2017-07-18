@@ -42,7 +42,7 @@ class StockChart extends React.Component {
         }
       },
       legend: {
-        data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30', 'DCU60', 'DCL20']
+        data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30', '60日最高', '20日最低']
       },
       grid: {
         top: '8%',
@@ -120,7 +120,7 @@ class StockChart extends React.Component {
           }
         },
         {
-          name: 'DCU60',
+          name: '60日最高',
           type: 'line',
           data: data.dcu60Data,
           smooth: true,
@@ -132,7 +132,7 @@ class StockChart extends React.Component {
           }
         },
         {
-          name: 'DCL20',
+          name: '20日最低',
           type: 'line',
           data: data.dcl20Data,
           smooth: true,
