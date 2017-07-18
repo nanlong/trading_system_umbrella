@@ -3,7 +3,7 @@ import { ApolloClient, createNetworkInterface, ApolloProvider } from 'react-apol
 import ReactDOM from 'react-dom';
 import StockStateList from './components/stock_state_list'
 import StockRealtime from './components/stock_realtime'
-import StockChart from './components/stock_chart'
+import StockChart from './components/stock_echart'
 
 
 const client = new ApolloClient({
@@ -22,14 +22,14 @@ if (document.getElementById('usstock-state-list')) {
   )
 }
 
-if (document.getElementById('stock-realtime')) {
-  ReactDOM.render(
-    <ApolloProvider client={client}>
-      <StockRealtime />
-    </ApolloProvider>,
-    document.getElementById('stock-realtime'),
-  )
-}
+// if (document.getElementById('stock-realtime')) {
+//   ReactDOM.render(
+//     <ApolloProvider client={client}>
+//       <StockRealtime />
+//     </ApolloProvider>,
+//     document.getElementById('stock-realtime'),
+//   )
+// }
 
 if (document.getElementById('stock-chart')) {
   ReactDOM.render(
