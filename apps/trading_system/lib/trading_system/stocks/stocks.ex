@@ -35,23 +35,28 @@ defmodule TradingSystem.Stocks do
     |> Repo.all()
   end
 
-  def history_stock_dailyk(%{symbol: symbol, date: date}) do
+  def history_stock_dailyk(%{symbol: symbol, date: date} = dailyk) do
     StockDailyK
     |> where([k], k.symbol == ^symbol)
-    |> where([k], k.date <= ^date)
+    |> where([k], k.date < ^date)
     |> order_by(asc: :inserted_at)
     |> Repo.all()
+    |> return_history(dailyk)
   end
 
-  def history_stock_dailyk(%{symbol: symbol, date: date}, duration) do
+  def history_stock_dailyk(%{symbol: symbol, date: date} = dailyk, duration) do
     StockDailyK
     |> where([k], k.symbol == ^symbol)
-    |> where([k], k.date <= ^date)
+    |> where([k], k.date < ^date)
     |> order_by(desc: :inserted_at)
     |> limit(^duration)
     |> Repo.all()
     |> Enum.reverse()
+    |> return_history(dailyk)
   end
+
+  defp return_history([], cur), do: [cur]
+  defp return_history(data, _cur), do: data
 
   def get_last_stock_dailyk(symbol) do
     StockDailyK

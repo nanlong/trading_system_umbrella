@@ -121,7 +121,7 @@ defmodule StockState do
   
   def save do
     stocks = Stocks.list_stock()
-    # stocks = [Stocks.get_stock!("VVUS")]
+    # stocks = [Stocks.get_stock!("BABA")]
     Logger.info "统计美股股票信息，合计： #{length(stocks)} 个股票"
     save(stocks, 1, length(stocks))
   end
