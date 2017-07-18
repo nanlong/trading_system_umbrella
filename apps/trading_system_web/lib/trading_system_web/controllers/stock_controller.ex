@@ -17,40 +17,12 @@ defmodule TradingSystem.Web.StockController do
     stock = Stocks.get_stock!(symbol)
     state = Stocks.get_last_stock_state(symbol)
     account = 100000
-
-    # 上一个突破点
-    up_list_60 =
-      StockState
-      |> where([s], s.symbol == ^symbol)
-      |> select([s], %{price: s.dcu60, start_date: min(s.date), end_date: max(s.date)})
-      |> group_by([s], s.dcu60)
-      |> order_by([s], desc: max(s.date))
-      |> Repo.all()
-
-    up_list_20 =
-      StockState
-      |> where([s], s.symbol == ^symbol)
-      |> select([s], %{price: s.dcu20, start_date: min(s.date), end_date: max(s.date)})
-      |> group_by([s], s.dcu20)
-      |> order_by([s], desc: max(s.date))
-      |> Repo.all()
-
-    lower_list_20 = 
-      StockState
-      |> where([s], s.symbol == ^symbol)
-      |> select([s], %{price: s.dcl20, start_date: min(s.date), end_date: max(s.date)})
-      |> group_by([s], s.dcl20)
-      |> order_by([s], desc: max(s.date))
-      |> Repo.all()
-    
+ 
     conn
     |> assign(:title, stock.cname)
     |> assign(:account, account)
     |> assign(:stock, stock)
     |> assign(:state, state)
-    |> assign(:up_list_60, up_list_60)
-    |> assign(:up_list_20, up_list_20)
-    |> assign(:lower_list_20, lower_list_20)
     |> render(:show)
   end
 end
