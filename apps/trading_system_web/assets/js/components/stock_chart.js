@@ -7,7 +7,7 @@ import Slider from 'g2-plugin-slider'
 function get_date_range(data) {
   let data_length = data.length
   let end_item = data[data_length - 1]
-  let start_item = data[data_length - 80]
+  let start_item = data[data_length - 80 * 6]
 
   return {
     start: start_item ? start_item.date : '',
@@ -16,11 +16,13 @@ function get_date_range(data) {
 }
 
 const LineChart = createG2(chart => {
-  chart.col('trend', {
-    type: 'cat',
-    alias: '趋势',
-    values: ['上涨','下跌']
-  })
+  chart.axis('value', false);
+  chart.legend({
+        position: 'top'
+      });
+      chart.tooltip({
+        crosshairs: true
+      });
   chart.col('date', {
     type: 'timeCat',
     nice: false,
@@ -44,6 +46,8 @@ const LineChart = createG2(chart => {
     .shape('candle')
     .tooltip('preClose*open*close*highest*lowest*volume')
 
+  chart.line().position('date*value').color('type', ['#AC4640', '#2D3C48', '#609099', '#BE7459', '#f00', '#000'])
+
   const data = chart.get('data').toJSON()
   const {start, end} = get_date_range(data)
   
@@ -66,18 +70,42 @@ class StockChart extends React.Component {
 
     this.state = {
       width: 760,
-      height: 236,
-      date: [],
-      plotCfg: {}
+      height: 400,
+      plotCfg: {margin: [60, 20, 30, 80]}
     }
   }
 
   dataHandler(data) {
     let line_data = data.stockDailykLine ? data.stockDailykLine : []    
-    const frame = new Frame(line_data)
-    frame.addCol('trend', function(obj) {
-      return (obj.open <= obj.close) ? 0 : 1
-    })
+    let state_data = data.stockStateLine ? data.stockStateLine : []
+    let source = []
+
+    for (let i = 0; i < line_data.length; i++) {
+      if (!! state_data[i]) {
+        let line = line_data[i]
+        let state = state_data[i]
+        let item = {
+          date: line.date,
+          open: line.open,
+          close: line.close,
+          highest: line.highest,
+          lowest: line.lowest,
+          preClose: line.preClose,
+          volume: line.volume,
+          trend: line.open <= line.close ? 'down' : 'up',
+          ma5: state.ma5,
+          ma10: state.ma10,
+          ma20: state.ma20,
+          ma30: state.ma30,
+          dcu60: state.dcu60,
+          dcl20: state.dcl20
+        }
+        source.push(item)
+      }
+    }
+
+    let frame = new Frame(source)
+    frame = Frame.combinColumns(frame, ['ma5','ma10','ma20','ma30', 'dcu60', 'dcl20'], 'value', 'type')
     return frame
   }
 
@@ -97,6 +125,7 @@ class StockChart extends React.Component {
             data={data}
             width={this.state.width}
             height={this.state.height}
+            plotCfg={this.state.plotCfg}
             ref="stockChart" 
           />
       )
