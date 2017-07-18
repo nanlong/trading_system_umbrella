@@ -14,45 +14,55 @@
   </div>
 </div>
 
-<!-- react component  -->
+<!-- React Component: StockRealtime  -->
 <div id="stock-realtime"></div>
 
 <div class="columns">
-  <div class="column">
-    <h1>建仓信息</h1>
-    <table class="table">
-      <tbody>
-        <tr>
-          <th>状态日期:</th>
-          <td><%= @state.date %></td>
-        </tr>
-        <tr>
-          <th>ATR: </th>
-          <td><%= @state.atr20 %></td>
-        </tr>
-        <tr>
-          <th>总资金: </th>
-          <td>$<%= @account %></td>
-        </tr>
-        <tr>
-          <th>突破价: </th>
-          <td>$<%= @state.dcu60 %></td>
-        </tr>
-        <tr>
-          <th>止损价: </th>
-          <td>$<%= stop_loss(@state) %></td>
-        </tr>
-        <tr>
-          <th>单位股数: </th>
-          <td><%= unit(@state, @account) %>股</td>
-        </tr>
-        <tr>
-          <th>单位市值:  </th>
-          <td>$<%= unit_price(@state, @account) %></td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="column is-8">
+    <!-- React Component: StockChart  -->
+    <div id="stock-chart"></div>
+    <div id="slider"></div>
   </div>
+  <div class="column">
+    <div class="column">
+      <h1>建仓信息</h1>
+      <table class="table">
+        <tbody>
+          <tr>
+            <th>状态日期:</th>
+            <td><%= @state.date %></td>
+          </tr>
+          <tr>
+            <th>ATR: </th>
+            <td><%= @state.atr20 %></td>
+          </tr>
+          <tr>
+            <th>总资金: </th>
+            <td>$<%= @account %></td>
+          </tr>
+          <tr>
+            <th>突破价: </th>
+            <td>$<%= @state.dcu60 %></td>
+          </tr>
+          <tr>
+            <th>止损价: </th>
+            <td>$<%= stop_loss(@state) %></td>
+          </tr>
+          <tr>
+            <th>单位股数: </th>
+            <td><%= unit(@state, @account) %>股</td>
+          </tr>
+          <tr>
+            <th>单位市值:  </th>
+            <td>$<%= unit_price(@state, @account) %></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="columns">
   <div class="column">
     <h1>20日最高价周期</h1>
     <div style="height: 342px; overflow-y: auto;"> 

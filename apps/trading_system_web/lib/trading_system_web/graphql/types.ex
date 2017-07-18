@@ -2,6 +2,11 @@ defmodule TradingSystem.Graphql.Types do
   use Absinthe.Schema.Notation
   use Absinthe.Ecto, repo: TradingSystem.Repo
 
+  scalar :decimal, description: "Decimal" do
+    parse &Decimal.new(&1)
+    serialize &Decimal.to_float(&1)
+  end
+
   @desc "美股详情"
   object :stock do
     field :symbol, :string
@@ -21,17 +26,16 @@ defmodule TradingSystem.Graphql.Types do
     field :market, :string
   end
 
-
   @desc "美股日k"
   object :stock_dailyk do
     field :date, :string
     field :symbol, :string
-    field :open, :float
-    field :highest, :float
-    field :lowest, :float
-    field :close, :float
-    field :pre_close, :float
-    field :volume, :float
+    field :open, :decimal
+    field :highest, :decimal
+    field :lowest, :decimal
+    field :close, :decimal
+    field :pre_close, :decimal
+    field :volume, :integer
   end
 
   @desc "美股实时"
