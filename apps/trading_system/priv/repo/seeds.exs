@@ -149,7 +149,14 @@ defmodule StockState do
   def create_item(_dailyk, true), do: nil
   def create_item(%{symbol: symbol, date: date} = dailyk, false) do
     history = Stocks.history_stock_dailyk(dailyk, 300)
-    history_today = history ++ [dailyk]
+
+    history_today =
+      if length(history) == 1 and Enum.at(history, 0) == dailyk do
+        history
+      else 
+        history ++ [dailyk]
+      end
+
     dc10 = TradingKernel.dc(history, 10)
     dc20 = TradingKernel.dc(history, 20)
     dc60 = TradingKernel.dc(history, 60)
