@@ -149,7 +149,7 @@ defmodule StockState do
   def create_item(_dailyk, true), do: nil
   def create_item(%{symbol: symbol, date: date} = dailyk, false) do
     history = Stocks.history_stock_dailyk(dailyk, 300)
-
+    history_today = history ++ [dailyk]
     dc10 = TradingKernel.dc(history, 10)
     dc20 = TradingKernel.dc(history, 20)
     dc60 = TradingKernel.dc(history, 60)
@@ -159,16 +159,16 @@ defmodule StockState do
       symbol: symbol,
       tr: TradingKernel.tr(dailyk),
       atr20: TradingKernel.atr(dailyk),
-      ma5: TradingKernel.ma(history, 5),
-      ma10: TradingKernel.ma(history, 10),
-      ma20: TradingKernel.ma(history, 20),
-      ma30: TradingKernel.ma(history, 30),
-      ma50: TradingKernel.ma(history, 50),
-      ma60: TradingKernel.ma(history, 60),
-      ma120: TradingKernel.ma(history, 120),
-      ma150: TradingKernel.ma(history, 150),
-      ma240: TradingKernel.ma(history, 240),
-      ma300: TradingKernel.ma(history, 300),
+      ma5: TradingKernel.ma(history_today, 5),
+      ma10: TradingKernel.ma(history_today, 10),
+      ma20: TradingKernel.ma(history_today, 20),
+      ma30: TradingKernel.ma(history_today, 30),
+      ma50: TradingKernel.ma(history_today, 50),
+      ma60: TradingKernel.ma(history_today, 60),
+      ma120: TradingKernel.ma(history_today, 120),
+      ma150: TradingKernel.ma(history_today, 150),
+      ma240: TradingKernel.ma(history_today, 240),
+      ma300: TradingKernel.ma(history_today, 300),
       dcu10: dc10.up,
       dca10: dc10.avg,
       dcl10: dc10.lower,

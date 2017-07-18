@@ -46,7 +46,7 @@ const LineChart = createG2(chart => {
     .shape('candle')
     .tooltip('preClose*open*close*highest*lowest*volume')
 
-  chart.line().position('date*value').color('type', ['#AC4640', '#2D3C48', '#609099', '#BE7459', '#f00', '#000'])
+  chart.line().position('date*value').color('type', ['#FC9CB8', '#12BDD9', '#EE2F72', '#8CBB0D', '#014ea2', '#014ea2'])
 
   const data = chart.get('data').toJSON()
   const {start, end} = get_date_range(data)

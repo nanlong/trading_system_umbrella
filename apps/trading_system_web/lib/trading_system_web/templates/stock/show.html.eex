@@ -37,11 +37,15 @@
             <td><%= @state.atr20 %></td>
           </tr>
           <tr>
+            <th>止盈价: </th>
+            <td>$<%= @state.dcl20 %></td>
+          </tr>
+          <tr>
             <th>总资金: </th>
             <td>$<%= @account %></td>
           </tr>
           <tr>
-            <th>突破价: </th>
+            <th>建仓价: </th>
             <td>$<%= @state.dcu60 %></td>
           </tr>
           <tr>
@@ -64,29 +68,6 @@
 
 <div class="columns">
   <div class="column">
-    <h1>20日最高价周期</h1>
-    <div style="height: 342px; overflow-y: auto;"> 
-      <table class="table">
-        <thead>
-          <tr>
-            <th>开始日期</th>
-            <th>结束日期</th>
-            <th>20日最高价</th>
-          </tr>
-        </thead>
-        <tbody>
-          <%= for break <- @break_list_20 do %>
-          <tr>
-            <td><%= break.start_date %></td>
-            <td><%= break.end_date %></td>
-            <td>$<%= break.price %></td>
-          </tr>
-          <%= end %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-  <div class="column">
     <h1>60日最高价周期</h1>
     <div style="height: 342px; overflow-y: auto;"> 
       <table class="table">
@@ -98,7 +79,53 @@
           </tr>
         </thead>
         <tbody>
-          <%= for break <- @break_list_60 do %>
+          <%= for break <- @up_list_60 do %>
+          <tr>
+            <td><%= break.start_date %></td>
+            <td><%= break.end_date %></td>
+            <td>$<%= break.price %></td>
+          </tr>
+          <%= end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="column">
+    <h1>20日最高价周期</h1>
+    <div style="height: 342px; overflow-y: auto;"> 
+      <table class="table">
+        <thead>
+          <tr>
+            <th>开始日期</th>
+            <th>结束日期</th>
+            <th>20日最高价</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for break <- @up_list_20 do %>
+          <tr>
+            <td><%= break.start_date %></td>
+            <td><%= break.end_date %></td>
+            <td>$<%= break.price %></td>
+          </tr>
+          <%= end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="column">
+    <h1>20日最低价周期</h1>
+    <div style="height: 342px; overflow-y: auto;"> 
+      <table class="table">
+        <thead>
+          <tr>
+            <th>开始日期</th>
+            <th>结束日期</th>
+            <th>20日最低价</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%= for break <- @lower_list_20 do %>
           <tr>
             <td><%= break.start_date %></td>
             <td><%= break.end_date %></td>

@@ -19,7 +19,7 @@ defmodule TradingSystem.Web.StockController do
     account = 100000
 
     # 上一个突破点
-    break_list_60 =
+    up_list_60 =
       StockState
       |> where([s], s.symbol == ^symbol)
       |> select([s], %{price: s.dcu60, start_date: min(s.date), end_date: max(s.date)})
@@ -27,11 +27,19 @@ defmodule TradingSystem.Web.StockController do
       |> order_by([s], desc: max(s.date))
       |> Repo.all()
 
-    break_list_20 =
+    up_list_20 =
       StockState
       |> where([s], s.symbol == ^symbol)
       |> select([s], %{price: s.dcu20, start_date: min(s.date), end_date: max(s.date)})
       |> group_by([s], s.dcu20)
+      |> order_by([s], desc: max(s.date))
+      |> Repo.all()
+
+    lower_list_20 = 
+      StockState
+      |> where([s], s.symbol == ^symbol)
+      |> select([s], %{price: s.dcl20, start_date: min(s.date), end_date: max(s.date)})
+      |> group_by([s], s.dcl20)
       |> order_by([s], desc: max(s.date))
       |> Repo.all()
     
@@ -40,8 +48,9 @@ defmodule TradingSystem.Web.StockController do
     |> assign(:account, account)
     |> assign(:stock, stock)
     |> assign(:state, state)
-    |> assign(:break_list_20, break_list_20)
-    |> assign(:break_list_60, break_list_60)
+    |> assign(:up_list_60, up_list_60)
+    |> assign(:up_list_20, up_list_20)
+    |> assign(:lower_list_20, lower_list_20)
     |> render(:show)
   end
 end
