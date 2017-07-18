@@ -117,6 +117,12 @@ const graphql_query = gql`
     }
     stockStateLine(symbol: $symbol) {
       date
+      ma5
+      ma10
+      ma20
+      ma30
+      dcu60
+      dcl20
     }
   }
 `

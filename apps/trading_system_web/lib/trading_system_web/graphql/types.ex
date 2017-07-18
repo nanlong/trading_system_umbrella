@@ -68,29 +68,29 @@ defmodule TradingSystem.Graphql.Types do
   object :stock_state do
     field :date, :string
     field :symbol, :string
-    field :dcu10, :float
-    field :dca10, :float
-    field :dcl10, :float
-    field :dcu20, :float
-    field :dca20, :float
-    field :dcl20, :float
-    field :dcu60, :float
-    field :dca60, :float
-    field :dcl60, :float
-    field :ma5, :float
-    field :ma10, :float
-    field :ma20, :float
-    field :ma30, :float
-    field :ma50, :float
-    field :ma60, :float
-    field :ma120, :float
-    field :ma150, :float
-    field :ma240, :float
-    field :ma300, :float
-    field :tr, :float
-    field :atr20, :float
+    field :dcu10, :decimal
+    field :dca10, :decimal
+    field :dcl10, :decimal
+    field :dcu20, :decimal
+    field :dca20, :decimal
+    field :dcl20, :decimal
+    field :dcu60, :decimal
+    field :dca60, :decimal
+    field :dcl60, :decimal
+    field :ma5, :decimal
+    field :ma10, :decimal
+    field :ma20, :decimal
+    field :ma30, :decimal
+    field :ma50, :decimal
+    field :ma60, :decimal
+    field :ma120, :decimal
+    field :ma150, :decimal
+    field :ma240, :decimal
+    field :ma300, :decimal
+    field :tr, :decimal
+    field :atr20, :decimal
     field :stock, :stock
-    field :price, :float
+    field :price, :decimal
     field :random, :integer
   end
 end
