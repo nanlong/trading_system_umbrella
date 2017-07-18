@@ -37,10 +37,6 @@
             <td><%= @state.atr20 %></td>
           </tr>
           <tr>
-            <th>止盈价: </th>
-            <td>$<%= @state.dcl20 %></td>
-          </tr>
-          <tr>
             <th>总资金: </th>
             <td>$<%= @account %></td>
           </tr>
@@ -51,6 +47,10 @@
           <tr>
             <th>止损价: </th>
             <td>$<%= stop_loss(@state) %></td>
+          </tr>
+          <tr>
+            <th>止盈价: </th>
+            <td>$<%= @state.dcl20 %></td>
           </tr>
           <tr>
             <th>单位股数: </th>

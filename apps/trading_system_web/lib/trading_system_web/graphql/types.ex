@@ -4,7 +4,10 @@ defmodule TradingSystem.Graphql.Types do
 
   scalar :decimal, description: "Decimal" do
     parse &Decimal.new(&1)
-    serialize &Decimal.to_float(&1)
+    serialize fn
+      (x) when is_bitstring(x) -> String.to_float(x)
+      (x) -> Decimal.to_float(x)
+    end
   end
 
   @desc "美股详情"
