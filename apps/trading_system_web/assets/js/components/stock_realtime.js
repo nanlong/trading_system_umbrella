@@ -143,7 +143,7 @@ class StockRelatime extends React.Component {
   }
 }
 
-const graphql_query = gql`
+const graphqlQuery = gql`
   query StockRealtime($symbol: String!){
     stockRealtime(stocks: $symbol) {
       symbol
@@ -170,11 +170,11 @@ const graphql_query = gql`
   }
 `
 
-const graphql_options = {
+const graphqlOptions = {
   options: {
     fetchPolicy: 'network-only',
     variables: {symbol: CONFIG['symbol']}
   }
 }
 
-export default graphql(graphql_query, graphql_options)(StockRelatime)
+export default graphql(graphqlQuery, graphqlOptions)(StockRelatime)

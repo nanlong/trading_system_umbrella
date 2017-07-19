@@ -1,139 +1,203 @@
 import React from 'react'
 import { gql, graphql } from 'react-apollo'
-import createG2 from 'g2-react'
-import { Stat, Frame, Chart } from 'g2'
-import Slider from 'g2-plugin-slider'
+import echarts from 'echarts'
 
-function get_date_range(data) {
-  let data_length = data.length
-  let end_item = data[data_length - 1]
-  let start_item = data[data_length - 80 * 6]
-
-  return {
-    start: start_item ? start_item.date : '',
-    end: end_item ? end_item.date : ''
-  }
-}
-
-const LineChart = createG2(chart => {
-  chart.axis('value', false);
-  chart.legend({
-        position: 'top'
-      });
-      chart.tooltip({
-        crosshairs: true
-      });
-  chart.col('date', {
-    type: 'timeCat',
-    nice: false,
-    mask: 'yy-mm-dd',
-    alias: '时间',
-    tickCount: 10
-  })
-  chart.col('volume', {alias: '成交量'})
-  chart.col('open', {alias: '开盘价'})
-  chart.col('close', {alias: '收盘价'})
-  chart.col('highest', {alias: '最高价'})
-  chart.col('lowest', {alias: '最低价'})
-  chart.col('preClose', {alias: '昨收盘'})
-  chart.col('open+close+highest+lowest+preClose', {alias: '股票价格'})
-  chart.axis('date', {
-    title: null
-  })
-  chart.schema()
-    .position('date*(open+close+highest+lowest+preClose)')
-    .color('trend', ['#2AF483','#F80041'])
-    .shape('candle')
-    .tooltip('preClose*open*close*highest*lowest*volume')
-
-  chart.line().position('date*value').color('type', ['#FC9CB8', '#12BDD9', '#EE2F72', '#8CBB0D', '#014ea2', '#014ea2'])
-
-  const data = chart.get('data').toJSON()
-  const {start, end} = get_date_range(data)
-  
-  const slider = new Slider({
-    domId: 'slider',
-    height: 20,
-    charts: [chart],
-    xDim: 'date',
-    yDim: 'highest',
-    start: start,
-    end: end
-  })
-
-  slider.render()
-})
 
 class StockChart extends React.Component {
-  constructor(props) {
-    super(props)
 
-    this.state = {
-      width: 760,
-      height: 400,
-      plotCfg: {margin: [60, 20, 30, 80]}
+  dataHandler(data) {
+    let source = {
+      categoryData: [],
+      dailykData: [],
+      ma5Data: [],
+      ma10Data: [],
+      ma20Data: [],
+      ma30Data: [],
+      dcu60Data: [],
+      dcl20Data: []
+    }
+    
+    for (let i = 0; i < data.stockDailykLine.length; i++) {
+      const {date, open, close, highest, lowest} = data.stockDailykLine[i]
+      const {ma5, ma10, ma20, ma30, dcu60, dcl20} = data.stockStateLine[i]
+      source.categoryData.push(date)
+      source.dailykData.push([open, close, lowest, highest])
+      source.ma5Data.push(ma5)
+      source.ma10Data.push(ma10)
+      source.ma20Data.push(ma20)
+      source.ma30Data.push(ma30)
+      source.dcu60Data.push(dcu60)
+      source.dcl20Data.push(dcl20)
+    }
+
+    return source
+  }
+
+  setChartOption(data) {
+    return {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross'
+        }
+      },
+      legend: {
+        data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30', '60日最高', '20日最低'],
+      },
+      grid: {
+        top: '8%',
+        left: '5%',
+        right: '5%',
+        bottom: '18%'
+      },
+      xAxis: {
+        type: 'category',
+        data: data.categoryData,
+        axisLine: { lineStyle: { color: '#8392A5' } }
+      },
+      yAxis: {
+        scale: true,
+        splitArea: {
+          show: true
+        }
+      },
+      dataZoom: {
+        start: (1 - 80 / data.categoryData.length) * 100,
+        end: 100
+      },
+      series: [
+        {
+          name: '日K',
+          type: 'candlestick',
+          data: data.dailykData,
+        },
+        {
+          name: 'MA5',
+          type: 'line',
+          data: data.ma5Data,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            normal: {
+              color: '#FC9CB8',
+              width: 1
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: '#FC9CB8'
+            }
+          }
+        },
+        {
+          name: 'MA10',
+          type: 'line',
+          data: data.ma10Data,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            normal: {
+              color: '#12BDD9',
+              width: 1
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: '#12BDD9'
+            }
+          }
+        },
+        {
+          name: 'MA20',
+          type: 'line',
+          data: data.ma20Data,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            normal: {
+              color: '#EE2F72',
+              width: 1
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: '#EE2F72'
+            }
+          }
+        },
+        {
+          name: 'MA30',
+          type: 'line',
+          data: data.ma30Data,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            normal: {
+              color: '#8CBB0D',
+              width: 1
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: '#8CBB0D'
+            }
+          }
+        },
+        {
+          name: '60日最高',
+          type: 'line',
+          data: data.dcu60Data,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            normal: {
+              color: '#014EA2',
+              width: 1
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: '#014EA2'
+            }
+          }
+        },
+        {
+          name: '20日最低',
+          type: 'line',
+          data: data.dcl20Data,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            normal: {
+              color: '#014EA2',
+              width: 1
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: '#014EA2'
+            }
+          }
+        },
+      ]
     }
   }
 
-  dataHandler(data) {
-    let line_data = data.stockDailykLine ? data.stockDailykLine : []    
-    let state_data = data.stockStateLine ? data.stockStateLine : []
-    let source = []
-
-    for (let i = 0; i < line_data.length; i++) {
-      if (!! state_data[i]) {
-        let line = line_data[i]
-        let state = state_data[i]
-        let item = {
-          date: line.date,
-          open: line.open,
-          close: line.close,
-          highest: line.highest,
-          lowest: line.lowest,
-          preClose: line.preClose,
-          volume: line.volume,
-          trend: line.open <= line.close ? 'down' : 'up',
-          ma5: state.ma5,
-          ma10: state.ma10,
-          ma20: state.ma20,
-          ma30: state.ma30,
-          dcu60: state.dcu60,
-          dcl20: state.dcl20
-        }
-        source.push(item)
-      }
-    }
-
-    let frame = new Frame(source)
-    frame = Frame.combinColumns(frame, ['ma5','ma10','ma20','ma30', 'dcu60', 'dcl20'], 'value', 'type')
-    return frame
+  componentDidUpdate() {
+    const data = this.dataHandler(this.props.data)
+    const chart = echarts.init(this.refs.stockChart)
+    const options = this.setChartOption(data)
+    chart.setOption(options)
   }
 
   render() {
-    let data = this.dataHandler(this.props.data)
-
-    if (data instanceof Frame) {
-      data = data.toJSON()
-    }
-
-    if (data.length === 0) {
-      return (<div></div>)
-    }
-    else {
-      return (
-          <LineChart 
-            data={data}
-            width={this.state.width}
-            height={this.state.height}
-            plotCfg={this.state.plotCfg}
-            ref="stockChart" 
-          />
-      )
-    }
+    return(
+      <div ref="stockChart" style={{width: '100%', height: '400px'}}></div>
+    )
   }
 }
 
-const graphql_query = gql`
+const graphqlQuery = gql`
   query StockChart($symbol: String!){
     stockDailykLine(symbol: $symbol) {
       date
@@ -156,10 +220,10 @@ const graphql_query = gql`
   }
 `
 
-const graphql_options = {
+const graphqlOptions = {
   options: {
     variables: {symbol: CONFIG['symbol']}
   }
 }
 
-export default graphql(graphql_query, graphql_options)(StockChart)
+export default graphql(graphqlQuery, graphqlOptions)(StockChart)

@@ -45,7 +45,7 @@ class StockStateList extends React.Component {
   }
 }
 
-const graphql_query = gql`
+const graphqlQuery = gql`
   query {
     stockState {
       date
@@ -64,10 +64,10 @@ const graphql_query = gql`
     }
   }
 `
-const graphql_options = {
+const graphqlOptions = {
   options: {
     fetchPolicy: 'network-only'
   }
 }
 
-export default graphql(graphql_query, graphql_options)(StockStateList)
+export default graphql(graphqlQuery, graphqlOptions)(StockStateList)

@@ -3,7 +3,7 @@ import { ApolloClient, createNetworkInterface, ApolloProvider } from 'react-apol
 import ReactDOM from 'react-dom';
 import StockStateList from './components/stock_state_list'
 import StockRealtime from './components/stock_realtime'
-import StockChart from './components/stock_echart'
+import StockChart from './components/stock_chart'
 
 
 const client = new ApolloClient({
