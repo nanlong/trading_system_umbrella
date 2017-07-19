@@ -13,12 +13,12 @@ defmodule TradingSystem.Web.StockView do
     String.replace(symbol, ".", "_")
   end 
 
-  def unit(%StockState{atr20: atr20}, account) do 
-    Decimal.div(Decimal.new(account * 0.01), atr20) |> Decimal.round
+  def unit(%StockState{atr20: atr}, account) do
+    TradingKernel.Common.unit(account, Decimal.to_float(atr))
   end
 
   def unit_price(%StockState{dcu60: dcu60} = status, account) do
-    unit(status, account) |> Decimal.mult(dcu60)
+    unit(status, account) * Decimal.to_float(dcu60)
   end
 
   def stop_loss(%StockState{dcu60: dcu60, atr20: atr20}) do
