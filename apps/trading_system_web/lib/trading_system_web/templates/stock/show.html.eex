@@ -33,6 +33,10 @@
             <td><%= @state.date %></td>
           </tr>
           <tr>
+            <th>MA50 vs MA300:</th>
+            <td><%= @state.ma50 > @state.ma300 %></td>
+          </tr>
+          <tr>
             <th>ATR: </th>
             <td><%= @state.atr20 %></td>
           </tr>
