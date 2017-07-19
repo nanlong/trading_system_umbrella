@@ -3,9 +3,6 @@ defmodule TradingSystem.Web.StockController do
 
   alias TradingSystem.Stocks
 
-  alias TradingSystem.Repo
-  alias TradingSystem.Stocks.StockState
-  import Ecto.Query
 
   def index(conn, _params) do
     conn
