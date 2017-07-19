@@ -14,7 +14,8 @@ class StockChart extends React.Component {
       ma20Data: [],
       ma30Data: [],
       dcu60Data: [],
-      dcl20Data: []
+      dcl20Data: [],
+      candlestickPoints: []
     }
     
     for (let i = 0; i < data.stockDailykLine.length; i++) {
@@ -28,6 +29,41 @@ class StockChart extends React.Component {
       source.ma30Data.push(ma30)
       source.dcu60Data.push(dcu60)
       source.dcl20Data.push(dcl20)
+
+      if (highest > dcu60) {
+        source.candlestickPoints.push({
+          coord: [date, dcu60],
+          symbol: 'circle',
+          symbolSize: 8,
+          itemStyle: {
+            normal: {
+              color: '#34a853'
+            }
+          },
+          label: {
+            normal: {
+              show: false
+            }
+          }
+        })
+      }
+      else if (lowest < dcl20) {
+        source.candlestickPoints.push({
+          coord: [date, dcl20],
+          symbol: 'circle',
+          symbolSize: 8,
+          itemStyle: {
+            normal: {
+              color: '#fbbc05'
+            }
+          },
+          label: {
+            normal: {
+              show: false
+            }
+          }
+        })
+      }
     }
 
     return source
@@ -70,6 +106,9 @@ class StockChart extends React.Component {
           name: '日K',
           type: 'candlestick',
           data: data.dailykData,
+          markPoint: {
+            data: data.candlestickPoints
+          }
         },
         {
           name: 'MA5',
