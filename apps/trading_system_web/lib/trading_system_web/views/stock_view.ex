@@ -41,7 +41,7 @@ defmodule TradingSystem.Web.StockView do
     (buy_avg_price(state, position) - Decimal.to_float(state.atr20) * 0.5) |> Float.round(2)
   end
 
-  defp buy_avg_price(state, position) do
+  def buy_avg_price(state, position) do
     (for n <- 1..position, do: buy_price(state, n))
     |> Enum.sum
     |> Kernel./(position)

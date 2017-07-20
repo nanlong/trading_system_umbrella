@@ -34,7 +34,8 @@
       <thead>
         <tr>
           <th colspan="5">
-            指导日期: <%= @state.date %>, 
+            日期: <%= @state.date %>, 
+            初始资金: $<%= @account %>,
             ATR: <%= @state.atr20 %>, 
             唐奇安周期: 60天
           </th>
@@ -44,7 +45,7 @@
           <th>买入价</th>
           <th>止损价</th>
           <th>头寸股数</th>
-          <th>头寸价值</th>
+          <th>头寸成本</th>
         </tr>
       </thead>
       <tbody>
@@ -54,11 +55,13 @@
           <td>$<%= buy_price(@state, n) %></td>
           <td>$<%= stop_loss(@state, n) %></td>
           <td><%= unit(@account, @state) %>股</td>
-          <td>$<%= unit_price(@account, @state, n) %></td>
+          <td>$<%= unit_price(@account, @state, n) %></td>  
         </tr>
         <%= end %>
         <tr>
-          <td colspan="3">总资金：$<%= @account %></td>
+          <th>总计</th>
+          <td>$<%= buy_avg_price(@state, 4) %></td>
+          <td>--</td>
           <td><%= unit(@account, @state) * 4 %>股</td>
           <td>$<%= all_price(@account, @state) %></td>
         </tr>
