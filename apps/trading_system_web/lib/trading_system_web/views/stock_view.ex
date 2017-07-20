@@ -29,18 +29,24 @@ defmodule TradingSystem.Web.StockView do
 
   def stop_loss(state, position \\ 1)
   def stop_loss(state, position) when position == 1 do
-    (buy_price(state, position) - Decimal.to_float(state.atr20) * 2) |> Float.round(2)
+    (buy_avg_price(state, position) - Decimal.to_float(state.atr20) * 2) |> Float.round(2)
   end
   def stop_loss(state, position) when position == 2 do
-    (buy_price(state, position) - Decimal.to_float(state.atr20)) |> Float.round(2)
+    (buy_avg_price(state, position) - Decimal.to_float(state.atr20)) |> Float.round(2)
   end
   def stop_loss(state, position) when position == 3 do
-    (buy_price(state, position) - Decimal.to_float(state.atr20) * 0.66) |> Float.round(2)
+    (buy_avg_price(state, position) - Decimal.to_float(state.atr20) * 0.66) |> Float.round(2)
   end
   def stop_loss(state, position) when position == 4 do
-    (buy_price(state, position) - Decimal.to_float(state.atr20) * 0.6) |> Float.round(2)
+    (buy_avg_price(state, position) - Decimal.to_float(state.atr20) * 0.5) |> Float.round(2)
   end
 
+  defp buy_avg_price(state, position) do
+    (for n <- 1..position, do: buy_price(state, n))
+    |> Enum.sum
+    |> Kernel./(position)
+    |> Float.round(2)
+  end
 
   def unit(account, %StockState{atr20: atr}) do
     TradingKernel.Common.unit(account, Decimal.to_float(atr))
