@@ -5,6 +5,24 @@ import echarts from 'echarts'
 
 class StockChart extends React.Component {
 
+  markPoint(x, y, color) {
+    return {
+      coord: [x, y],
+      symbol: 'circle',
+      symbolSize: 8,
+      itemStyle: {
+        normal: {
+          color: color
+        }
+      },
+      label: {
+        normal: {
+          show: false
+        }
+      }
+    }
+  }
+
   dataHandler(data) {
     let source = {
       categoryData: [],
@@ -19,6 +37,7 @@ class StockChart extends React.Component {
     }
     
     for (let i = 0; i < data.stockDailykLine.length; i++) {
+      if (! data.stockDailykLine[i] || ! data.stockStateLine[i]) { break }
       const {date, open, close, highest, lowest} = data.stockDailykLine[i]
       const {ma5, ma10, ma20, ma30, dcu60, dcl20} = data.stockStateLine[i]
       source.categoryData.push(date)
@@ -31,38 +50,10 @@ class StockChart extends React.Component {
       source.dcl20Data.push(dcl20)
 
       if (highest > dcu60) {
-        source.candlestickPoints.push({
-          coord: [date, dcu60],
-          symbol: 'circle',
-          symbolSize: 8,
-          itemStyle: {
-            normal: {
-              color: '#34a853'
-            }
-          },
-          label: {
-            normal: {
-              show: false
-            }
-          }
-        })
+        source.candlestickPoints.push(this.markPoint(date, dcu60, '#34a853'))
       }
       else if (lowest < dcl20) {
-        source.candlestickPoints.push({
-          coord: [date, dcl20],
-          symbol: 'circle',
-          symbolSize: 8,
-          itemStyle: {
-            normal: {
-              color: '#fbbc05'
-            }
-          },
-          label: {
-            normal: {
-              show: false
-            }
-          }
-        })
+        source.candlestickPoints.push(this.markPoint(date, dcl20, '#fbbc05'))
       }
     }
 
