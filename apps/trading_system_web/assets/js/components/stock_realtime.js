@@ -47,95 +47,81 @@ class StockRelatime extends React.Component {
     
     return (
       <div>
+        <h1>
+          <span style={{fontSize: '20px', marginRight: '10px'}}>${data.price}</span>
+          <span style={{fontSize: '14px', color: '#999'}}>{data.chg}</span>
+          <span style={{fontSize: '14px', color: '#999'}}>({data.diff}%)</span>
+        </h1>
         <div className="columns">
           <div className="column">
-            <span style={{fontSize: '20px', marginRight: '10px'}}>{data.price}</span>
-            <span>{data.chg}</span>
-            <span>({data.diff}%)</span>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th colSpan="2">详细行情</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>开盘：</th>
+                  <td>{data.open}</td>
+                </tr>
+                <tr>
+                  <th>成交：</th>
+                  <td>{data.volume}</td>
+                </tr>
+                <tr>
+                  <th>10日均量：</th>
+                  <td>{data.volumeD10Avg}</td>
+                </tr>
+                <tr>
+                  <th>前收盘：</th>
+                  <td>{data.preClose}</td>
+                </tr>
+                <tr>
+                  <th>区间：</th>
+                  <td>{data.lowest}-{data.highest}</td>
+                </tr>
+                <tr>
+                  <th>52周区间：</th>
+                  <td>{data.w52Lowest}-{data.w52Highest}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        </div>
-        <div className="columns">
-          <div className="column is-6">
-            <h5>详细行情</h5>
-            <div className="columns">
-              <div className="column is-6">
-                <table className="table">
-                  <tbody>
-                    <tr>
-                      <th>开盘：</th>
-                      <td>{data.open}</td>
-                    </tr>
-                    <tr>
-                      <th>成交：</th>
-                      <td>{data.volume}</td>
-                    </tr>
-                    <tr>
-                      <th>10日均量：</th>
-                      <td>{data.volumeD10Avg}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div className="column is-6">
-                <table className="table">
-                  <tbody>
-                    <tr>
-                      <th>前收盘：</th>
-                      <td>{data.preClose}</td>
-                    </tr>
-                    <tr>
-                      <th>区间：</th>
-                      <td>{data.lowest}-{data.highest}</td>
-                    </tr>
-                    <tr>
-                      <th>52周区间：</th>
-                      <td>{data.w52Lowest}-{data.w52Highest}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div className="column is-6">
-            <h5>基本面摘要</h5>
-            <div className="columns">
-              <div className="column is-6">
-                <table className="table">
-                  <tbody>
-                    <tr>
-                      <th>市盈率：</th>
-                      <td>{data.pe}</td>
-                    </tr>
-                    <tr>
-                      <th>每股收益：</th>
-                      <td>{data.eps}</td>
-                    </tr>
-                    <tr>
-                      <th>贝塔系数：</th>
-                      <td>{data.beta}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-              <div className="column is-6">
-                <table className="table">
-                  <tbody>
-                    <tr>
-                      <th>市值：</th>
-                      <td>{data.marketCap}</td>
-                    </tr>
-                    <tr>
-                      <th>股本：</th>
-                      <td>{data.capital}</td>
-                    </tr>
-                    <tr>
-                      <th>股息/收益率：</th>
-                      <td>{data.dividend}/{data.yield}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
+          <div className="column">
+            <table className="table">
+              <thead>
+                <tr>
+                  <th colSpan="2">基本面摘要</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th>市盈率：</th>
+                  <td>{data.pe}</td>
+                </tr>
+                <tr>
+                  <th>每股收益：</th>
+                  <td>{data.eps}</td>
+                </tr>
+                <tr>
+                  <th>贝塔系数：</th>
+                  <td>{data.beta}</td>
+                </tr>
+                <tr>
+                  <th>市值：</th>
+                  <td>{data.marketCap}</td>
+                </tr>
+                <tr>
+                  <th>股本：</th>
+                  <td>{data.capital}</td>
+                </tr>
+                <tr>
+                  <th>股息/收益率：</th>
+                  <td>{data.dividend}/{data.yield}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>

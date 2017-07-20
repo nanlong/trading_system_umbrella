@@ -13,15 +13,45 @@ defmodule TradingSystem.Web.StockView do
     String.replace(symbol, ".", "_")
   end 
 
-  def unit(%StockState{atr20: atr}, account) do
+  def buy_price(state, position \\ 1)
+  def buy_price(state, position) when position == 1 do
+    Decimal.to_float(state.dcu60)
+  end
+  def buy_price(state, position) when position == 2 do
+    (Decimal.to_float(state.dcu60) + Decimal.to_float(state.atr20) * 0.5) |> Float.round(2)
+  end
+  def buy_price(state, position) when position == 3 do
+    (Decimal.to_float(state.dcu60) + Decimal.to_float(state.atr20)) |> Float.round(2)
+  end
+  def buy_price(state, position) when position == 4 do
+    (Decimal.to_float(state.dcu60) + Decimal.to_float(state.atr20) * 1.5) |> Float.round(2)
+  end
+
+  def stop_loss(state, position \\ 1)
+  def stop_loss(state, position) when position == 1 do
+    (buy_price(state, position) - Decimal.to_float(state.atr20) * 2) |> Float.round(2)
+  end
+  def stop_loss(state, position) when position == 2 do
+    (buy_price(state, position) - Decimal.to_float(state.atr20)) |> Float.round(2)
+  end
+  def stop_loss(state, position) when position == 3 do
+    (buy_price(state, position) - Decimal.to_float(state.atr20) * 0.66) |> Float.round(2)
+  end
+  def stop_loss(state, position) when position == 4 do
+    (buy_price(state, position) - Decimal.to_float(state.atr20) * 0.6) |> Float.round(2)
+  end
+
+
+  def unit(account, %StockState{atr20: atr}) do
     TradingKernel.Common.unit(account, Decimal.to_float(atr))
   end
 
-  def unit_price(%StockState{dcu60: dcu60} = status, account) do
-    unit(status, account) * Decimal.to_float(dcu60)
+  def unit_price(account, state, position \\ 1)
+  def unit_price(account, state, position) do
+    (unit(account, state) * buy_price(state, position)) |> Float.round(2)
   end
 
-  def stop_loss(%StockState{dcu60: dcu60, atr20: atr20}) do
-    Decimal.sub(dcu60, Decimal.mult(atr20, Decimal.new(2)))
+  def all_price(account, state) do
+    (for n <- 1..4, do: unit_price(account, state, n)) |> Enum.sum |> Float.round(2)
   end
 end
