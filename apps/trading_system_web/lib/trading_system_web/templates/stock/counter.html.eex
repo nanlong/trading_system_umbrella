@@ -1,0 +1,78 @@
+
+<h1>计算器</h1>
+<div class="columns">
+  <div class="column">
+    <form method="POST" action="<%= stock_path(@conn, :post_counter) %>">
+      <input type="hidden" name="_csrf_token" value="<%= get_csrf_token() %>">
+      <div class="field">
+        <label class="label">总资金</label>
+        <div class="control">
+          <input class="input" type="text" name="account" placeholder="总资金" value="<%= @account || "" %>">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">买入价</label>
+        <div class="control">
+          <input class="input" type="text" name="buy" placeholder="买入价" value="<%= @buy || "" %>">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label">ATR</label>
+        <div class="control">
+          <input class="input" type="text" name="atr" placeholder="ATR" value="<%= @atr || "" %>">
+        </div>
+      </div>
+
+      <div class="field is-grouped">
+        <div class="control">
+          <button class="button is-primary">确定</button>
+        </div>
+        <div class="control">
+          <button class="button is-link">取消</button>
+        </div>
+      </div>
+    </form>   
+  </div>
+  <div class="column">
+    <%= if @account && @account > 0 do %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th colspan="5">
+            初始: $<%= @account %>,
+            ATR: <%= @state.atr20 %>, 
+            止损：2%
+          </th>
+        </tr>
+        <tr>
+          <th>头寸(<=4)</th>
+          <th>买入价</th>
+          <th>止损价</th>
+          <th>单位股数</th>
+          <th>单位成本</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= for n <- 1..4 do %>
+        <tr>
+          <th>第 <%= n %> 单位</th>
+          <td>$<%= buy(@state, n) %></td>
+          <td>$<%= stop_loss(@state, n) %></td>
+          <td><%= unit(@account, @state) %>股</td>
+          <td>$<%= unit_cost(@account, @state, n) %></td>  
+        </tr>
+        <%= end %>
+        <tr>
+          <th>总计</th>
+          <td>$<%= buy_avg(@state, 4) %></td>
+          <td>--</td>
+          <td><%= unit(@account, @state) * 4 %>股</td>
+          <td>$<%= all_cost(@account, @state) %></td>
+        </tr>
+      </tbody>
+    </table>
+    <%= end %>
+  </div>
+</div>

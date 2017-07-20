@@ -17,6 +17,22 @@
 
   <body>
     <div class="container">
+      <nav class="navbar ">
+        <div class="navbar-brand">
+          <%= link to: page_path(@conn, :index), class: "navbar-item" do %>
+            <strong class="title is-5">交易系统</strong>
+          <%= end %>
+          <%= link "股票列表", to: stock_path(@conn, :index), class: "navbar-item is-hidden-desktop" %>
+          <%= link "计算器", to: stock_path(@conn, :counter), class: "navbar-item is-hidden-desktop" %>
+        </div>
+
+        <div class="navbar-menu">
+          <div class="navbar-start">
+            <%= link "股票列表", to: stock_path(@conn, :index), class: "navbar-item" %>
+            <%= link "计算器", to: stock_path(@conn, :counter), class: "navbar-item" %>
+          </div>
+        </div>
+      </nav>
 
       <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>

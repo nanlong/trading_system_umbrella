@@ -22,4 +22,27 @@ defmodule TradingSystem.Web.StockController do
     |> assign(:state, state)
     |> render(:show)
   end
+
+  def counter(conn, _params) do
+    conn
+    |> assign(:title, "计算器")
+    |> assign(:account, nil)
+    |> assign(:buy, nil)
+    |> assign(:atr, nil)
+    |> assign(:state, %{atr20: Decimal.new(0), dcu60: Decimal.new(0)})
+    |> render(:counter)
+  end
+
+  def post_counter(conn, %{"account" => account, "buy" => buy, "atr" => atr}) do
+    buy = Decimal.new(buy)
+    atr = Decimal.new(atr)
+
+    conn
+    |> assign(:title, "计算器")
+    |> assign(:account, String.to_integer(account))
+    |> assign(:buy, buy)
+    |> assign(:atr, atr)
+    |> assign(:state, %{atr20: atr, dcu60: buy})
+    |> render(:counter)
+  end
 end

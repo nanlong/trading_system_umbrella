@@ -39,6 +39,7 @@ defmodule TradingSystem.Web.StockView do
   @doc """
   单位规模
   """
+  def unit(account, _state) when account <= 0, do: 0
   def unit(account, state) do
     atr = Decimal.to_float(state.atr20)
     TradingKernel.Common.unit(account, atr)
