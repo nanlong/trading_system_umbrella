@@ -2,6 +2,7 @@
   var CONFIG = {};
   CONFIG['symbol'] = '<%= @stock.symbol %>';
 </script>
+
 <div class="columns">
   <div class="column is-8">
     <div>
@@ -11,6 +12,14 @@
       </strong>
       <span><%= @stock.name %></span>
     </div>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column">
+    <!-- React Component: StockChart  -->
+    <div id="stock-chart"></div>
+    <div id="slider"></div>
   </div>
 </div>
 
@@ -55,13 +64,5 @@
         </tr>
       </tbody>
     </table>
-  </div>
-</div>
-
-<div class="columns">
-  <div class="column">
-    <!-- React Component: StockChart  -->
-    <div id="stock-chart"></div>
-    <div id="slider"></div>
   </div>
 </div>
