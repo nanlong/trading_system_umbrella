@@ -23,13 +23,13 @@
             <strong class="title is-5">交易系统</strong>
           <%= end %>
           <%= link "股票列表", to: stock_path(@conn, :index), class: "navbar-item is-hidden-desktop" %>
-          <%= link "计算器", to: stock_path(@conn, :counter), class: "navbar-item is-hidden-desktop" %>
+          <%= link "计算器", to: stock_path(@conn, :counter), class: "navbar-item is-hidden-desktop", target: "_blank" %>
         </div>
 
         <div class="navbar-menu">
           <div class="navbar-start">
             <%= link "股票列表", to: stock_path(@conn, :index), class: "navbar-item" %>
-            <%= link "计算器", to: stock_path(@conn, :counter), class: "navbar-item" %>
+            <%= link "计算器", to: stock_path(@conn, :counter), class: "navbar-item", target: "_blank" %>
           </div>
         </div>
       </nav>
