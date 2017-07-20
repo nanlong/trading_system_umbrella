@@ -35,35 +35,36 @@
         <tr>
           <th colspan="5">
             日期: <%= @state.date %>, 
-            初始资金: $<%= @account %>,
+            初始: $<%= @account %>,
             ATR: <%= @state.atr20 %>, 
-            唐奇安周期: 60天
+            唐奇安: 60天,
+            止损：2%
           </th>
         </tr>
         <tr>
-          <th>头寸规模</th>
+          <th>头寸(<=4)</th>
           <th>买入价</th>
           <th>止损价</th>
-          <th>头寸股数</th>
-          <th>头寸成本</th>
+          <th>单位股数</th>
+          <th>单位成本</th>
         </tr>
       </thead>
       <tbody>
         <%= for n <- 1..4 do %>
         <tr>
           <th>第 <%= n %> 单位</th>
-          <td>$<%= buy_price(@state, n) %></td>
+          <td>$<%= buy(@state, n) %></td>
           <td>$<%= stop_loss(@state, n) %></td>
           <td><%= unit(@account, @state) %>股</td>
-          <td>$<%= unit_price(@account, @state, n) %></td>  
+          <td>$<%= unit_cost(@account, @state, n) %></td>  
         </tr>
         <%= end %>
         <tr>
           <th>总计</th>
-          <td>$<%= buy_avg_price(@state, 4) %></td>
+          <td>$<%= buy_avg(@state, 4) %></td>
           <td>--</td>
           <td><%= unit(@account, @state) * 4 %>股</td>
-          <td>$<%= all_price(@account, @state) %></td>
+          <td>$<%= all_cost(@account, @state) %></td>
         </tr>
       </tbody>
     </table>

@@ -13,51 +13,49 @@ defmodule TradingSystem.Web.StockView do
     String.replace(symbol, ".", "_")
   end 
 
-  def buy_price(state, position \\ 1)
-  def buy_price(state, position) when position == 1 do
-    Decimal.to_float(state.dcu60)
-  end
-  def buy_price(state, position) when position == 2 do
-    (Decimal.to_float(state.dcu60) + Decimal.to_float(state.atr20) * 0.5) |> Float.round(2)
-  end
-  def buy_price(state, position) when position == 3 do
-    (Decimal.to_float(state.dcu60) + Decimal.to_float(state.atr20)) |> Float.round(2)
-  end
-  def buy_price(state, position) when position == 4 do
-    (Decimal.to_float(state.dcu60) + Decimal.to_float(state.atr20) * 1.5) |> Float.round(2)
+  @doc """
+  每涨0.5个ATR加一个单位，最多4个
+  """
+  def buy(state, position \\ 1) do
+    buy_signal = Decimal.to_float(state.dcu60)
+    atr = Decimal.to_float(state.atr20)
+    (buy_signal + atr * (0.5 * (position - 1))) |> Float.round(2)
   end
 
-  def stop_loss(state, position \\ 1)
-  def stop_loss(state, position) when position == 1 do
-    (buy_avg_price(state, position) - Decimal.to_float(state.atr20) * 2) |> Float.round(2)
-  end
-  def stop_loss(state, position) when position == 2 do
-    (buy_avg_price(state, position) - Decimal.to_float(state.atr20)) |> Float.round(2)
-  end
-  def stop_loss(state, position) when position == 3 do
-    (buy_avg_price(state, position) - Decimal.to_float(state.atr20) * 0.66) |> Float.round(2)
-  end
-  def stop_loss(state, position) when position == 4 do
-    (buy_avg_price(state, position) - Decimal.to_float(state.atr20) * 0.5) |> Float.round(2)
+  @doc """
+  一次止损 4个ATR的损失，总账户的2%
+  """
+  def stop_loss(state, position \\ 1) do
+    atr = Decimal.to_float(state.atr20)
+    (buy_avg(state, position) - atr * (4 / position)) |> Float.round(2)
   end
 
-  def buy_avg_price(state, position) do
-    (for n <- 1..position, do: buy_price(state, n))
-    |> Enum.sum
-    |> Kernel./(position)
-    |> Float.round(2)
+  @doc """
+  买入平均价
+  """
+  def buy_avg(state, position) do
+    (for n <- 1..position, do: buy(state, n)) |> Enum.sum |> Kernel./(position) |> Float.round(2)
   end
 
-  def unit(account, %StockState{atr20: atr}) do
-    TradingKernel.Common.unit(account, Decimal.to_float(atr))
+  @doc """
+  单位规模
+  """
+  def unit(account, state) do
+    atr = Decimal.to_float(state.atr20)
+    TradingKernel.Common.unit(account, atr)
   end
 
-  def unit_price(account, state, position \\ 1)
-  def unit_price(account, state, position) do
-    (unit(account, state) * buy_price(state, position)) |> Float.round(2)
+  @doc """
+  单位成本
+  """
+  def unit_cost(account, state, position \\ 1) do
+    (unit(account, state) * buy(state, position)) |> Float.round(2)
   end
 
-  def all_price(account, state) do
-    (for n <- 1..4, do: unit_price(account, state, n)) |> Enum.sum |> Float.round(2)
+  @doc """
+  总成本
+  """
+  def all_cost(account, state) do
+    (for n <- 1..4, do: unit_cost(account, state, n)) |> Enum.sum |> Float.round(2)
   end
 end
