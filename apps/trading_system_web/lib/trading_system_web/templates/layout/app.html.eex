@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>交易系统<%= assigns[:title] && " - " <> assigns[:title] %></title>
+    <title>趋势跟踪系统<%= assigns[:title] && " - " <> assigns[:title] %></title>
     <link href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
     <script>
@@ -20,7 +20,10 @@
       <nav class="navbar ">
         <div class="navbar-brand">
           <%= link to: page_path(@conn, :index), class: "navbar-item" do %>
-            <strong class="title is-5">交易系统</strong>
+            <strong class="title is-5" style="font-weight: bold;">
+              趋势跟踪系统
+              <span style="font-size: 12px;">Beta</span>
+            </strong>
           <%= end %>
           <%= link "股票列表", to: stock_path(@conn, :index), class: "navbar-item is-hidden-desktop" %>
           <%= link "计算器", to: stock_path(@conn, :counter), class: "navbar-item is-hidden-desktop", target: "_blank" %>
