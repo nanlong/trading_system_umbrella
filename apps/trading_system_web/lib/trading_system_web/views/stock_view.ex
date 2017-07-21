@@ -55,6 +55,10 @@ defmodule TradingSystem.Web.StockView do
   总成本
   """
   def all_cost(account, buy_signal, atr) do
-    (for position <- 1..4, do: unit_cost(account, buy_signal, atr, position)) |> Enum.sum |> Float.round(2)
+    (for position <- 1..4, do: unit_cost(account, buy_signal, atr, position)) 
+    |> Enum.sum 
+    |> Float.round(2)
   end
+
+  def float_to_string(float), do: :erlang.float_to_binary(float, decimals: 2)
 end

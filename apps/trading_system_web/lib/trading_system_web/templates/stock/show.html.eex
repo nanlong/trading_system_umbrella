@@ -16,57 +16,24 @@
 </div>
 
 <div class="columns">
-  <div class="column">
+  <div class="column is-9">
     <!-- React Component: StockChart  -->
     <div id="stock-chart"></div>
     <div id="slider"></div>
+  </div>
+  <div class="column is-3">
+    <!-- React Component: StockRealtime  -->
+    <div id="stock-realtime"></div>
   </div>
 </div>
 
 <div class="columns">
   <div class="column is-6">
-    <!-- React Component: StockRealtime  -->
-    <div id="stock-realtime"></div>
+    <h1>20日突破价: $<%= @state.dcu20 %></h1>
+    <%= render "position.html", account: @account, buy_signal: @state.dcu20, atr: @state.atr20 %>
   </div>
   <div class="column">
-    <h1>操作指导</h1>
-    <table class="table">
-      <thead>
-        <tr>
-          <th colspan="5">
-            日期: <%= @state.date %>, 
-            初始: $<%= @account %>,
-            ATR: <%= @state.atr20 %>, 
-            唐奇安: 60天,
-            止损：2%
-          </th>
-        </tr>
-        <tr>
-          <th>头寸(<=4)</th>
-          <th>买入价</th>
-          <th>止损价</th>
-          <th>单位股数</th>
-          <th>单位成本</th>
-        </tr>
-      </thead>
-      <tbody>
-        <%= for position <- 1..4 do %>
-        <tr>
-          <th>第 <%= position %> 单位</th>
-          <td>$<%= buy(@state.dcu60, @state.atr20, position) %></td>
-          <td>$<%= stop_loss(@state.dcu60, @state.atr20, position) %></td>
-          <td><%= unit(@account, @state.atr20) %>股</td>
-          <td>$<%= unit_cost(@account, @state.dcu60, @state.atr20, position) %></td>  
-        </tr>
-        <%= end %>
-        <tr>
-          <th>总计</th>
-          <td>$<%= buy_avg(@state.dcu60, @state.atr20, 4) %></td>
-          <td>--</td>
-          <td><%= unit(@account, @state.atr20) * 4 %>股</td>
-          <td>$<%= all_cost(@account, @state.dcu60, @state.atr20) %></td>
-        </tr>
-      </tbody>
-    </table>
+    <h1>60日突破价: $<%= @state.dcu60 %></h1>
+    <%= render "position.html", account: @account, buy_signal: @state.dcu60, atr: @state.atr20 %>
   </div>
 </div>

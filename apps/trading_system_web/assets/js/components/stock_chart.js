@@ -222,7 +222,7 @@ class StockChart extends React.Component {
 
   render() {
     return(
-      <div ref="stockChart" style={{width: '100%', height: '400px'}}></div>
+      <div ref="stockChart" style={{width: '100%', height: '500px'}}></div>
     )
   }
 }

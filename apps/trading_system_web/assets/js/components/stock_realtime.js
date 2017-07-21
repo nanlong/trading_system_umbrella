@@ -87,8 +87,6 @@ class StockRelatime extends React.Component {
                 </tr>
               </tbody>
             </table>
-          </div>
-          <div className="column">
             <table className="table">
               <thead>
                 <tr>
