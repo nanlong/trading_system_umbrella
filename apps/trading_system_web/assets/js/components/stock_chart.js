@@ -38,7 +38,17 @@ class StockChart extends React.Component {
       dcu20Point: [],
       dcl10Point: [],
       dcu60Point: [],
-      dcl20Point: []
+      dcl20Point: [],
+      line20Cache: [],
+      line60Cache: [],
+    }
+
+    function is_pre_break_down(linePoint) {
+      return linePoint.length == 0 || linePoint[linePoint.length - 1].itemStyle.normal.color == '#fbbc05'
+    }
+
+    function is_pre_break_up(linePoint) {
+      return linePoint.length > 0 && linePoint[linePoint.length - 1].itemStyle.normal.color == '#34a853'
     }
     
     for (let i = 0; i < data.stockDailykLine.length; i++) {
@@ -56,20 +66,28 @@ class StockChart extends React.Component {
       source.dcl20Data.push(dcl20)
       source.dcl10Data.push(dcl10)
 
-      if (highest > dcu20) {
-        source.dcu20Point.push(this.markPoint(date, dcu20, '#34a853'))
+      if (highest > dcu20 && is_pre_break_down(source.line20Cache)) {
+        let point = this.markPoint(date, dcu20, '#34a853')
+        source.line20Cache.push(point)
+        source.dcu20Point.push(point)
       }
 
-      if (lowest < dcl10) {
-        source.dcl10Point.push(this.markPoint(date, dcl10, '#fbbc05'))
+      if (lowest < dcl10 && is_pre_break_up(source.line20Cache)) {
+        let point = this.markPoint(date, dcl10, '#fbbc05')
+        source.line20Cache.push(point)
+        source.dcl10Point.push(point)
       }
 
-      if (highest > dcu60) {
-        source.dcu60Point.push(this.markPoint(date, dcu60, '#34a853'))
+      if (highest > dcu60 && is_pre_break_down(source.line60Cache)) {
+        let point = this.markPoint(date, dcu60, '#34a853')
+        source.line60Cache.push(point)
+        source.dcu60Point.push(point)
       }
       
-      if (lowest < dcl20) {
-        source.dcl20Point.push(this.markPoint(date, dcl20, '#fbbc05'))
+      if (lowest < dcl20 && is_pre_break_up(source.line60Cache)) {
+        let point = this.markPoint(date, dcl20, '#fbbc05')
+        source.line60Cache.push(point)
+        source.dcl20Point.push(point)
       }
     }
 
