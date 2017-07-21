@@ -27,13 +27,23 @@
   </div>
 </div>
 
+<div style="border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 10px;">
+  <span class="title is-4">仓控</span> |
+  <span>参考日期: <%= @state.date %></span> |
+  <span>初始资金: $<%= @account %></span> |
+  <span>ATR: <%= @state.atr20 %></span> |
+  <span>失败损失: 2%</span> |
+  <span>加仓规则: +0.5ATR</span> |
+  <span>最大头寸: 4</span> |
+</div>
+
 <div class="columns">
   <div class="column is-6">
-    <h1>20日突破价: $<%= @state.dcu20 %></h1>
+    <div><span class="title is-5">20</span>日突破价: $<%= @state.dcu20 %></div>
     <%= render "position.html", account: @account, buy_signal: @state.dcu20, atr: @state.atr20 %>
   </div>
   <div class="column">
-    <h1>60日突破价: $<%= @state.dcu60 %></h1>
+    <div><span class="title is-5">60</span>日突破价: $<%= @state.dcu60 %></div>
     <%= render "position.html", account: @account, buy_signal: @state.dcu60, atr: @state.atr20 %>
   </div>
 </div>
