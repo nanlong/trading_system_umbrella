@@ -14,7 +14,7 @@
       <div class="field">
         <label class="label">买入价</label>
         <div class="control">
-          <input class="input" type="text" name="buy" placeholder="买入价" value="<%= @buy || "" %>">
+          <input class="input" type="text" name="buy" placeholder="买入价" value="<%= @buy_signal || "" %>">
         </div>
       </div>
 
@@ -42,7 +42,7 @@
         <tr>
           <th colspan="5">
             初始: $<%= @account %>,
-            ATR: <%= @state.atr20 %>, 
+            ATR: <%= @atr %>, 
             止损：2%
           </th>
         </tr>
@@ -55,21 +55,21 @@
         </tr>
       </thead>
       <tbody>
-        <%= for n <- 1..4 do %>
+        <%= for position <- 1..4 do %>
         <tr>
-          <th>第 <%= n %> 单位</th>
-          <td>$<%= buy(@state, n) %></td>
-          <td>$<%= stop_loss(@state, n) %></td>
-          <td><%= unit(@account, @state) %>股</td>
-          <td>$<%= unit_cost(@account, @state, n) %></td>  
+          <th>第 <%= position %> 单位</th>
+          <td>$<%= buy(@buy_signal, @atr, position) %></td>
+          <td>$<%= stop_loss(@buy_signal, @atr, position) %></td>
+          <td><%= unit(@account, @atr) %>股</td>
+          <td>$<%= unit_cost(@account, @buy_signal, @atr, position) %></td>  
         </tr>
         <%= end %>
         <tr>
           <th>总计</th>
-          <td>$<%= buy_avg(@state, 4) %></td>
+          <td>$<%= buy_avg(@buy_signal, @atr, 4) %></td>
           <td>--</td>
-          <td><%= unit(@account, @state) * 4 %>股</td>
-          <td>$<%= all_cost(@account, @state) %></td>
+          <td><%= unit(@account, @atr) * 4 %>股</td>
+          <td>$<%= all_cost(@account, @buy_signal, @atr) %></td>
         </tr>
       </tbody>
     </table>

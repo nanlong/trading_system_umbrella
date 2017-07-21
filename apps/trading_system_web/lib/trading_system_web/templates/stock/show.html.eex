@@ -50,21 +50,21 @@
         </tr>
       </thead>
       <tbody>
-        <%= for n <- 1..4 do %>
+        <%= for position <- 1..4 do %>
         <tr>
-          <th>第 <%= n %> 单位</th>
-          <td>$<%= buy(@state, n) %></td>
-          <td>$<%= stop_loss(@state, n) %></td>
-          <td><%= unit(@account, @state) %>股</td>
-          <td>$<%= unit_cost(@account, @state, n) %></td>  
+          <th>第 <%= position %> 单位</th>
+          <td>$<%= buy(@state.dcu60, @state.atr20, position) %></td>
+          <td>$<%= stop_loss(@state.dcu60, @state.atr20, position) %></td>
+          <td><%= unit(@account, @state.atr20) %>股</td>
+          <td>$<%= unit_cost(@account, @state.dcu60, @state.atr20, position) %></td>  
         </tr>
         <%= end %>
         <tr>
           <th>总计</th>
-          <td>$<%= buy_avg(@state, 4) %></td>
+          <td>$<%= buy_avg(@state.dcu60, @state.atr20, 4) %></td>
           <td>--</td>
-          <td><%= unit(@account, @state) * 4 %>股</td>
-          <td>$<%= all_cost(@account, @state) %></td>
+          <td><%= unit(@account, @state.atr20) * 4 %>股</td>
+          <td>$<%= all_cost(@account, @state.dcu60, @state.atr20) %></td>
         </tr>
       </tbody>
     </table>

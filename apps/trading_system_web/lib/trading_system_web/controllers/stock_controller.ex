@@ -27,22 +27,20 @@ defmodule TradingSystem.Web.StockController do
     conn
     |> assign(:title, "计算器")
     |> assign(:account, nil)
-    |> assign(:buy, nil)
+    |> assign(:buy_signal, nil)
     |> assign(:atr, nil)
-    |> assign(:state, %{atr20: Decimal.new(0), dcu60: Decimal.new(0)})
     |> render(:counter)
   end
 
   def post_counter(conn, %{"account" => account, "buy" => buy, "atr" => atr}) do
-    buy = Decimal.new(buy)
+    buy_signal = Decimal.new(buy)
     atr = Decimal.new(atr)
 
     conn
     |> assign(:title, "计算器")
     |> assign(:account, String.to_integer(account))
-    |> assign(:buy, buy)
+    |> assign(:buy_signal, buy_signal)
     |> assign(:atr, atr)
-    |> assign(:state, %{atr20: atr, dcu60: buy})
     |> render(:counter)
   end
 end

@@ -15,47 +15,46 @@ defmodule TradingSystem.Web.StockView do
   @doc """
   每涨0.5个ATR加一个单位，最多4个
   """
-  def buy(state, position \\ 1) do
-    buy_signal = Decimal.to_float(state.dcu60)
-    atr = Decimal.to_float(state.atr20)
+  def buy(buy_signal, atr, position \\ 1) do
+    buy_signal = Decimal.to_float(buy_signal)
+    atr = Decimal.to_float(atr)
     (buy_signal + atr * (0.5 * (position - 1))) |> Float.round(2)
-  end
-
-  @doc """
-  一次止损 4个ATR的损失，总账户的2%
-  """
-  def stop_loss(state, position \\ 1) do
-    atr = Decimal.to_float(state.atr20)
-    (buy_avg(state, position) - atr * (4 / position)) |> Float.round(2)
   end
 
   @doc """
   买入平均价
   """
-  def buy_avg(state, position) do
-    (for n <- 1..position, do: buy(state, n)) |> Enum.sum |> Kernel./(position) |> Float.round(2)
+  def buy_avg(buy_signal, atr, position) do
+    (for position <- 1..position, do: buy(buy_signal, atr, position)) |> Enum.sum |> Kernel./(position) |> Float.round(2)
+  end
+
+  @doc """
+  一次止损 4个ATR的损失，总账户的2%
+  """
+  def stop_loss(buy_signal, atr, position \\ 1) do
+    (buy_avg(buy_signal, atr, position) - Decimal.to_float(atr) * (4 / position)) |> Float.round(2)
   end
 
   @doc """
   单位规模
   """
-  def unit(account, _state) when account <= 0, do: 0
-  def unit(account, state) do
-    atr = Decimal.to_float(state.atr20)
+  def unit(account, _atr) when account <= 0, do: 0
+  def unit(account, atr) do
+    atr = Decimal.to_float(atr)
     TradingKernel.Common.unit(account, atr)
   end
 
   @doc """
   单位成本
   """
-  def unit_cost(account, state, position \\ 1) do
-    (unit(account, state) * buy(state, position)) |> Float.round(2)
+  def unit_cost(account, buy_signal, atr, position \\ 1) do
+    (unit(account, atr) * buy(buy_signal, atr, position)) |> Float.round(2)
   end
 
   @doc """
   总成本
   """
-  def all_cost(account, state) do
-    (for n <- 1..4, do: unit_cost(account, state, n)) |> Enum.sum |> Float.round(2)
+  def all_cost(account, buy_signal, atr) do
+    (for position <- 1..4, do: unit_cost(account, buy_signal, atr, position)) |> Enum.sum |> Float.round(2)
   end
 end
