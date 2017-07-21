@@ -31,15 +31,20 @@ class StockChart extends React.Component {
       ma10Data: [],
       ma20Data: [],
       ma30Data: [],
+      dcu20Data: [],
       dcu60Data: [],
+      dcl10Data: [],
       dcl20Data: [],
-      candlestickPoints: []
+      dcu20Point: [],
+      dcl10Point: [],
+      dcu60Point: [],
+      dcl20Point: []
     }
     
     for (let i = 0; i < data.stockDailykLine.length; i++) {
       if (! data.stockDailykLine[i] || ! data.stockStateLine[i]) { break }
       const {date, open, close, highest, lowest} = data.stockDailykLine[i]
-      const {ma5, ma10, ma20, ma30, dcu60, dcl20} = data.stockStateLine[i]
+      const {ma5, ma10, ma20, ma30, dcu60, dcu20, dcl20, dcl10} = data.stockStateLine[i]
       source.categoryData.push(date)
       source.dailykData.push([open, close, lowest, highest])
       source.ma5Data.push(ma5)
@@ -47,13 +52,24 @@ class StockChart extends React.Component {
       source.ma20Data.push(ma20)
       source.ma30Data.push(ma30)
       source.dcu60Data.push(dcu60)
+      source.dcu20Data.push(dcu20)
       source.dcl20Data.push(dcl20)
+      source.dcl10Data.push(dcl10)
+
+      if (highest > dcu20) {
+        source.dcu20Point.push(this.markPoint(date, dcu20, '#34a853'))
+      }
+
+      if (lowest < dcl10) {
+        source.dcl10Point.push(this.markPoint(date, dcl10, '#fbbc05'))
+      }
 
       if (highest > dcu60) {
-        source.candlestickPoints.push(this.markPoint(date, dcu60, '#34a853'))
+        source.dcu60Point.push(this.markPoint(date, dcu60, '#34a853'))
       }
-      else if (lowest < dcl20) {
-        source.candlestickPoints.push(this.markPoint(date, dcl20, '#fbbc05'))
+      
+      if (lowest < dcl20) {
+        source.dcl20Point.push(this.markPoint(date, dcl20, '#fbbc05'))
       }
     }
 
@@ -69,7 +85,8 @@ class StockChart extends React.Component {
         }
       },
       legend: {
-        data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30', '60日最高', '20日最低'],
+        data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30', '20日最高', '10日最低', '60日最高', '20日最低'],
+        selected: {'60日最高': false, '20日最低': false}
       },
       grid: {
         top: '8%',
@@ -96,10 +113,7 @@ class StockChart extends React.Component {
         {
           name: '日K',
           type: 'candlestick',
-          data: data.dailykData,
-          markPoint: {
-            data: data.candlestickPoints
-          }
+          data: data.dailykData
         },
         {
           name: 'MA5',
@@ -174,6 +188,48 @@ class StockChart extends React.Component {
           }
         },
         {
+          name: '20日最高',
+          type: 'line',
+          data: data.dcu20Data,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            normal: {
+              color: '#014EA2',
+              width: 1
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: '#014EA2'
+            }
+          },
+          markPoint: {
+            data: data.dcu20Point
+          }
+        },
+        {
+          name: '10日最低',
+          type: 'line',
+          data: data.dcl10Data,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            normal: {
+              color: '#014EA2',
+              width: 1
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: '#014EA2'
+            }
+          },
+          markPoint: {
+            data: data.dcl10Point
+          }
+        },
+        {
           name: '60日最高',
           type: 'line',
           data: data.dcu60Data,
@@ -189,6 +245,9 @@ class StockChart extends React.Component {
             normal: {
               color: '#014EA2'
             }
+          },
+          markPoint: {
+            data: data.dcu60Point
           }
         },
         {
@@ -207,6 +266,9 @@ class StockChart extends React.Component {
             normal: {
               color: '#014EA2'
             }
+          },
+          markPoint: {
+            data: data.dcl20Point
           }
         },
       ]
@@ -244,7 +306,9 @@ const graphqlQuery = gql`
       ma10
       ma20
       ma30
+      dcu20
       dcu60
+      dcl10
       dcl20
     }
   }
