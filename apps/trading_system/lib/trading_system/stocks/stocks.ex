@@ -133,6 +133,7 @@ defmodule TradingSystem.Stocks do
     |> where([s], s.date == ^date)
     |> where([s], s.ma50 > s.ma300)
     |> where([s], fragment("? / ?", s.atr20, s.dcu60) > 0.02)
+    |> where([s], not s.symbol in fragment("select symbol from stock_blacklist"))
     |> join(:inner, [s1], s2 in Stock, s1.symbol == s2.symbol and s2.volume > 3000000 and s2.open > 10)
     |> preload(:stock)
     |> Repo.all()
@@ -140,11 +141,7 @@ defmodule TradingSystem.Stocks do
   
 
   def get_stock_state_last_date do
-    query = from(s in StockState, select: s.date, order_by: [desc: :date])
-
-    query
-    |> first()
-    |> Repo.one()
+    (from s in StockState, select: s.date, order_by: [desc: :date]) |> first() |> Repo.one()
   end
 
   def get_stock_state(%{symbol: symbol, date: date}) do
