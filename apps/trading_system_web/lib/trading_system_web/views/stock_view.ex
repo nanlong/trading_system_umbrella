@@ -18,6 +18,20 @@ defmodule TradingSystem.Web.StockView do
 
   @doc """
   每涨0.5个ATR加一个单位，最多4个
+
+  ## Example
+
+    iex> alias TradingSystem.Web.StockView
+    iex> buy_signal = Decimal.new(167.51)
+    iex> atr = Decimal.new(5.40)
+    iex> StockView.buy(buy_signal, atr, 1)
+    167.51
+    iex> StockView.buy(buy_signal, atr, 2)
+    170.21
+    iex> StockView.buy(buy_signal, atr, 3)
+    172.91
+    iex> StockView.buy(buy_signal, atr, 4)
+    175.61
   """
   def buy(buy_signal, atr, position \\ 1) do
     buy_signal = Decimal.to_float(buy_signal)
@@ -27,6 +41,20 @@ defmodule TradingSystem.Web.StockView do
 
   @doc """
   买入平均价
+
+  ## Example
+
+    iex> alias TradingSystem.Web.StockView
+    iex> buy_signal = Decimal.new(167.51)
+    iex> atr = Decimal.new(5.40)
+    iex> StockView.buy_avg(buy_signal, atr, 1)
+    167.51
+    iex> StockView.buy_avg(buy_signal, atr, 2)
+    168.86
+    iex> StockView.buy_avg(buy_signal, atr, 3)
+    170.21
+    iex> StockView.buy_avg(buy_signal, atr, 4)
+    171.56
   """
   def buy_avg(buy_signal, _atr, position) when position == 1, do: Decimal.to_float(buy_signal)
   def buy_avg(buy_signal, atr, position) do
@@ -37,6 +65,20 @@ defmodule TradingSystem.Web.StockView do
 
   @doc """
   一次止损 4个ATR的损失，总账户的2%
+
+  ## Example
+
+    iex> alias TradingSystem.Web.StockView
+    iex> buy_signal = Decimal.new(167.51)
+    iex> atr = Decimal.new(5.40)
+    iex> StockView.stop_loss(buy_signal, atr, 1)
+    145.91
+    iex> StockView.stop_loss(buy_signal, atr, 2)
+    158.06
+    iex> StockView.stop_loss(buy_signal, atr, 3)
+    163.01
+    iex> StockView.stop_loss(buy_signal, atr, 4)
+    166.16
   """
   def stop_loss(buy_signal, atr, position \\ 1) do
     (buy_avg(buy_signal, atr, position) - Decimal.to_float(atr) * (@stop_step / position)) |> Float.round(2)
@@ -44,6 +86,15 @@ defmodule TradingSystem.Web.StockView do
 
   @doc """
   单位规模
+
+  ## Example
+
+    iex> alias TradingSystem.Web.StockView
+    iex> atr = Decimal.new(5.40)
+    iex> StockView.unit(0, atr)
+    0
+    iex> StockView.unit(100000, atr)
+    93
   """
   def unit(account, _atr) when account <= 0, do: 0
   def unit(account, atr) do
@@ -53,6 +104,21 @@ defmodule TradingSystem.Web.StockView do
 
   @doc """
   单位成本
+
+  ## Example
+
+    iex> alias TradingSystem.Web.StockView
+    iex> account = 100000
+    iex> buy_signal = Decimal.new(167.51)
+    iex> atr = Decimal.new(5.40)
+    iex> StockView.unit_cost(account, buy_signal, atr, 1)
+    15578.43
+    iex> StockView.unit_cost(account, buy_signal, atr, 2)
+    15829.53
+    iex> StockView.unit_cost(account, buy_signal, atr, 3)
+    16080.63
+    iex> StockView.unit_cost(account, buy_signal, atr, 4)
+    16331.73
   """
   def unit_cost(account, buy_signal, atr, position \\ 1) do
     (unit(account, atr) * buy(buy_signal, atr, position)) |> Float.round(2)
@@ -60,6 +126,15 @@ defmodule TradingSystem.Web.StockView do
 
   @doc """
   总成本
+
+  ## Example
+
+    iex> alias TradingSystem.Web.StockView
+    iex> account = 100000
+    iex> buy_signal = Decimal.new(167.51)
+    iex> atr = Decimal.new(5.40)
+    iex> StockView.all_cost(account, buy_signal, atr)
+    63820.32
   """
   def all_cost(account, buy_signal, atr) do
     (for position <- 1..@max_position, do: unit_cost(account, buy_signal, atr, position)) 

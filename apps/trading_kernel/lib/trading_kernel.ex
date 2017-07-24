@@ -108,7 +108,7 @@ defmodule TradingKernel do
   ## Example:
     iex> state = %{atr20: Decimal.new(2.76)}
     iex> TradingKernel.unit(10000, state)
-    36
+    18
   """
   def unit(account, %{atr20: atr}) do
     Common.unit(account, Decimal.to_float(atr))

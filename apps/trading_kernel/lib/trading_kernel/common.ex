@@ -61,7 +61,7 @@ defmodule TradingKernel.Common do
 
   ## Examples:
     iex> TradingKernel.Common.unit(10000, 1.35)
-    74
+    37
   """
   @spec unit(integer, float) :: integer
   def unit(account, atr) do

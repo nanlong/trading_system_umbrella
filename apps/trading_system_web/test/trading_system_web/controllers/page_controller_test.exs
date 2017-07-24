@@ -3,6 +3,6 @@ defmodule TradingSystem.Web.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"
-    assert html_response(conn, 200) =~ "交易系统"
+    assert html_response(conn, 200) =~ "趋势跟踪系统"
   end
 end
