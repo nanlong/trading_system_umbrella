@@ -43,18 +43,48 @@ class StockChart extends React.Component {
       line60Cache: [],
     }
 
+    let p20State = {}
+    let p60State = {}
+
     function is_pre_break_down(linePoint) {
-      return linePoint.length == 0 || linePoint[linePoint.length - 1].itemStyle.normal.color == '#fbbc05'
+      return linePoint.length == 0 
+        || linePoint[linePoint.length - 1].itemStyle.normal.color == '#fbbc05'
+        || linePoint[linePoint.length - 1].itemStyle.normal.color == '#9966CC'
     }
 
     function is_pre_break_up(linePoint) {
-      return linePoint.length > 0 && linePoint[linePoint.length - 1].itemStyle.normal.color == '#34a853'
+      return linePoint.length > 0 
+        && linePoint[linePoint.length - 1].itemStyle.normal.color == '#34a853'
+    }
+
+    function range(start, end) {
+      return Array(end - start + 1).fill(0).map((v, i) => i + start)
+    }
+
+    function sum(start, end) {
+      if (start > end) {
+        return 0
+      }
+      else if (start == end) {
+        return start
+      }
+      else {
+        return range(start, end).reduce((pre, cur, _index, _arr) => pre + cur)
+      }
+    }
+
+    function buy_avg(buy, atr, position) {
+      return ((buy * position) + atr * 0.5 * sum(1, position - 1)) / position
+    }
+
+    function stop_loss(buy, atr, position) {
+      return buy_avg(buy, atr, position) - atr * 4 / position
     }
     
     for (let i = 0; i < data.stockDailykLine.length; i++) {
       if (! data.stockDailykLine[i] || ! data.stockStateLine[i]) { break }
       const {date, open, close, highest, lowest} = data.stockDailykLine[i]
-      const {ma5, ma10, ma20, ma30, dcu60, dcu20, dcl20, dcl10} = data.stockStateLine[i]
+      const {ma5, ma10, ma20, ma30, dcu60, dcu20, dcl20, dcl10, atr20} = data.stockStateLine[i]
       source.categoryData.push(date)
       source.dailykData.push([open, close, lowest, highest])
       source.ma5Data.push(ma5)
@@ -66,25 +96,52 @@ class StockChart extends React.Component {
       source.dcl20Data.push(dcl20)
       source.dcl10Data.push(dcl10)
 
+      // 20日突破点
       if (highest > dcu20 && is_pre_break_down(source.line20Cache)) {
         let point = this.markPoint(date, dcu20, '#34a853')
         source.line20Cache.push(point)
         source.dcu20Point.push(point)
-      }
 
-      if (lowest < dcl10 && is_pre_break_up(source.line20Cache)) {
+        p20State = {
+          break: dcu20,
+          next_break: dcu20 + atr20 * 0.5,
+          atr: atr20,
+          stop: stop_loss(dcu20, atr20, 1),
+          count: 1
+        }
+      }
+      // 20日突破后的加仓
+      else if (is_pre_break_up(source.line20Cache) && highest > p20State.next_break && p20State.count < 4) {
+        p20State = {
+          break: p20State.break,
+          next_break: p20State.next_break + p20State.atr * 0.5,
+          atr: p20State.atr,
+          stop: stop_loss(p20State.break, p20State.atr, p20State.count + 1),
+          count: p20State.count + 1
+        }
+      }
+      // 20日止损点
+      else if(is_pre_break_up(source.line20Cache) && lowest < p20State.stop) {
+        let point = this.markPoint(date, p20State.stop, '#9966CC')
+        source.line20Cache.push(point)
+        source.dcu20Point.push(point)
+        p20State = {}
+      }
+      // 20日止盈点
+      else if (lowest < dcl10 && is_pre_break_up(source.line20Cache)) {
         let point = this.markPoint(date, dcl10, '#fbbc05')
         source.line20Cache.push(point)
         source.dcl10Point.push(point)
       }
 
+      // 60日突破点
       if (highest > dcu60 && is_pre_break_down(source.line60Cache)) {
         let point = this.markPoint(date, dcu60, '#34a853')
         source.line60Cache.push(point)
         source.dcu60Point.push(point)
       }
-      
-      if (lowest < dcl20 && is_pre_break_up(source.line60Cache)) {
+      // 60日止盈点
+      else if (lowest < dcl20 && is_pre_break_up(source.line60Cache)) {
         let point = this.markPoint(date, dcl20, '#fbbc05')
         source.line60Cache.push(point)
         source.dcl20Point.push(point)
@@ -328,6 +385,7 @@ const graphqlQuery = gql`
       dcu60
       dcl10
       dcl20
+      atr20
     }
   }
 `
