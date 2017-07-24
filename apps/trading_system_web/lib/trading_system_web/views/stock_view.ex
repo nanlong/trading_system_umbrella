@@ -4,6 +4,10 @@ defmodule TradingSystem.Web.StockView do
 
   alias TradingSystem.Stocks.Stock
 
+  @max_position 4
+  @add_step 0.5
+  @stop_step 4
+
   def to_humanize(d) do
     Timex.from_now(d, "zh_CN")
   end
@@ -18,21 +22,24 @@ defmodule TradingSystem.Web.StockView do
   def buy(buy_signal, atr, position \\ 1) do
     buy_signal = Decimal.to_float(buy_signal)
     atr = Decimal.to_float(atr)
-    (buy_signal + atr * (0.5 * (position - 1))) |> Float.round(2)
+    (buy_signal + atr * @add_step * (position - 1)) |> Float.round(2)
   end
 
   @doc """
   买入平均价
   """
+  def buy_avg(buy_signal, _atr, position) when position == 1, do: Decimal.to_float(buy_signal)
   def buy_avg(buy_signal, atr, position) do
-    (for position <- 1..position, do: buy(buy_signal, atr, position)) |> Enum.sum |> Kernel./(position) |> Float.round(2)
+    buy_signal = Decimal.to_float(buy_signal)
+    atr = Decimal.to_float(atr)
+    ((buy_signal * position + atr * @add_step * Enum.sum(1..position - 1)) / position) |> Float.round(2)
   end
 
   @doc """
   一次止损 4个ATR的损失，总账户的2%
   """
   def stop_loss(buy_signal, atr, position \\ 1) do
-    (buy_avg(buy_signal, atr, position) - Decimal.to_float(atr) * (4 / position)) |> Float.round(2)
+    (buy_avg(buy_signal, atr, position) - Decimal.to_float(atr) * (@stop_step / position)) |> Float.round(2)
   end
 
   @doc """
@@ -55,7 +62,7 @@ defmodule TradingSystem.Web.StockView do
   总成本
   """
   def all_cost(account, buy_signal, atr) do
-    (for position <- 1..4, do: unit_cost(account, buy_signal, atr, position)) 
+    (for position <- 1..@max_position, do: unit_cost(account, buy_signal, atr, position)) 
     |> Enum.sum 
     |> Float.round(2)
   end

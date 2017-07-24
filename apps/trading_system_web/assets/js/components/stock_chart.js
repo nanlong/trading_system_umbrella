@@ -1,6 +1,7 @@
 import React from 'react'
 import { gql, graphql } from 'react-apollo'
 import echarts from 'echarts'
+import { stop_loss } from '../lib/stock'
 
 
 class StockChart extends React.Component {
@@ -57,30 +58,6 @@ class StockChart extends React.Component {
         && linePoint[linePoint.length - 1].itemStyle.normal.color == '#34a853'
     }
 
-    function range(start, end) {
-      return Array(end - start + 1).fill(0).map((v, i) => i + start)
-    }
-
-    function sum(start, end) {
-      if (start > end) {
-        return 0
-      }
-      else if (start == end) {
-        return start
-      }
-      else {
-        return range(start, end).reduce((pre, cur, _index, _arr) => pre + cur)
-      }
-    }
-
-    function buy_avg(buy, atr, position) {
-      return ((buy * position) + atr * 0.5 * sum(1, position - 1)) / position
-    }
-
-    function stop_loss(buy, atr, position) {
-      return buy_avg(buy, atr, position) - atr * 4 / position
-    }
-    
     for (let i = 0; i < data.stockDailykLine.length; i++) {
       if (! data.stockDailykLine[i] || ! data.stockStateLine[i]) { break }
       const {date, open, close, highest, lowest} = data.stockDailykLine[i]
