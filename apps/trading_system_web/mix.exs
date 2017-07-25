@@ -35,7 +35,7 @@ defmodule TradingSystem.Web.Mixfile do
     [{:phoenix, "~> 1.3.0-rc"},
      {:phoenix_pubsub, "~> 1.0"},
      {:phoenix_ecto, "~> 3.2"},
-     {:phoenix_html, "~> 2.6"},
+     {:phoenix_html, "~> 2.10"},
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:trading_system, in_umbrella: true},

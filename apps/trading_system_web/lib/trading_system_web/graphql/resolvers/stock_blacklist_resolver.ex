@@ -5,7 +5,7 @@ defmodule TradingSystem.Graphql.StockBlacklistResolver do
 
   import Ecto.Query
 
-  def create(%{symbol: symbol} = attrs, _info) do
+  def create(%{symbol: symbol}, _info) do
     black = Repo.one(from b in StockBlacklist, where: [symbol: ^symbol], preload: [:stock])
 
     black =
