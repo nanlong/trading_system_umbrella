@@ -17,7 +17,7 @@
       <td><%= unit(@account, @atr) %>股</td>
       <td>$<%= unit_cost(@account, @buy_signal, @atr, position) |> float_to_string %></td>  
     </tr>
-    <%= end %>
+    <% end %>
     <tr>
       <th></th>
       <td>平均 $<%= buy_avg(@buy_signal, @atr, 4) |> float_to_string %></td>

@@ -38,6 +38,6 @@
   <div class="column">
     <%= if @account && @account > 0 do %>
       <%= render "position.html", account: @account, buy_signal: @buy_signal, atr: @atr %>
-    <%= end %>
+    <% end %>
   </div>
 </div>

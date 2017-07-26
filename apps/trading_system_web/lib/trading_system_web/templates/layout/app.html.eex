@@ -24,7 +24,7 @@
               趋势跟踪系统
               <span style="font-size: 12px;">Beta</span>
             </strong>
-          <%= end %>
+          <% end %>
           <%= link "股票列表", to: stock_path(@conn, :index), class: "navbar-item is-hidden-desktop" %>
           <%= link "计算器", to: stock_path(@conn, :counter), class: "navbar-item is-hidden-desktop", target: "_blank" %>
         </div>
