@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import StockStateList from './components/stock_state_list'
 import StockRealtime from './components/stock_realtime'
 import StockChart from './components/stock_chart'
+import StockBacklistBtn from './components/stock_backlist_btn'
 
 
 const client = new ApolloClient({
@@ -37,5 +38,14 @@ if (document.getElementById('stock-chart')) {
       <StockChart />
     </ApolloProvider>,
     document.getElementById('stock-chart'),
+  )
+}
+
+if (document.getElementById('stock-backlist-btn')) {
+  ReactDOM.render(
+    <ApolloProvider client={client}>
+      <StockBacklistBtn symbol={CONFIG['symbol']} isBlacklist={CONFIG['isBlacklist']}/>
+    </ApolloProvider>,
+    document.getElementById('stock-backlist-btn'),
   )
 }

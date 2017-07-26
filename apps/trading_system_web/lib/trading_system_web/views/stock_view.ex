@@ -2,6 +2,7 @@ defmodule TradingSystem.Web.StockView do
   use TradingSystem.Web, :view
   use Timex
 
+  alias TradingSystem.Stocks
   alias TradingSystem.Stocks.Stock
 
   @max_position 4
@@ -143,4 +144,7 @@ defmodule TradingSystem.Web.StockView do
   end
 
   def float_to_string(float), do: :erlang.float_to_binary(float, decimals: 2)
+
+  def blacklist?(symbol), do: Stocks.blacklist?(symbol)
+  
 end

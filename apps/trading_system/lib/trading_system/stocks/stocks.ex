@@ -10,7 +10,7 @@ defmodule TradingSystem.Stocks do
   alias TradingSystem.Stocks.StockDailyK
   alias TradingSystem.Stocks.Stock5MinK
   alias TradingSystem.Stocks.StockState
-
+  alias TradingSystem.Stocks.StockBlacklist
 
   def list_stock, do: Repo.all(Stock)
 
@@ -186,5 +186,12 @@ defmodule TradingSystem.Stocks do
     StockState
     |> where([s], s.symbol == ^symbol and s.date < ^date)
     |> Repo.all()
+  end
+
+  def blacklist?(symbol) do
+    case Repo.get_by(StockBlacklist, symbol: symbol) do
+      nil -> false
+      _ -> true
+    end
   end
 end

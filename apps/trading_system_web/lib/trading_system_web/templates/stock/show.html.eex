@@ -1,6 +1,7 @@
 <script>
   var CONFIG = {};
   CONFIG['symbol'] = '<%= @stock.symbol %>';
+  CONFIG['isBlacklist'] = <%= blacklist?(@stock.symbol) %>;
 </script>
 
 <div class="columns">
@@ -11,6 +12,7 @@
         <%= @stock.market %>:<%= @stock.symbol %>
       </strong>
       <span><%= @stock.name %></span>
+      <span id="stock-backlist-btn"></span>
     </div>
   </div>
 </div>
