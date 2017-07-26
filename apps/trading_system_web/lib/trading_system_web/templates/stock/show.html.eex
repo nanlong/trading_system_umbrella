@@ -12,8 +12,11 @@
         <%= @stock.market %>:<%= @stock.symbol %>
       </strong>
       <span><%= @stock.name %></span>
-      <span id="stock-backlist-btn"></span>
+      
     </div>
+  </div>
+  <div class="column" style="padding-top: 20px;"> 
+    <span id="stock-backlist-btn" class="is-pulled-right"></span>
   </div>
 </div>
 
