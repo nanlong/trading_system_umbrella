@@ -33,5 +33,15 @@ defmodule TradingSystem.Graphql.Schema do
       arg :symbol, non_null(:string)
       resolve &TradingSystem.Graphql.StockBlacklistResolver.delete/2
     end
+
+    field :create_stock_star, :stock do
+      arg :symbol, non_null(:string)
+      resolve &TradingSystem.Graphql.StockStarResolver.create/2
+    end
+
+    field :delete_stock_star, :stock do
+      arg :symbol, non_null(:string)
+      resolve &TradingSystem.Graphql.StockStarResolver.delete/2
+    end
   end
 end

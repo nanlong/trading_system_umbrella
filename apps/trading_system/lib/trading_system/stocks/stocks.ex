@@ -11,6 +11,7 @@ defmodule TradingSystem.Stocks do
   alias TradingSystem.Stocks.Stock5MinK
   alias TradingSystem.Stocks.StockState
   alias TradingSystem.Stocks.StockBlacklist
+  alias TradingSystem.Stocks.StockStar
 
   def list_stock, do: Repo.all(Stock)
 
@@ -190,6 +191,13 @@ defmodule TradingSystem.Stocks do
 
   def blacklist?(symbol) do
     case Repo.get_by(StockBlacklist, symbol: symbol) do
+      nil -> false
+      _ -> true
+    end
+  end
+
+  def star?(symbol) do
+    case Repo.get_by(StockStar, symbol: symbol) do
       nil -> false
       _ -> true
     end

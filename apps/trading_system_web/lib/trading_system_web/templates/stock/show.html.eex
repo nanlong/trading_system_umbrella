@@ -2,6 +2,7 @@
   var CONFIG = {};
   CONFIG['symbol'] = '<%= @stock.symbol %>';
   CONFIG['isBlacklist'] = <%= blacklist?(@stock.symbol) %>;
+  CONFIG['isStar'] = <%= star?(@stock.symbol) %>;
 </script>
 
 <div class="columns">
@@ -16,7 +17,8 @@
     </div>
   </div>
   <div class="column" style="padding-top: 20px;"> 
-    <span id="stock-backlist-btn" class="is-pulled-right"></span>
+    <span id="stock-star-btn" class="is-pulled-right"></span>
+    <span id="stock-backlist-btn" class="is-pulled-right" style="margin-right: 20px;"></span>
   </div>
 </div>
 

@@ -147,4 +147,5 @@ defmodule TradingSystem.Web.StockView do
 
   def blacklist?(symbol), do: Stocks.blacklist?(symbol)
   
+  def star?(symbol), do: Stocks.star?(symbol)
 end
