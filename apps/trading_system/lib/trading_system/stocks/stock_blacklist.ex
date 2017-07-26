@@ -20,5 +20,7 @@ defmodule TradingSystem.Stocks.StockBlacklist do
     stock_blacklist
     |> cast(attrs, @required_fields)
     |> validate_required(@required_fields)
+    |> unique_constraint(:symbol)
+    |> assoc_constraint(:stock)
   end
 end
