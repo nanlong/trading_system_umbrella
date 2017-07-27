@@ -1,18 +1,13 @@
 import React from 'react'
-import { ApolloClient, createNetworkInterface, ApolloProvider } from 'react-apollo'
+import { ApolloProvider } from 'react-apollo'
 import ReactDOM from 'react-dom';
+import client from './lib/client' 
 import StockStateList from './components/stock_state_list'
 import StockRealtime from './components/stock_realtime'
 import StockChart from './components/stock_chart'
 import StockBacklistBtn from './components/stock_backlist_btn'
 import StockStarBtn from './components/stock_star_btn'
-
-
-const client = new ApolloClient({
-  networkInterface: createNetworkInterface({
-    uri: '/api',
-  }),
-})
+import StockStarList from './components/stock_star_list'
 
 
 if (document.getElementById('usstock-state-list')) {
@@ -53,5 +48,14 @@ if (document.getElementById('stock-star-btn')) {
   ReactDOM.render(
     <StockStarBtn symbol={CONFIG['symbol']} isStar={CONFIG['isStar']}/>,
     document.getElementById('stock-star-btn'),
+  )
+}
+
+if (document.getElementById('stock-star-list')) {
+  ReactDOM.render(
+    <ApolloProvider client={client}>
+      <StockStarList />
+    </ApolloProvider>,
+    document.getElementById('stock-star-list'),
   )
 }

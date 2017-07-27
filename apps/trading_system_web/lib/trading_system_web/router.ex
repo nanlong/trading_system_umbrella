@@ -20,8 +20,10 @@ defmodule TradingSystem.Web.Router do
 
     resources "/stocks", StockController, param: "symbol", only: [:index, :show]
 
-    get "/counter", StockController, :counter
+    get "/counter", StockController, :new_counter
     post "/counter", StockController, :post_counter
+
+    get "/star", StockController, :star_index
   end
 
   forward "/api", Absinthe.Plug,

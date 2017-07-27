@@ -21,6 +21,10 @@ defmodule TradingSystem.Graphql.Schema do
       arg :stocks, non_null(:string), description: "股票代码，用逗号分隔"
       resolve &TradingSystem.Graphql.StockResolver.realtime/2
     end
+
+    field :stock_star, list_of(:stock_state) do
+      resolve &TradingSystem.Graphql.StockStarResolver.all/2
+    end
   end
 
   mutation do

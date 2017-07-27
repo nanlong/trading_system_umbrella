@@ -1,7 +1,24 @@
 defmodule TradingSystem.Graphql.StockStarResolver do
   alias TradingSystem.Repo
+  alias TradingSystem.Stocks
   alias TradingSystem.Stocks.StockStar
+  alias TradingSystem.Stocks.StockState
   alias TradingSystem.Graphql.ErrorHelpers
+
+  import Ecto.Query
+
+  def all(_args, _info) do
+    date = Stocks.get_stock_state_last_date()
+
+    results =
+      StockState
+      |> where([state], state.date == ^date)
+      |> join(:inner, [state], star in StockStar, star.symbol == state.symbol)
+      |> preload(:stock)
+      |> Repo.all()
+
+    {:ok, results}
+  end
 
   def create(attrs, _info) do
     changeset = StockStar.changeset(%StockStar{}, attrs)

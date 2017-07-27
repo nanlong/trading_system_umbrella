@@ -1,7 +1,7 @@
 import React from 'react'
 import { gql } from 'react-apollo'
 import { Button } from 'antd'
-import ApolloClient, { createNetworkInterface } from 'apollo-client'
+import client from '../lib/client'
 
 
 class StockBacklistBtn extends React.Component {
@@ -12,11 +12,7 @@ class StockBacklistBtn extends React.Component {
     this.createBacklist = this.createBacklist.bind(this)
     this.deleteBacklist = this.deleteBacklist.bind(this)
 
-    this.client = new ApolloClient({
-      networkInterface: createNetworkInterface({
-        uri: '/api',
-      }),
-    })
+    this.client = client
 
     this.state = {
       symbol: symbol,

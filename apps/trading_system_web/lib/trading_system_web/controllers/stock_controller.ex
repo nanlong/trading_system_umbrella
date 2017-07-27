@@ -23,7 +23,7 @@ defmodule TradingSystem.Web.StockController do
     |> render(:show)
   end
 
-  def counter(conn, _params) do
+  def new_counter(conn, _params) do
     conn
     |> assign(:title, "计算器")
     |> assign(:account, nil)
@@ -42,5 +42,11 @@ defmodule TradingSystem.Web.StockController do
     |> assign(:buy_signal, buy_signal)
     |> assign(:atr, atr)
     |> render(:counter)
+  end
+
+  def star_index(conn, _params) do
+    conn
+    |> assign(:title, "关注列表")
+    |> render(:star_index)
   end
 end

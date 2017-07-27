@@ -1,7 +1,7 @@
 import React from 'react'
 import { gql } from 'react-apollo'
 import { Button } from 'antd'
-import ApolloClient, { createNetworkInterface } from 'apollo-client'
+import client from '../lib/client'
 
 
 class StockStarBtn extends React.Component {
@@ -12,11 +12,7 @@ class StockStarBtn extends React.Component {
     this.createStar = this.createStar.bind(this)
     this.deleteStar = this.deleteStar.bind(this)
 
-    this.client = new ApolloClient({
-      networkInterface: createNetworkInterface({
-        uri: '/api',
-      }),
-    })
+    this.client = client
 
     this.state = {
       symbol: symbol,
