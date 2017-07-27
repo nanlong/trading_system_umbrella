@@ -158,7 +158,7 @@ class StockChart extends React.Component {
         }
       },
       dataZoom: {
-        start: (1 - 80 / data.categoryData.length) * 100,
+        start: (1 - 120 / data.categoryData.length) * 100,
         end: 100
       },
       series: [
