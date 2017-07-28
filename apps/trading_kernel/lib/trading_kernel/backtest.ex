@@ -8,7 +8,7 @@ defmodule TradingKernel.Backtest do
 
   def run(symbol, options \\ []) do
     config = %{
-      account: Keyword.get(options, :account, 100000),
+      account: Keyword.get(options, :account, 1000000),
       max_position: Keyword.get(options, :max_position, 4),
       add_step: Keyword.get(options, :add_step, 0.5),
       stop_step: Keyword.get(options, :stop_step, 4)
@@ -18,10 +18,14 @@ defmodule TradingKernel.Backtest do
     state = Stocks.list_stock_state(symbol: symbol)
     # 读取日线数据
     dailyk = Stocks.list_stock_dailyk(symbol: symbol)
+    if length(dailyk) < 300 do
+      IO.puts "数据不足，跳过"
+    else
+      start_index = Enum.find_index(dailyk, fn x -> Date.compare(x.date, ~D[2016-07-28]) == :gt end)
+      data = Enum.zip(dailyk, state) |> Enum.slice(start_index..-1)
 
-    data = Enum.zip(dailyk, state) |> Enum.slice(300..-1)
-
-    run(data, config, %{})
+      run(data, config, %{})
+    end
   end
 
   def run([], config, %{position: position} = status) when position > 0 do
@@ -49,7 +53,7 @@ defmodule TradingKernel.Backtest do
     status =
       cond do
         is_create_position?(dailyk, state, status) ->
-          IO.inspect "#{dailyk.date} 建仓"
+          # IO.inspect "#{dailyk.date} 建仓"
           begin_date = Map.get(status, :begin_date, state.date)
           account = Map.get(status, :account, config.account)
           atr = D.to_float(state.atr20)
@@ -67,10 +71,9 @@ defmodule TradingKernel.Backtest do
           |> Map.put(:stop_loss, Common.stop_loss(buy, atr, position, config.add_step, config.stop_step))
           |> Map.put(:init_account, account)
           |> Map.put(:account, account - Common.unit_cost(account, buy, atr, position, config.add_step))
-          |> IO.inspect
 
         is_add_position?(dailyk, status, config) ->
-          IO.inspect "#{dailyk.date} 加仓"
+          # IO.inspect "#{dailyk.date} 加仓"
           init_account = Map.get(status, :init_account)
           account = Map.get(status, :account, 0)
           buy = Map.get(status, :buy, 0)
@@ -81,25 +84,22 @@ defmodule TradingKernel.Backtest do
           |> Map.put(:position, position)
           |> Map.put(:stop_loss, Common.stop_loss(buy, atr, position, config.add_step, config.stop_step))
           |> Map.put(:account, account - Common.unit_cost(init_account, buy, atr, position, config.add_step))
-          |> IO.inspect
 
         is_stop_loss?(dailyk, status) ->
-          IO.inspect "#{dailyk.date} 止损, 卖出价格: #{Map.get(status, :stop_loss)}"
+          # IO.inspect "#{dailyk.date} 止损, 卖出价格: #{Map.get(status, :stop_loss)}"
           sell = (Map.get(status, :stop_loss) * Map.get(status, :unit) * Map.get(status, :position)) |> Float.round(2)
           
           status
           |> Map.put(:position, 0)
           |> Map.update!(:account, &(&1 + sell))
-          |> IO.inspect
         
         is_stop_profit?(dailyk, state, status) ->
-          IO.inspect "#{dailyk.date} 止盈, 卖出价格：#{state.dcl10}"
+          # IO.inspect "#{dailyk.date} 止盈, 卖出价格：#{state.dcl10}"
           sell = (D.to_float(state.dcl10) * Map.get(status, :unit) * Map.get(status, :position)) |> Float.round(2)
 
           status
           |> Map.put(:position, 0)
           |> Map.update!(:account, &(&1 + sell))
-          |> IO.inspect
 
         true ->
           status
@@ -124,8 +124,7 @@ defmodule TradingKernel.Backtest do
 
     position > 0 and
     position < config.max_position and
-    status.account > Common.unit_cost(init_account, buy, atr, position + 1, config.add_step) and
-    D.to_float(dailyk.lowest) < break and
+    account > Common.unit_cost(init_account, buy, atr, position + 1, config.add_step) and
     D.to_float(dailyk.highest) > break
   end
 
