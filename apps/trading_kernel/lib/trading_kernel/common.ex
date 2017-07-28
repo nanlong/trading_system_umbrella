@@ -127,7 +127,7 @@ defmodule TradingKernel.Common do
     (buy_avg(buy_signal, atr, position, add_step) - atr * (stop_step / position)) |> Float.round(2)
   end
 
-  def unit_cost(account, buy_signal, atr, position) do
-    (unit(account, atr) * buy(buy_signal, atr, position)) |> Float.round(2)
+  def unit_cost(account, buy_signal, atr, position, add_step) do
+    (unit(account, atr) * buy(buy_signal, atr, position, add_step)) |> Float.round(2)
   end
 end

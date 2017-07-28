@@ -37,9 +37,13 @@ defmodule TradingKernel.Backtest do
     IO.puts "初始资金 #{config.account}"
     IO.puts "盈利 #{Float.round(now_account - config.account, 2)}"
   end
-  def run([], _config, status) do
+  def run([], config, status) do
+    begin_date = Map.get(status, :begin_date)
+    symbol = Map.get(status, :symbol)
 
-    IO.inspect status.init_account
+    IO.puts "#{begin_date} 开始交易股票 #{symbol}"
+    IO.puts "初始资金 #{config.account}"
+    IO.puts "盈利 #{Float.round(status.account - config.account, 2)}"
   end
   def run([{dailyk, state} | rest], config, status) do
     status =
@@ -62,7 +66,7 @@ defmodule TradingKernel.Backtest do
           |> Map.put(:buy, buy)
           |> Map.put(:stop_loss, Common.stop_loss(buy, atr, position, config.add_step, config.stop_step))
           |> Map.put(:init_account, account)
-          |> Map.put(:account, account - Common.unit_cost(account, buy, atr, position))
+          |> Map.put(:account, account - Common.unit_cost(account, buy, atr, position, config.add_step))
           |> IO.inspect
 
         is_add_position?(dailyk, status, config) ->
@@ -76,7 +80,7 @@ defmodule TradingKernel.Backtest do
           status
           |> Map.put(:position, position)
           |> Map.put(:stop_loss, Common.stop_loss(buy, atr, position, config.add_step, config.stop_step))
-          |> Map.put(:account, account - Common.unit_cost(init_account, buy, atr, position))
+          |> Map.put(:account, account - Common.unit_cost(init_account, buy, atr, position, config.add_step))
           |> IO.inspect
 
         is_stop_loss?(dailyk, status) ->
@@ -111,15 +115,18 @@ defmodule TradingKernel.Backtest do
   end
 
   defp is_add_position?(dailyk, status, config) do
+    init_account = Map.get(status, :init_account)
     account = Map.get(status, :account, 0)
     buy = Map.get(status, :buy, 0)
     atr = Map.get(status, :atr, 0)
     position = Map.get(status, :position, 0)
+    break = Common.buy(buy, atr, position + 1, config.add_step)
 
     position > 0 and
     position < config.max_position and
-    status.account > Common.unit_cost(account, buy, atr, position + 1) and
-    D.to_float(dailyk.highest) > Common.buy(buy, atr, position + 1, config.add_step)
+    status.account > Common.unit_cost(init_account, buy, atr, position + 1, config.add_step) and
+    D.to_float(dailyk.lowest) < break and
+    D.to_float(dailyk.highest) > break
   end
 
   defp is_stop_loss?(dailyk, status) do
