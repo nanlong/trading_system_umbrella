@@ -114,20 +114,73 @@ defmodule TradingKernel.Common do
     |> Decimal.round(2)
   end
 
+  @doc """
+  买入价
+
+  ## Example:
+    iex> buy_signal = 165.12
+    iex> atr = 3.53
+    iex> TradingKernel.Common.buy(buy_signal, atr)
+    165.12
+    iex> TradingKernel.Common.buy(buy_signal, atr, 2)
+    166.88
+    iex> TradingKernel.Common.buy(buy_signal, atr, 2, 1)
+    168.65
+  """
   def buy(buy_signal, atr, position \\ 1, step \\ 0.5) do
     (buy_signal + atr * step * (position - 1)) |> Float.round(2)
   end
 
+  @doc """
+  买入平均价
+
+  ## Example:
+    iex> buy_signal = 165.12
+    iex> atr = 3.53
+    iex> TradingKernel.Common.buy_avg(buy_signal, atr)
+    165.12
+    iex> TradingKernel.Common.buy_avg(buy_signal, atr, 2)
+    166.0
+    iex> TradingKernel.Common.buy_avg(buy_signal, atr, 2, 1)
+    166.88
+  """
+  def buy_avg(buy_signal, atr, position \\ 1, step \\ 0.5)
   def buy_avg(buy_signal, _atr, position, _step) when position == 1, do: buy_signal
   def buy_avg(buy_signal, atr, position, step) do
     ((buy_signal * position + atr * step * Enum.sum(1..position - 1)) / position) |> Float.round(2)
   end
 
-  def stop_loss(buy_signal, atr, position, add_step, stop_step) do
+  @doc """
+  止损价
+
+  ## Example:
+    iex> buy_signal = 165.12
+    iex> atr = 3.53
+    iex> TradingKernel.Common.stop_loss(buy_signal, atr)
+    151.0
+    iex> TradingKernel.Common.stop_loss(buy_signal, atr, 2)
+    158.94
+    iex> TradingKernel.Common.stop_loss(buy_signal, atr, 2, 0.5, 2)
+    162.47
+  """
+  def stop_loss(buy_signal, atr, position \\ 1, add_step \\ 0.5, stop_step \\ 4) do
     (buy_avg(buy_signal, atr, position, add_step) - atr * (stop_step / position)) |> Float.round(2)
   end
 
-  def unit_cost(account, buy_signal, atr, position, add_step) do
+
+  @doc """
+  单位价值
+
+  ## Example:
+    iex> account = 100000
+    iex> buy_signal = 165.12
+    iex> atr = 3.53
+    iex> TradingKernel.Common.unit_cost(account, buy_signal, atr)
+    23447.04
+    iex> TradingKernel.Common.unit_cost(account, buy_signal, atr, 2)
+    23696.96
+  """
+  def unit_cost(account, buy_signal, atr, position \\ 1, add_step \\ 0.5) do
     (unit(account, atr) * buy(buy_signal, atr, position, add_step)) |> Float.round(2)
   end
 end

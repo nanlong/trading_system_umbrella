@@ -37,7 +37,8 @@ defmodule TradingSystem.Web.StockView do
   def buy(buy_signal, atr, position \\ 1) do
     buy_signal = Decimal.to_float(buy_signal)
     atr = Decimal.to_float(atr)
-    (buy_signal + atr * @add_step * (position - 1)) |> Float.round(2)
+
+    TradingKernel.Common.buy(buy_signal, atr, position, @add_step)
   end
 
   @doc """
@@ -57,11 +58,11 @@ defmodule TradingSystem.Web.StockView do
     iex> StockView.buy_avg(buy_signal, atr, 4)
     171.56
   """
-  def buy_avg(buy_signal, _atr, position) when position == 1, do: Decimal.to_float(buy_signal)
   def buy_avg(buy_signal, atr, position) do
     buy_signal = Decimal.to_float(buy_signal)
     atr = Decimal.to_float(atr)
-    ((buy_signal * position + atr * @add_step * Enum.sum(1..position - 1)) / position) |> Float.round(2)
+
+    TradingKernel.Common.buy_avg(buy_signal, atr, position, @add_step)
   end
 
   @doc """
@@ -82,7 +83,10 @@ defmodule TradingSystem.Web.StockView do
     166.16
   """
   def stop_loss(buy_signal, atr, position \\ 1) do
-    (buy_avg(buy_signal, atr, position) - Decimal.to_float(atr) * (@stop_step / position)) |> Float.round(2)
+    buy_signal = Decimal.to_float(buy_signal)
+    atr = Decimal.to_float(atr)
+
+    TradingKernel.Common.stop_loss(buy_signal, atr, position, @add_step, @stop_step)
   end
 
   @doc """
@@ -100,6 +104,7 @@ defmodule TradingSystem.Web.StockView do
   def unit(account, _atr) when account <= 0, do: 0
   def unit(account, atr) do
     atr = Decimal.to_float(atr)
+    
     TradingKernel.Common.unit(account, atr)
   end
 
@@ -122,7 +127,10 @@ defmodule TradingSystem.Web.StockView do
     16331.73
   """
   def unit_cost(account, buy_signal, atr, position \\ 1) do
-    (unit(account, atr) * buy(buy_signal, atr, position)) |> Float.round(2)
+    buy_signal = Decimal.to_float(buy_signal)
+    atr = Decimal.to_float(atr)
+
+    TradingKernel.Common.unit_cost(account, buy_signal, atr, position, @add_step)
   end
 
   @doc """
