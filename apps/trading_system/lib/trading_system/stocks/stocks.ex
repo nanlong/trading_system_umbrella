@@ -29,12 +29,15 @@ defmodule TradingSystem.Stocks do
 
 
   def list_stock_dailyk, do: Repo.all(StockDailyK)
+  def list_stock_dailyk(symbol: symbol), do: list_stock_dailyk(symbol)
   def list_stock_dailyk(symbol) do
     StockDailyK
     |> where([k], k.symbol == ^symbol)
     |> order_by(asc: :inserted_at)
     |> Repo.all()
   end
+
+  
 
   def history_stock_dailyk(%{symbol: symbol, date: date} = dailyk) do
     StockDailyK

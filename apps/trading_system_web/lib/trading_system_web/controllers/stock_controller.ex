@@ -35,10 +35,12 @@ defmodule TradingSystem.Web.StockController do
   def post_counter(conn, %{"account" => account, "buy" => buy, "atr" => atr}) do
     buy_signal = Decimal.new(buy)
     atr = Decimal.new(atr)
+    IO.inspect account
+    {account, _} = Float.parse(account)
 
     conn
     |> assign(:title, "计算器")
-    |> assign(:account, String.to_integer(account))
+    |> assign(:account, account)
     |> assign(:buy_signal, buy_signal)
     |> assign(:atr, atr)
     |> render(:counter)

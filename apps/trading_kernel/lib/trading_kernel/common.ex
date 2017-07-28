@@ -63,9 +63,9 @@ defmodule TradingKernel.Common do
     iex> TradingKernel.Common.unit(10000, 1.35)
     37
   """
-  @spec unit(integer, float) :: integer
-  def unit(account, atr) do
-    (account * 0.005 / atr) |> round()
+  @spec unit(integer, float, float) :: integer
+  def unit(account, atr, percent \\ 0.5) do
+    (account * percent / 100 / atr ) |> round()
   end
 
   @doc """
@@ -112,5 +112,22 @@ defmodule TradingKernel.Common do
     |> Decimal.div(Decimal.new(2))
     |> Decimal.add(lowest)
     |> Decimal.round(2)
+  end
+
+  def buy(buy_signal, atr, position \\ 1, step \\ 0.5) do
+    (buy_signal + atr * step * (position - 1)) |> Float.round(2)
+  end
+
+  def buy_avg(buy_signal, _atr, position, _step) when position == 1, do: buy_signal
+  def buy_avg(buy_signal, atr, position, step) do
+    ((buy_signal * position + atr * step * Enum.sum(1..position - 1)) / position) |> Float.round(2)
+  end
+
+  def stop_loss(buy_signal, atr, position, add_step, stop_step) do
+    (buy_avg(buy_signal, atr, position, add_step) - atr * (stop_step / position)) |> Float.round(2)
+  end
+
+  def unit_cost(account, buy_signal, atr, position) do
+    (unit(account, atr) * buy(buy_signal, atr, position)) |> Float.round(2)
   end
 end

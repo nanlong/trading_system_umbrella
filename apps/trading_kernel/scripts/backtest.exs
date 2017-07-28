@@ -1,0 +1,1 @@
+TradingKernel.Backtest.run(System.get_env("SYMBOL") || "BABA")
