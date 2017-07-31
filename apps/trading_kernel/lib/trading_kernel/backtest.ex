@@ -5,10 +5,11 @@ defmodule TradingKernel.Backtest do
   alias TradingKernel.Common
   alias TradingSystem.Stocks
   alias Decimal, as: D
+  import Logger
 
   def run(symbol, options \\ []) do
     config = %{
-      account: Keyword.get(options, :account, 1000000),
+      account: Keyword.get(options, :account, 10000),
       max_position: Keyword.get(options, :max_position, 4),
       add_step: Keyword.get(options, :add_step, 0.5),
       stop_step: Keyword.get(options, :stop_step, 4)
@@ -19,7 +20,8 @@ defmodule TradingKernel.Backtest do
     # 读取日线数据
     dailyk = Stocks.list_stock_dailyk(symbol: symbol)
     if length(dailyk) < 300 do
-      IO.puts "数据不足，跳过"
+      Logger.info "股票 #{symbol} 数据不足，跳过"
+      %{symbol: symbol, begin_date: nil, account: config.account, profit: 0}
     else
       start_index = Enum.find_index(dailyk, fn x -> Date.compare(x.date, ~D[2016-07-28]) == :gt end)
       data = Enum.zip(dailyk, state) |> Enum.slice(start_index..-1)
@@ -37,17 +39,23 @@ defmodule TradingKernel.Backtest do
     position = Map.get(status, :position, 0)
     now_account = (status.account + Common.buy_avg(buy, atr, position, config.add_step) * unit * position) |> Float.round(2) 
 
-    IO.puts "#{begin_date} 开始交易股票 #{symbol}"
-    IO.puts "初始资金 #{config.account}"
-    IO.puts "盈利 #{Float.round(now_account - config.account, 2)}"
+    %{
+      symbol: symbol,
+      begin_date: begin_date,
+      account: config.account,
+      profit: Float.round(now_account - config.account, 2)
+    }
   end
   def run([], config, status) do
     begin_date = Map.get(status, :begin_date)
     symbol = Map.get(status, :symbol)
 
-    IO.puts "#{begin_date} 开始交易股票 #{symbol}"
-    IO.puts "初始资金 #{config.account}"
-    IO.puts "盈利 #{Float.round(status.account - config.account, 2)}"
+    %{
+      symbol: symbol,
+      begin_date: begin_date,
+      account: config.account,
+      profit: Float.round(status.account - config.account, 2)
+    }
   end
   def run([{dailyk, state} | rest], config, status) do
     status =
