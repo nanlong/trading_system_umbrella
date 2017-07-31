@@ -14,8 +14,11 @@ results =
 
 IO.inspect Enum.sort(results, &(&1.profit < &2.profit)), limit: 100
 
-Logger.info "最小盈利: #{inspect(Enum.min_by(results, fn x -> x.profit end))}"
-Logger.info "最大盈利: #{inspect(Enum.max_by(results, fn x -> x.profit end))}"
+min_stock = Enum.min_by(results, fn x -> x.profit end)
+max_stock = Enum.max_by(results, fn x -> x.profit end)
+
+Logger.info "最小盈利: #{inspect(min_stock)}"
+Logger.info "最大盈利: #{inspect(max_stock)}"
 
 Logger.info "回测结束"
 
