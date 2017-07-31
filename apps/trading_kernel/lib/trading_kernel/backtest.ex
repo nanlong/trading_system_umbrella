@@ -9,6 +9,7 @@ defmodule TradingKernel.Backtest do
 
   def run(symbol, options \\ []) do
     config = %{
+      begin_date: Keyword.get(options, :begin_date, ~D[2000-07-28]),
       account: Keyword.get(options, :account, 10000),
       max_position: Keyword.get(options, :max_position, 4),
       add_step: Keyword.get(options, :add_step, 0.5),
@@ -23,7 +24,7 @@ defmodule TradingKernel.Backtest do
       Logger.info "股票 #{symbol} 数据不足，跳过"
       %{symbol: symbol, begin_date: nil, account: config.account, profit: 0}
     else
-      start_index = Enum.find_index(dailyk, fn x -> Date.compare(x.date, ~D[2016-07-28]) == :gt end)
+      start_index = Enum.find_index(dailyk, fn x -> Date.compare(x.date, config.begin_date) == :gt end)
       data = Enum.zip(dailyk, state) |> Enum.slice(start_index..-1)
 
       run(data, config, %{}, {})
@@ -84,6 +85,7 @@ defmodule TradingKernel.Backtest do
             |> Map.put(:stop_loss, Common.stop_loss(buy, atr, position, config.add_step, config.stop_step))
             |> Map.put(:init_account, account)
             |> Map.put(:account, surplus)
+            
 
           history = Tuple.append(history, %{
             date: state.date,
@@ -92,7 +94,8 @@ defmodule TradingKernel.Backtest do
             account: surplus,
             price: buy,
             unit: unit,
-            position: position
+            position: position,
+            market_cap: market_cap(dailyk.close, unit * position),
           })
 
           {status, history}
@@ -104,6 +107,7 @@ defmodule TradingKernel.Backtest do
           buy = Map.get(status, :buy, 0)
           atr = Map.get(status, :atr, 0)
           position = Map.get(status, :position, 0) + 1
+          unit = Map.get(status, :unit)
           surplus = (account - Common.unit_cost(init_account, buy, atr, position, config.add_step)) |> Float.round
 
           status =
@@ -119,7 +123,8 @@ defmodule TradingKernel.Backtest do
             account: surplus,
             price: Common.buy(buy, atr, position, config.add_step),
             unit: Map.get(status, :unit),
-            position: position
+            position: position,
+            market_cap: market_cap(dailyk.close, unit * position),
           })
 
           {status, history}
@@ -129,6 +134,11 @@ defmodule TradingKernel.Backtest do
           sell = (Map.get(status, :stop_loss) * Map.get(status, :unit) * Map.get(status, :position)) |> Float.round(2)
           surplus = (Map.get(status, :account) + sell) |> Float.round
 
+          status =
+            status
+            |> Map.put(:position, 0)
+            |> Map.put(:account, surplus)
+
           history = Tuple.append(history, %{
             date: state.date,
             action: "stop loss",
@@ -136,13 +146,9 @@ defmodule TradingKernel.Backtest do
             account: surplus,
             price: Map.get(status, :stop_loss),
             unit: Map.get(status, :unit),
-            position: Map.get(status, :position)
+            position: Map.get(status, :position),
+            market_cap: 0,
           })
-
-          status =
-            status
-            |> Map.put(:position, 0)
-            |> Map.put(:account, surplus)
 
           {status, history}
           
@@ -151,6 +157,11 @@ defmodule TradingKernel.Backtest do
           sell = (D.to_float(state.dcl10) * Map.get(status, :unit) * Map.get(status, :position)) |> Float.round(2)
           surplus = (Map.get(status, :account) + sell) |> Float.round
 
+          status = 
+            status
+            |> Map.put(:position, 0)
+            |> Map.put(:account, surplus)
+
           history = Tuple.append(history, %{
             date: state.date,
             action: "stop profit",
@@ -158,21 +169,36 @@ defmodule TradingKernel.Backtest do
             account: surplus,
             price: D.to_float(state.dcl10),
             unit: Map.get(status, :unit),
-            position: Map.get(status, :position)
+            position: Map.get(status, :position),
+            market_cap: 0
           })
-
-          status = 
-            status
-            |> Map.put(:position, 0)
-            |> Map.put(:account, surplus)
 
           {status, history}
 
         true ->
+          init_history_item = %{
+            date: state.date,
+            action: "empty",
+            init_account: config.account,
+            account: config.account,
+            price: 0,
+            unit: 0,
+            position: 0,
+            market_cap: 0
+          }
+
+          history_item = if tuple_size(history) > 0, do: elem(history, tuple_size(history) - 1), else: init_history_item
+          history_item = Map.put(history_item, :market_cap, market_cap(dailyk.close, Map.get(status, :position, 0) * Map.get(status, :unit, 0)))
+
+          history = Tuple.append(history, history_item)
           {status, history}
       end
 
     run(rest, config, status, history)
+  end
+
+  defp market_cap(price, amount) do
+    D.to_float(price) * amount |> Float.round(2)
   end
 
   defp is_create_position?(dailyk, state, status) do

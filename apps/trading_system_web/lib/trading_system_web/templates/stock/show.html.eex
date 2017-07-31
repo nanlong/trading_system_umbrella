@@ -13,7 +13,7 @@
         <%= @stock.market %>:<%= @stock.symbol %>
       </strong>
       <span><%= @stock.name %></span>
-      
+      <%= link "回测", to: stock_path(@conn, :backtest, @stock.symbol) %>
     </div>
   </div>
   <div class="column" style="padding-top: 20px;"> 

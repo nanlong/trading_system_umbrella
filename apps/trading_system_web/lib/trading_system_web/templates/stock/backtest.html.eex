@@ -1,0 +1,6 @@
+<script>
+  var CONFIG = {};
+  CONFIG['symbol'] = '<%= @symbol %>';
+</script>
+
+<div id="stock-backtest"></div>

@@ -96,4 +96,16 @@ defmodule TradingSystem.Graphql.Types do
     field :price, :decimal
     field :random, :integer
   end
+
+  @desc "回测"
+  object :stock_backtest do
+    field :date, :string
+    field :init_account, :float
+    field :account, :float
+    field :action, :string
+    field :price, :float
+    field :unit, :integer
+    field :position, :integer
+    field :market_cap, :float
+  end
 end

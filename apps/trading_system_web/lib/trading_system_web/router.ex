@@ -24,6 +24,8 @@ defmodule TradingSystem.Web.Router do
     post "/counter", StockController, :post_counter
 
     get "/star", StockController, :star_index
+
+    get "/stocks/:symbol/backtest", StockController, :backtest
   end
 
   forward "/api", Absinthe.Plug,

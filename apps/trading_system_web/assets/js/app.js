@@ -8,6 +8,7 @@ import StockChart from './components/stock_chart'
 import StockBacklistBtn from './components/stock_backlist_btn'
 import StockStarBtn from './components/stock_star_btn'
 import StockStarList from './components/stock_star_list'
+import StockBacktest from './components/stock_backtest'
 
 
 if (document.getElementById('usstock-state-list')) {
@@ -57,5 +58,14 @@ if (document.getElementById('stock-star-list')) {
       <StockStarList />
     </ApolloProvider>,
     document.getElementById('stock-star-list'),
+  )
+}
+
+if (document.getElementById('stock-backtest')) {
+  ReactDOM.render(
+    <ApolloProvider client={client}>
+      <StockBacktest />
+    </ApolloProvider>,
+    document.getElementById('stock-backtest'),
   )
 }
