@@ -9,7 +9,7 @@ defmodule TradingKernel.Backtest do
 
   def run(symbol, options \\ []) do
     config = %{
-      begin_date: Keyword.get(options, :begin_date, ~D[2000-07-28]),
+      begin_date: Keyword.get(options, :begin_date, Timex.shift(DateTime.utc_now(), years: -3) |> Timex.to_date),
       account: Keyword.get(options, :account, 10000),
       max_position: Keyword.get(options, :max_position, 4),
       add_step: Keyword.get(options, :add_step, 0.5),

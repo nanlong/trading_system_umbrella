@@ -4,6 +4,18 @@ import echarts from 'echarts'
 
 class StockBacktest extends React.Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      data: {
+        xAxisData: [],
+        position: [],
+        account: [],
+      },
+      yearYieldRate: 0
+    }
+  }
+
   dataHandler(data) {
     let source = {
       xAxisData: [],
@@ -15,17 +27,32 @@ class StockBacktest extends React.Component {
       let item = data.stockBacktest[i]
       source.xAxisData.push(item.date)
       source.position.push(item.position * item.unit)
-      source.account.push(((item.account + item.marketCap) - 10000) / 10000 )
+      source.account.push(Math.ceil((item.account + item.marketCap - 10000) / 10000 * 1000) / 1000)
     }
-    console.log(source)
 
+    console.log(source.account)
     return source
   }
 
   setChartOption(data) {
     return {
+      tooltip: {
+        trigger: 'axis',
+        position: function (pt) {
+          return [pt[0], '10%'];
+        }
+      },
       legend: {
         data: ['累计收益率']
+      },
+      toolbox: {
+        feature: {
+          dataZoom: {
+            yAxisIndex: 'none'
+          },
+          restore: {},
+          saveAsImage: {}
+        }
       },
       xAxis: {
         type: 'category',
@@ -46,17 +73,61 @@ class StockBacktest extends React.Component {
     }
   }
 
+  dateDiff(date1, date2, type) {
+    date1 = typeof date1 == 'string' ? new Date(date1) : date1;
+    date1 = date1.getTime();
+    date2 = typeof date2 == 'string' ? new Date(date2) : date2;
+    date2 = date2.getTime();
+    type = type || 'year';
+
+    var diffValue = Math.abs(date2 - date1);
+
+    var second = 1000,
+      minute = second * 60,
+      hour = minute * 60,
+      day = hour * 24,
+      month = day * 30,
+      year = month * 12
+
+    var timeType = {
+      second: second,
+      minute: minute,
+      hour: hour,
+      day: day,
+      month: month,
+      year: year
+    }
+    
+    return Math.ceil(diffValue / timeType[type] * 100) / 100
+  }
+
+  yearYieldRate(data) {
+    const years = this.dateDiff(data.xAxisData[0], data.xAxisData[data.xAxisData.length - 1])
+    const yieldRate = data.account[data.account.length - 1]
+    return Math.ceil(yieldRate / years * 10000) / 100
+  }
+
   componentDidUpdate() {
     const data = this.dataHandler(this.props.data)
     const chart = echarts.init(this.refs.stockPosition)
     const options = this.setChartOption(data)
+    const years = this.dateDiff(data.xAxisData[0], data.xAxisData[data.xAxisData.length - 1])
+
+    this.refs.yearYieldRate.innerText = `年化收益率: ${this.yearYieldRate(data)}%`
+
     chart.setOption(options)
   }
 
   render() {
+
+
+    
     return (
       <div className="columns">
         <div className="column">
+          <div>
+            <span ref="yearYieldRate"></span>
+          </div>
           <div ref="stockPosition" style={{width: '100%', height: '500px'}}></div>
         </div>
 
