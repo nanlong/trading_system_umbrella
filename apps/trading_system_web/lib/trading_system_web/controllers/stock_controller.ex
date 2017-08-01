@@ -51,11 +51,4 @@ defmodule TradingSystem.Web.StockController do
     |> assign(:title, "关注列表")
     |> render(:star_index)
   end
-
-  def backtest(conn, %{"symbol" => symbol}) do
-    conn
-    |> assign(:title, "回测")
-    |> assign(:symbol, symbol)
-    |> render(:backtest)
-  end
 end

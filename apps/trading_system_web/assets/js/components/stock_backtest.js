@@ -4,18 +4,6 @@ import echarts from 'echarts'
 
 class StockBacktest extends React.Component {
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      data: {
-        xAxisData: [],
-        position: [],
-        account: [],
-      },
-      yearYieldRate: 0
-    }
-  }
-
   dataHandler(data) {
     let source = {
       xAxisData: [],
@@ -109,7 +97,7 @@ class StockBacktest extends React.Component {
 
   componentDidUpdate() {
     const data = this.dataHandler(this.props.data)
-    const chart = echarts.init(this.refs.stockPosition)
+    const chart = echarts.init(this.refs.stockBacktest)
     const options = this.setChartOption(data)
     const years = this.dateDiff(data.xAxisData[0], data.xAxisData[data.xAxisData.length - 1])
 
@@ -119,19 +107,12 @@ class StockBacktest extends React.Component {
   }
 
   render() {
-
-
-    
     return (
-      <div className="columns">
-        <div className="column">
-          <div>
-            <span ref="yearYieldRate"></span>
-          </div>
-          <div ref="stockPosition" style={{width: '100%', height: '500px'}}></div>
-        </div>
-
+      <div>
+        <div><span ref="yearYieldRate"></span></div>
+        <div ref="stockBacktest" style={{width: '100%', height: '500px'}}></div>
       </div>
+      
     )
   }
 }

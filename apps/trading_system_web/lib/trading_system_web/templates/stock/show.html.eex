@@ -13,7 +13,6 @@
         <%= @stock.market %>:<%= @stock.symbol %>
       </strong>
       <span><%= @stock.name %></span>
-      <%= link "回测", to: stock_path(@conn, :backtest, @stock.symbol) %>
     </div>
   </div>
   <div class="column" style="padding-top: 20px;"> 
@@ -31,6 +30,12 @@
   <div class="column is-3">
     <!-- React Component: StockRealtime  -->
     <div id="stock-realtime"></div>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column">
+    <div id="stock-backtest"></div>
   </div>
 </div>
 
