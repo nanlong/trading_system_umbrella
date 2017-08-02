@@ -24,6 +24,12 @@ class StockBacktest extends React.Component {
 
   setChartOption(data) {
     return {
+      grid: {
+        top: '8%',
+        left: '5%',
+        right: '2%',
+        bottom: '5%'
+      },
       tooltip: {
         trigger: 'axis',
         position: function (pt) {
