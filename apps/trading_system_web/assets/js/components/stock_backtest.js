@@ -25,10 +25,10 @@ class StockBacktest extends React.Component {
   setChartOption(data) {
     return {
       grid: {
-        top: '8%',
+        top: '10%',
         left: '5%',
         right: '2%',
-        bottom: '5%'
+        bottom: '10%'
       },
       tooltip: {
         trigger: 'axis',
@@ -116,7 +116,7 @@ class StockBacktest extends React.Component {
     return (
       <div>
         <div><span ref="yearYieldRate"></span></div>
-        <div ref="stockBacktest" style={{width: '100%', height: '500px'}}></div>
+        <div ref="stockBacktest" style={{width: '100%', height: '360px'}}></div>
       </div>
       
     )
