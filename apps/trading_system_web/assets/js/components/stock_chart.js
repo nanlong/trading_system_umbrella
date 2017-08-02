@@ -32,6 +32,8 @@ class StockChart extends React.Component {
       ma10Data: [],
       ma20Data: [],
       ma30Data: [],
+      ma50Data: [],
+      ma300Data: [],
       dcu20Data: [],
       dcu60Data: [],
       dcl10Data: [],
@@ -61,13 +63,15 @@ class StockChart extends React.Component {
     for (let i = 0; i < data.stockDailykLine.length; i++) {
       if (! data.stockDailykLine[i] || ! data.stockStateLine[i]) { break }
       const {date, open, close, highest, lowest} = data.stockDailykLine[i]
-      const {ma5, ma10, ma20, ma30, dcu60, dcu20, dcl20, dcl10, atr20} = data.stockStateLine[i]
+      const {ma5, ma10, ma20, ma30, ma50, ma300, dcu60, dcu20, dcl20, dcl10, atr20} = data.stockStateLine[i]
       source.categoryData.push(date)
       source.dailykData.push([open, close, lowest, highest])
       source.ma5Data.push(ma5)
       source.ma10Data.push(ma10)
       source.ma20Data.push(ma20)
       source.ma30Data.push(ma30)
+      source.ma50Data.push(ma50)
+      source.ma300Data.push(ma300)
       source.dcu60Data.push(dcu60)
       source.dcu20Data.push(dcu20)
       source.dcl20Data.push(dcl20)
@@ -140,27 +144,57 @@ class StockChart extends React.Component {
         data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30', '20日最高', '10日最低', '60日最高', '20日最低'],
         selected: {'60日最高': false, '20日最低': false}
       },
-      grid: {
-        top: '8%',
-        left: '5%',
-        right: '5%',
-        bottom: '18%'
-      },
-      xAxis: {
-        type: 'category',
-        data: data.categoryData,
-        axisLine: { lineStyle: { color: '#8392A5' } }
-      },
-      yAxis: {
-        scale: true,
-        splitArea: {
-          show: true
+      grid: [
+        {
+          top: '8%',
+          left: '5%',
+          right: '5%',
+          bottom: '25%'
+        },
+        {
+          left: '5%',
+          right: '5%',
+          top: '82%',
+          height: '8%'
         }
-      },
-      dataZoom: {
-        start: (1 - 120 / data.categoryData.length) * 100,
-        end: 100
-      },
+      ],
+      xAxis: [
+        {
+          type: 'category',
+          data: data.categoryData,
+          axisLine: { lineStyle: { color: '#8392A5' } }
+        },
+        {
+          gridIndex: 1,
+          type: 'category',
+          data: data.categoryData,
+          show: false,
+        }
+      ],
+      yAxis: [
+        {
+          scale: true,
+          splitArea: {
+            show: true
+          }
+        },
+        {
+          gridIndex: 1,
+          type: 'value',
+        }
+      ],
+      dataZoom: [
+        {
+          start: (1 - 120 / data.categoryData.length) * 100,
+          end: 100,
+          xAxisIndex: [0, 1]
+        },
+        {
+          start: (1 - 120 / data.categoryData.length) * 100,
+          end: 100,
+          xAxisIndex: [0, 1]
+        },
+      ],
       series: [
         {
           name: '日K',
@@ -323,6 +357,20 @@ class StockChart extends React.Component {
             data: data.dcl20Point
           }
         },
+        {
+          name: 'ma50',
+          type: 'line',
+          data: data.ma50Data,
+          xAxisIndex: 1,
+          yAxisIndex: 1,
+        },
+        {
+          name: 'ma300',
+          type: 'line',
+          data: data.ma300Data,
+          xAxisIndex: 1,
+          yAxisIndex: 1,
+        }
       ]
     }
   }
@@ -358,6 +406,8 @@ const graphqlQuery = gql`
       ma10
       ma20
       ma30
+      ma50
+      ma300
       dcu20
       dcu60
       dcl10
