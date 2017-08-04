@@ -1,7 +1,7 @@
 import React from 'react'
 import { ApolloProvider } from 'react-apollo'
 import ReactDOM from 'react-dom';
-import client from './lib/client' 
+import client from './lib/apollo_client' 
 import StockStateList from './components/stock_state_list'
 import StockRealtime from './components/stock_realtime'
 import StockChart from './components/stock_chart'

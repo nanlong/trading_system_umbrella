@@ -1,7 +1,7 @@
 import React from 'react'
 import { gql } from 'react-apollo'
 import { Button } from 'antd'
-import client from '../lib/client'
+import client from '../lib/apollo_client'
 
 
 class StockStarBtn extends React.Component {
