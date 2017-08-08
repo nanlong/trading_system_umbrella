@@ -31,10 +31,14 @@ defmodule TradingSystem.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:postgrex, ">= 0.0.0"},
-     {:ecto, "~> 2.1"},
-     {:calendar, "~> 0.17.2"},
-     {:progress_bar, "~> 1.6"}]
+    [
+      {:postgrex, ">= 0.0.0"},
+      {:ecto, "~> 2.1"},
+      {:calendar, "~> 0.17.2"},
+      {:progress_bar, "~> 1.6"},
+      {:comeonin, "~> 4.0"},
+      {:bcrypt_elixir, "~> 0.12.0"},
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
