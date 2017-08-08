@@ -116,4 +116,8 @@ defmodule TradingSystem.Accounts do
       {:error, %{changeset | action: :create}}
     end
   end
+
+  def change_session(%Session{} = session) do
+    Session.changeset(session, %{})
+  end
 end

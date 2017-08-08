@@ -21,6 +21,9 @@ defmodule TradingSystem.Web.Router do
     get "/join", UserController, :new
     post "/join", UserController, :create
 
+    get "/login", SessionController, :new
+    post "/login", SessionController, :create
+
     resources "/stocks", StockController, param: "symbol", only: [:index, :show]
 
     get "/counter", StockController, :new_counter
