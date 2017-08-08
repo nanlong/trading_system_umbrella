@@ -8,6 +8,7 @@ defmodule TradingSystem.Web.UserController do
     changeset = Accounts.change_user(%User{})
 
     conn
+    |> assign(:title, "用户注册")
     |> assign(:changeset, changeset)
     |> render(:new)
   end
@@ -20,6 +21,7 @@ defmodule TradingSystem.Web.UserController do
         |> redirect(to: page_path(conn, :index))
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
+        |> assign(:title, "用户注册")
         |> assign(:changeset, changeset)
         |> render(:new)
     end

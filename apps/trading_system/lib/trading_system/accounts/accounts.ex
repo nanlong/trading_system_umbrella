@@ -35,8 +35,9 @@ defmodule TradingSystem.Accounts do
       ** (Ecto.NoResultsError)
 
   """
+  def get_user!(email: email), do: Repo.get_by!(User, email: email)
   def get_user!(id), do: Repo.get!(User, id)
-
+  
   @doc """
   Creates a user.
 
@@ -100,5 +101,19 @@ defmodule TradingSystem.Accounts do
   """
   def change_user(%User{} = user) do
     User.changeset(user, %{})
+  end
+
+
+  alias TradingSystem.Accounts.Session
+  import Ecto.Changeset
+
+  def create_session(attrs \\ %{}) do
+    changeset = Session.changeset(%Session{}, attrs)
+
+    if changeset.valid? do
+      {:ok, get_field(changeset, :user)}
+    else
+      {:error, %{changeset | action: :create}}
+    end
   end
 end

@@ -45,4 +45,21 @@ defmodule TradingSystem.AccountsTest do
       assert %Ecto.Changeset{} = Accounts.change_user(user)
     end
   end
+
+
+  describe "session" do
+    alias TradingSystem.Accounts.User
+
+    @valid_attrs %{email: "test@qushi.pro", password: "123456"}
+    @invalid_attrs %{email: nil, password: nil}
+
+    test "create_session/1 with valid data creates a session" do
+      user_fixture()
+      assert {:ok, %User{}} = Accounts.create_session(@valid_attrs)
+    end
+
+    test "create_session/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Accounts.create_session(@invalid_attrs)
+    end
+  end
 end
