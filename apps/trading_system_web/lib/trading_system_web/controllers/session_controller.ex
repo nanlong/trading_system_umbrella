@@ -15,8 +15,9 @@ defmodule TradingSystem.Web.SessionController do
 
   def create(conn, %{"session" => session_params}) do
     case Accounts.create_session(session_params) do
-      {:ok, _user} ->
+      {:ok, user} ->
         conn
+        |> Guardian.Plug.sign_in(user)
         |> put_flash(:info, "登录成功.")
         |> redirect(to: page_path(conn, :index))
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -25,5 +26,12 @@ defmodule TradingSystem.Web.SessionController do
         |> assign(:changeset, changeset)
         |> render(:new)
     end
+  end
+
+  def delete(conn, _params) do
+    conn
+    |> Guardian.Plug.sign_out()
+    |> put_flash(:info, "退出登录.")
+    |> redirect(to: page_path(conn, :index))
   end
 end

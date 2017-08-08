@@ -32,19 +32,22 @@ defmodule TradingSystem.Web.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.3.0"},
-     {:phoenix_pubsub, "~> 1.0"},
-     {:phoenix_ecto, "~> 3.2"},
-     {:phoenix_html, "~> 2.10"},
-     {:phoenix_live_reload, "~> 1.0", only: :dev},
-     {:gettext, "~> 0.11"},
-     {:trading_system, in_umbrella: true},
-     {:cowboy, "~> 1.0"},
-     {:absinthe, "~> 1.3.1"},
-     {:absinthe_plug, "~> 1.3.0"},
-     {:absinthe_ecto, git: "https://github.com/absinthe-graphql/absinthe_ecto.git"},
-     {:poison, "~> 3.1"},
-     {:timex, "~> 3.1"}]
+    [
+      {:phoenix, "~> 1.3.0"},
+      {:phoenix_pubsub, "~> 1.0"},
+      {:phoenix_ecto, "~> 3.2"},
+      {:phoenix_html, "~> 2.10"},
+      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:gettext, "~> 0.11"},
+      {:trading_system, in_umbrella: true},
+      {:cowboy, "~> 1.0"},
+      {:absinthe, "~> 1.3.1"},
+      {:absinthe_plug, "~> 1.3.0"},
+      {:absinthe_ecto, git: "https://github.com/absinthe-graphql/absinthe_ecto.git"},
+      {:poison, "~> 3.1"},
+      {:timex, "~> 3.1"},
+      {:guardian, "~> 0.14"},
+    ]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

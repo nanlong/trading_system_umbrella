@@ -15,7 +15,7 @@ defmodule TradingSystem.Web.UserController do
 
   def create(conn, %{"user" => user_params}) do
     case Accounts.create_user(user_params) do
-      {:ok, user} ->
+      {:ok, _user} ->
         conn
         |> put_flash(:info, "注册成功.")
         |> redirect(to: page_path(conn, :index))

@@ -27,6 +27,17 @@ config :logger, :console,
 config :trading_system_web, :generators,
   context_app: :trading_system
 
+
+config :guardian, Guardian,
+  allowed_algos: ["HS512"], # optional
+  verify_module: Guardian.JWT,  # optional
+  issuer: "TradingSystem",
+  ttl: { 30, :days },
+  allowed_drift: 2000,
+  verify_issuer: true, # optional
+  secret_key: "ptpsaF+erxh8Lo9/tl5UilXZfgbyAwnx7exifvod4uIABa8gc5Qf/tw768h5azaO",
+  serializer: TradingSystem.Accounts.GuardianSerializer
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

@@ -37,4 +37,11 @@ defmodule TradingSystem.Web.SessionControllerTest do
       assert html_response(conn, 200) =~ "用户登录"
     end
   end
+
+  describe "delete session" do
+    test "redirects", %{conn: conn} do
+      conn = get conn, session_path(conn, :delete)
+      assert redirected_to(conn) == page_path(conn, :index)
+    end
+  end
 end
