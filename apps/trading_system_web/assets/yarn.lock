@@ -888,9 +888,9 @@ builtin-status-codes@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
 
-bulma@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/bulma/-/bulma-0.4.3.tgz#060da634b579ed99d7cedf0251d9e21e1f5c770d"
+bulma@^0.5.1:
+  version "0.5.1"
+  resolved "http://registry.npm.taobao.org/bulma/download/bulma-0.5.1.tgz#db2831c94afe732250c7b12527a7b792a4dc9ef8"
 
 camelcase-keys@^2.0.0:
   version "2.1.0"
@@ -2719,10 +2719,10 @@ performance-now@^0.2.0:
   resolved "https://registry.yarnpkg.com/performance-now/-/performance-now-0.2.0.tgz#33ef30c5c77d4ea21c5a53869d91b56d8f2555e5"
 
 "phoenix@file:../../../deps/phoenix":
-  version "1.3.0-rc.2"
+  version "1.3.0"
 
 "phoenix_html@file:../../../deps/phoenix_html":
-  version "2.9.3"
+  version "2.10.2"
 
 pify@^2.0.0:
   version "2.3.0"
