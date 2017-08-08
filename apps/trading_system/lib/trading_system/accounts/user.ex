@@ -26,7 +26,7 @@ defmodule TradingSystem.Accounts.User do
   def changeset(%User{} = user, attrs) do
     user
     |> cast(attrs, @required_fields ++ @optional_fields)
-    |> validate_required(@required_fields)
+    |> validate_required(@required_fields, message: "不能为空")
     |> unique_constraint(:email, name: :users_lower_email_index, message: "邮箱已存在")
     |> validate_format(:email, @regex_email, message: "请输入正确的邮箱地址")
     |> validate_length(:password, min: 6, max: 128, message: "密码长度6-128位")
