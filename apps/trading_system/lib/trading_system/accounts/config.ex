@@ -7,6 +7,8 @@ defmodule TradingSystem.Accounts.Config do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "configs" do
+    field :account, :float, default: 100000.00
+    field :position, :integer, default: 4
     field :atr_account_ratio, :float, default: 0.5
     field :atr_add_step, :float, default: 0.5
     field :atr_days, :integer, default: 20
@@ -19,7 +21,7 @@ defmodule TradingSystem.Accounts.Config do
   end
 
   @required_fields ~w(user_id)a
-  @optional_fields ~w(atr_account_ratio atr_add_step atr_days atr_stop_step close_days create_days)a
+  @optional_fields ~w(account position atr_account_ratio atr_add_step atr_days atr_stop_step close_days create_days)a
   
   @doc false
   def changeset(%Config{} = config, attrs) do

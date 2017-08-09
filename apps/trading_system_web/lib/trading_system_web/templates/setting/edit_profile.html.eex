@@ -1,0 +1,71 @@
+<div class="columns">
+  <div class="column is-3">
+    <nav class="panel">
+      <p class="panel-heading">
+        设置
+      </p>
+      <%= link "账号信息", to: setting_path(@conn, :show, "profile"), class: "panel-block is-active" %>
+      <%= link "系统参数", to: setting_path(@conn, :show, "config"), class: "panel-block" %>
+    </nav>
+  </div>
+  <div class="column is-6">
+    <div class="box">
+      <h3 class="title is-4">修改个人信息</h3>
+      <%= form_for @changeset_profile, setting_path(@conn, :update, "profile"), fn f -> %>
+
+        <div class="field">
+          <%= label f, :nickname, "昵称", class: "label" %>
+          <div class="control">
+            <%= text_input f, :nickname, class: "input" %>
+            <%= error_tag f, :nickname %>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <button class="button is-info is-fullwidth" type="submit">确定</button>
+          </div>
+        </div>
+        
+      <% end %>
+    </div>
+    
+    <div class="box">
+      <h3 class="title is-4">修改密码</h3>
+      <%= form_for @changeset_password, setting_path(@conn, :update, "password"), fn f -> %>
+
+        <div class="field">
+          <%= label f, :old_password, "原密码", class: "label" %>
+          <div class="control">
+            <%= password_input f, :old_password, class: "input" %>
+            <%= error_tag f, :old_password %>
+          </div>
+        </div>
+
+        <div class="field">
+          <%= label f, :password, "新密码", class: "label" %>
+          <div class="control">
+            <%= password_input f, :password, class: "input" %>
+            <%= error_tag f, :password %>
+          </div>
+        </div>
+
+        <div class="field">
+          <%= label f, :password_confirmation, "重复密码", class: "label" %>
+          <div class="control">
+            <%= password_input f, :password_confirmation, class: "input" %>
+            <%= error_tag f, :password_confirmation %>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            <button class="button is-info is-fullwidth" type="submit">确定</button>
+          </div>
+        </div>
+
+      <% end %>
+    </div>
+    
+  </div>
+</div>

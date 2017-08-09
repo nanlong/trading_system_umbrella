@@ -1,0 +1,90 @@
+<div class="columns">
+  <div class="column is-3">
+    <nav class="panel">
+      <p class="panel-heading">
+        设置
+      </p>
+      <%= link "账号信息", to: setting_path(@conn, :show, "profile"), class: "panel-block" %>
+      <%= link "系统参数", to: setting_path(@conn, :show, "config"), class: "panel-block is-active" %>
+    </nav>
+  </div>
+  <div class="column is-6">
+    <%= form_for @changeset, setting_path(@conn, :update, "config"), fn f -> %>
+      <div class="field">
+        <%= label f, :account, "账户资金", class: "label" %>
+        <div class="control">
+          <%= text_input f, :account, class: "input" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <%= label f, :position, "头寸规模", class: "label" %>
+        <div class="control">
+          <%= select f, :position, 
+            (for value <- [1, 2, 3, 4, 5, 6, 7, 8], do: {value, value}), 
+            class: "select is-fullwidth" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <%= label f, :atr_days, "ATR周期天", class: "label" %>
+        <div class="control">
+          <%= text_input f, :atr_days, class: "input", readonly: "readonly" %>
+          (暂时不可修改)
+        </div>
+      </div>
+
+      <div class="field">
+        <%= label f, :create_days, "唐奇安上通道日线（建仓）", class: "label" %>
+        <div class="control">
+          <%= select f, :create_days, 
+            (for value <- [20, 60], do: {value, value}), 
+            class: "select is-fullwidth" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <%= label f, :close_days, "唐奇安下通道日线（平仓）", class: "label" %>
+        <div class="control">
+          <%= select f, :close_days, 
+            (for value <- [10, 20], do: {value, value}), 
+            class: "select is-fullwidth" %>
+        </div>
+      </div>
+      
+      <div class="field">
+        <%= label f, :atr_account_ratio, "1ATR对应账户净值百分比", class: "label" %>
+        <div class="control">
+          <%= select f, :atr_account_ratio, 
+            (for value <- [0.5, 1.0, 1.5, 2.0], do: {value, value}), 
+            class: "select is-fullwidth" %>
+        </div>
+      </div>
+      
+      <div class="field">
+        <%= label f, :atr_add_step, "加仓ATR", class: "label" %>
+        <div class="control">
+          <%= select f, :atr_add_step, 
+            (for value <- [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0], do: {value, value}), 
+            class: "select is-fullwidth" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <%= label f, :atr_stop_step, "止损ATR", class: "label" %>
+        <div class="control">
+          <%= select f, :atr_stop_step, 
+            (for value <- [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0], do: {value, value}), 
+            class: "select is-fullwidth" %>
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="control">
+          <button class="button is-info is-fullwidth" type="submit">确定</button>
+        </div>
+      </div>
+      
+    <% end %>
+  </div>
+</div>

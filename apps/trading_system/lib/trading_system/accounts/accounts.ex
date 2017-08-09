@@ -75,9 +75,15 @@ defmodule TradingSystem.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_user(%User{} = user, attrs) do
+  def update_user(:profile, %User{} = user, attrs) do
     user
-    |> User.changeset(attrs)
+    |> User.changeset_profile(attrs)
+    |> Repo.update()
+  end
+
+  def update_user(:password, %User{} = user, attrs) do
+    user
+    |> User.changeset_password(attrs)
     |> Repo.update()
   end
 
@@ -108,6 +114,14 @@ defmodule TradingSystem.Accounts do
   """
   def change_user(%User{} = user) do
     User.changeset(user, %{})
+  end
+
+  def change_user(:profile, %User{} = user) do
+    User.changeset_profile(user, %{})
+  end
+
+  def change_user(:password, %User{} = user) do
+    User.changeset_password(user, %{})
   end
 
 

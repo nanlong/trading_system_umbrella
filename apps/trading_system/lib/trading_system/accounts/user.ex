@@ -15,6 +15,7 @@ defmodule TradingSystem.Accounts.User do
 
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
+    field :old_password, :string, virtual: true
 
     has_one :config, Config
     timestamps()
@@ -37,6 +38,22 @@ defmodule TradingSystem.Accounts.User do
     |> put_nickname
   end
 
+  def changeset_profile(%User{} = user, attrs) do
+    user
+    |> cast(attrs, [:nickname])
+    |> validate_required([:nickname], message: "不能为空")
+  end
+
+  def changeset_password(%User{} = user, attrs) do
+    user
+    |> cast(attrs, [:old_password, :password, :password_confirmation])
+    |> validate_required([:old_password, :password, :password_confirmation], message: "不能为空")
+    |> checkpw(:old_password, message: "密码输入不正确")
+    |> validate_length(:password, min: 6, max: 128, message: "密码长度6-128位")
+    |> validate_confirmation(:password, message: "两次输入密码不一致")
+    |> put_password_hash
+  end
+
   defp put_password_hash(%{valid?: false} = changeset), do: changeset
   defp put_password_hash(changeset) do
     password_hash = 
@@ -56,5 +73,14 @@ defmodule TradingSystem.Accounts.User do
       |> List.first
 
     put_change(changeset, :nickname, nickname)
+  end
+
+  defp checkpw(%{valid?: false} = changeset, _field, _opts), do: changeset
+  defp checkpw(changeset, field, [message: message]) do
+    if Comeonin.Bcrypt.checkpw(get_field(changeset, field), changeset.data.password_hash) do
+      changeset
+    else
+      add_error(changeset, field, message)
+    end
   end
 end

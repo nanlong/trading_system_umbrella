@@ -32,6 +32,9 @@ defmodule TradingSystem.Web.Router do
 
     get "/logout", SessionController, :delete
 
+    get "/settings", SettingController, :index
+    resources "/settings/:page", SettingController, only: [:show, :update], singleton: true
+
     resources "/stocks", StockController, param: "symbol", only: [:index, :show]
 
     get "/counter", StockController, :new_counter

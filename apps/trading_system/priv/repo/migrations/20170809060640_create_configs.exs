@@ -4,6 +4,8 @@ defmodule TradingSystem.Repo.Migrations.CreateConfigs do
   def change do
     create table(:configs, primary_key: false) do
       add :id, :binary_id, primary_key: true
+      add :account, :float
+      add :position, :integer
       add :atr_days, :integer
       add :atr_account_ratio, :float
       add :atr_add_step, :float

@@ -2,7 +2,6 @@ defmodule TradingSystem.Web.StockView do
   use TradingSystem.Web, :view
   use Timex
 
-  alias TradingSystem.Stocks
   alias TradingSystem.Stocks.Stock
 
   @max_position 4
