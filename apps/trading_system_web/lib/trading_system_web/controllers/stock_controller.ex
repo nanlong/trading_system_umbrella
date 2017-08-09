@@ -14,9 +14,16 @@ defmodule TradingSystem.Web.StockController do
     stock = Stocks.get_stock!(symbol)
     state = Stocks.get_last_stock_state(symbol)
     account = 100000
- 
+    
+    config = %{
+      symbol: symbol,
+      isBlacklist: Stocks.blacklist?(symbol),
+      isStar: Stocks.star?(symbol),
+    }
+
     conn
     |> assign(:title, stock.cname)
+    |> assign(:config, config)
     |> assign(:account, account)
     |> assign(:stock, stock)
     |> assign(:state, state)

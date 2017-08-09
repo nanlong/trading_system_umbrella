@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
     <script>
       var CONFIG = {};
+      <%= if assigns[:config] do %>
+      <%= for {key, value} <- @config do %>
+      CONFIG['<%= key %>'] = <%= raw Poison.encode!(value) %>;
+      <% end %>
+      <% end %>
     </script>
   </head>
 

@@ -152,8 +152,4 @@ defmodule TradingSystem.Web.StockView do
   end
 
   def float_to_string(float), do: :erlang.float_to_binary(float, decimals: 2)
-
-  def blacklist?(symbol), do: Stocks.blacklist?(symbol)
-  
-  def star?(symbol), do: Stocks.star?(symbol)
 end
