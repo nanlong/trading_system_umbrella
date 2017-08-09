@@ -51,9 +51,16 @@ defmodule TradingSystem.Accounts do
 
   """
   def create_user(attrs \\ %{}) do
-    %User{}
-    |> User.changeset(attrs)
-    |> Repo.insert()
+    result =
+      Ecto.Multi.new
+      |> Ecto.Multi.insert(:user, User.changeset(%User{}, attrs))
+      |> Ecto.Multi.run(:config, fn %{user: user} -> create_config(%{user_id: user.id}) end)
+      |> Repo.transaction()
+
+    case result do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
   end
 
   @doc """
