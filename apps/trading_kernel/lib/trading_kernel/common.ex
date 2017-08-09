@@ -180,7 +180,7 @@ defmodule TradingKernel.Common do
     iex> TradingKernel.Common.unit_cost(account, buy_signal, atr, 2)
     23696.96
   """
-  def unit_cost(account, buy_signal, atr, position \\ 1, add_step \\ 0.5) do
-    (unit(account, atr) * buy(buy_signal, atr, position, add_step)) |> Float.round(2)
+  def unit_cost(account, buy_signal, atr, atr_account_ratio, position \\ 1, add_step \\ 0.5) do
+    (unit(account, atr, atr_account_ratio) * buy(buy_signal, atr, position, add_step)) |> Float.round(2)
   end
 end

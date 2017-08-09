@@ -33,11 +33,11 @@ defmodule TradingSystem.Web.StockView do
     iex> StockView.buy(buy_signal, atr, 4)
     175.61
   """
-  def buy(buy_signal, atr, position \\ 1) do
+  def buy(buy_signal, atr, position \\ 1, atr_add_step \\ 0.5) do
     buy_signal = Decimal.to_float(buy_signal)
     atr = Decimal.to_float(atr)
 
-    TradingKernel.Common.buy(buy_signal, atr, position, @add_step)
+    TradingKernel.Common.buy(buy_signal, atr, position, atr_add_step)
   end
 
   @doc """
@@ -57,11 +57,11 @@ defmodule TradingSystem.Web.StockView do
     iex> StockView.buy_avg(buy_signal, atr, 4)
     171.56
   """
-  def buy_avg(buy_signal, atr, position) do
+  def buy_avg(buy_signal, atr, position, atr_add_step) do
     buy_signal = Decimal.to_float(buy_signal)
     atr = Decimal.to_float(atr)
 
-    TradingKernel.Common.buy_avg(buy_signal, atr, position, @add_step)
+    TradingKernel.Common.buy_avg(buy_signal, atr, position, atr_add_step)
   end
 
   @doc """
@@ -81,11 +81,11 @@ defmodule TradingSystem.Web.StockView do
     iex> StockView.stop_loss(buy_signal, atr, 4)
     166.16
   """
-  def stop_loss(buy_signal, atr, position \\ 1) do
+  def stop_loss(buy_signal, atr, position, atr_add_step, atr_stop_step) do
     buy_signal = Decimal.to_float(buy_signal)
     atr = Decimal.to_float(atr)
 
-    TradingKernel.Common.stop_loss(buy_signal, atr, position, @add_step, @stop_step)
+    TradingKernel.Common.stop_loss(buy_signal, atr, position, atr_add_step, atr_stop_step)
   end
 
   @doc """
@@ -100,11 +100,11 @@ defmodule TradingSystem.Web.StockView do
     iex> StockView.unit(100000, atr)
     93
   """
-  def unit(account, _atr) when account <= 0, do: 0
-  def unit(account, atr) do
+  def unit(account, _atr, _atr_account_ratio) when account <= 0, do: 0
+  def unit(account, atr, atr_account_ratio) do
     atr = Decimal.to_float(atr)
     
-    TradingKernel.Common.unit(account, atr)
+    TradingKernel.Common.unit(account, atr, atr_account_ratio)
   end
 
   @doc """
@@ -125,11 +125,11 @@ defmodule TradingSystem.Web.StockView do
     iex> StockView.unit_cost(account, buy_signal, atr, 4)
     16331.73
   """
-  def unit_cost(account, buy_signal, atr, position \\ 1) do
+  def unit_cost(account, buy_signal, atr, atr_account_ratio, position, atr_add_step) do
     buy_signal = Decimal.to_float(buy_signal)
     atr = Decimal.to_float(atr)
 
-    TradingKernel.Common.unit_cost(account, buy_signal, atr, position, @add_step)
+    TradingKernel.Common.unit_cost(account, buy_signal, atr, atr_account_ratio, position, atr_add_step)
   end
 
   @doc """
@@ -144,8 +144,8 @@ defmodule TradingSystem.Web.StockView do
     iex> StockView.all_cost(account, buy_signal, atr)
     63820.32
   """
-  def all_cost(account, buy_signal, atr) do
-    (for position <- 1..@max_position, do: unit_cost(account, buy_signal, atr, position)) 
+  def all_cost(account, buy_signal, atr, atr_account_ratio, max_position, atr_add_step) do
+    (for position <- 1..max_position, do: unit_cost(account, buy_signal, atr, atr_account_ratio, position, atr_add_step)) 
     |> Enum.sum 
     |> Float.round(2)
   end

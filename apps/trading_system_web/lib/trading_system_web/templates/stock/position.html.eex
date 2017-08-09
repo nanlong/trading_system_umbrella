@@ -9,21 +9,21 @@
     </tr>
   </thead>
   <tbody>
-    <%= for position <- 1..4 do %>
+    <%= for position <- 1..@user_config.position do %>
     <tr>
       <th>第 <%= position %> 单位</th>
-      <td>$<%= buy(@buy_signal, @atr, position) |> float_to_string %></td>
-      <td>$<%= stop_loss(@buy_signal, @atr, position) |> float_to_string %></td>
-      <td><%= unit(@account, @atr) %>股</td>
-      <td>$<%= unit_cost(@account, @buy_signal, @atr, position) |> float_to_string %></td>  
+      <td>$<%= buy(@state.dcu20, @state.atr20, position, @user_config.atr_add_step) |> float_to_string %></td>
+      <td>$<%= stop_loss(@state.dcu20, @state.atr20, position, @user_config.atr_add_step, @user_config.atr_stop_step) |> float_to_string %></td>
+      <td><%= unit(@user_config.account, @state.atr20, @user_config.atr_account_ratio) %>股</td>
+      <td>$<%= unit_cost(@user_config.account, @state.dcu20, @state.atr20, @user_config.atr_account_ratio, position, @user_config.atr_add_step) |> float_to_string %></td>  
     </tr>
     <% end %>
     <tr>
       <th></th>
-      <td>平均 $<%= buy_avg(@buy_signal, @atr, 4) |> float_to_string %></td>
+      <td>平均 $<%= buy_avg(@state.dcu20, @state.atr20, @user_config.position, @user_config.atr_add_step) |> float_to_string %></td>
       <td>--</td>
-      <td>共 <%= unit(@account, @atr) * 4 %> 股</td>
-      <td>总 $<%= all_cost(@account, @buy_signal, @atr) |> float_to_string %></td>
+      <td>共 <%= unit(@user_config.account, @state.atr20, @user_config.atr_account_ratio) * @user_config.position %> 股</td>
+      <td>总 $<%= all_cost(@user_config.account, @state.dcu20, @state.atr20, @user_config.atr_account_ratio, @user_config.position, @user_config.atr_add_step) |> float_to_string %></td>
     </tr>
   </tbody>
 </table>
