@@ -161,6 +161,8 @@ defmodule TradingSystem.Accounts do
   def get_config!(id), do: Repo.get!(Config, id)
 
   def get_config(user_id: user_id), do: Repo.get_by(Config, user_id: user_id)
+
+  def preload_config(user), do: Repo.preload(user, :config)
   @doc """
   Creates a config.
 

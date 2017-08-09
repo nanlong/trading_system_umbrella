@@ -2,6 +2,7 @@ defmodule TradingSystem.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
   alias TradingSystem.Accounts.User
+  alias TradingSystem.Accounts.Config
 
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -15,6 +16,7 @@ defmodule TradingSystem.Accounts.User do
     field :password, :string, virtual: true
     field :password_confirmation, :string, virtual: true
 
+    has_one :config, Config
     timestamps()
   end
 

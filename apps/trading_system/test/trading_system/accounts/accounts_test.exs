@@ -34,6 +34,7 @@ defmodule TradingSystem.AccountsTest do
     test "get_user!/1 returns the user with given id" do
       user = user_fixture()
       assert Accounts.get_user!(user.id) == user
+      assert Accounts.get_config(user_id: user.id)
     end
 
     test "create_user/1 with valid data creates a user" do
