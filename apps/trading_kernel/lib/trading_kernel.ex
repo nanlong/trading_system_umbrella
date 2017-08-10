@@ -110,7 +110,7 @@ defmodule TradingKernel do
     iex> TradingKernel.unit(10000, state)
     18
   """
-  def unit(account, %{atr20: atr}) do
-    Common.unit(account, Decimal.to_float(atr))
+  def unit(account, %{atr20: atr}, percent \\ 0.5) do
+    Common.unit(account, Decimal.to_float(atr), percent)
   end
 end

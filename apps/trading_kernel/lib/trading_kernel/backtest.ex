@@ -38,7 +38,7 @@ defmodule TradingKernel.Backtest do
     atr = Map.get(status, :atr, 0)
     unit = Map.get(status, :unit, 0)
     position = Map.get(status, :position, 0)
-    now_account = (status.account + Common.buy_avg(buy, atr, position, config.add_step) * unit * position) |> Float.round(2) 
+    now_account = (status.account + Common.buy_avg(buy, atr, position: position, add_step: config.add_step) * unit * position) |> Float.round(2) 
 
     %{
       symbol: symbol,
@@ -71,7 +71,7 @@ defmodule TradingKernel.Backtest do
           buy = D.to_float(state.dcu20)
           position = 1
           unit = Common.unit(account, atr)
-          surplus = (account - Common.unit_cost(account, buy, atr, position, config.add_step)) |> Float.round
+          surplus = (account - Common.unit_cost(account, buy, atr, position: position, add_step: config.add_step)) |> Float.round
           
           status =
             status
@@ -82,7 +82,7 @@ defmodule TradingKernel.Backtest do
             |> Map.put(:unit, unit)
             |> Map.put(:atr, atr)
             |> Map.put(:buy, buy)
-            |> Map.put(:stop_loss, Common.stop_loss(buy, atr, position, config.add_step, config.stop_step))
+            |> Map.put(:stop_loss, Common.stop_loss(buy, atr, position: position, add_step: config.add_step, stop_step: config.stop_step))
             |> Map.put(:init_account, account)
             |> Map.put(:account, surplus)
             
@@ -108,12 +108,12 @@ defmodule TradingKernel.Backtest do
           atr = Map.get(status, :atr, 0)
           position = Map.get(status, :position, 0) + 1
           unit = Map.get(status, :unit)
-          surplus = (account - Common.unit_cost(init_account, buy, atr, position, config.add_step)) |> Float.round
+          surplus = (account - Common.unit_cost(init_account, buy, atr, position: position, add_step: config.add_step)) |> Float.round
 
           status =
             status
             |> Map.put(:position, position)
-            |> Map.put(:stop_loss, Common.stop_loss(buy, atr, position, config.add_step, config.stop_step))
+            |> Map.put(:stop_loss, Common.stop_loss(buy, atr, position: position, add_step: config.add_step, stop_step: config.stop_step))
             |> Map.put(:account, surplus)
 
           history = Tuple.append(history, %{
@@ -121,7 +121,7 @@ defmodule TradingKernel.Backtest do
             action: "add",
             init_account: init_account,
             account: surplus,
-            price: Common.buy(buy, atr, position, config.add_step),
+            price: Common.buy(buy, atr, position: position, add_step: config.add_step),
             unit: Map.get(status, :unit),
             position: position,
             market_cap: market_cap(dailyk.close, unit * position),
@@ -213,11 +213,11 @@ defmodule TradingKernel.Backtest do
     buy = Map.get(status, :buy, 0)
     atr = Map.get(status, :atr, 0)
     position = Map.get(status, :position, 0)
-    break = Common.buy(buy, atr, position + 1, config.add_step)
+    break = Common.buy(buy, atr, position: position + 1, add_step: config.add_step)
 
     position > 0 and
     position < config.max_position and
-    account > Common.unit_cost(init_account, buy, atr, position + 1, config.add_step) and
+    account > Common.unit_cost(init_account, buy, atr, position: position + 1, add_step: config.add_step) and
     D.to_float(dailyk.highest) > break
   end
 

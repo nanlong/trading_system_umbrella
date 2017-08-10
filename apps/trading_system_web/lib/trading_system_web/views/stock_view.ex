@@ -4,10 +4,6 @@ defmodule TradingSystem.Web.StockView do
 
   alias TradingSystem.Stocks.Stock
 
-  @max_position 4
-  @add_step 0.5
-  @stop_step 4
-
   def to_humanize(d) do
     Timex.from_now(d, "zh_CN")
   end
@@ -22,22 +18,26 @@ defmodule TradingSystem.Web.StockView do
   ## Example
 
     iex> alias TradingSystem.Web.StockView
-    iex> buy_signal = Decimal.new(167.51)
-    iex> atr = Decimal.new(5.40)
-    iex> StockView.buy(buy_signal, atr, 1)
+    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40)}
+    iex> config = %{create_days: 20, atr_add_step: 0.5}
+    iex> StockView.buy(state, config, 1)
     167.51
-    iex> StockView.buy(buy_signal, atr, 2)
+    iex> StockView.buy(state, config, 2)
     170.21
-    iex> StockView.buy(buy_signal, atr, 3)
+    iex> StockView.buy(state, config, 3)
     172.91
-    iex> StockView.buy(buy_signal, atr, 4)
+    iex> StockView.buy(state, config, 4)
     175.61
   """
-  def buy(buy_signal, atr, position \\ 1, atr_add_step \\ 0.5) do
-    buy_signal = Decimal.to_float(buy_signal)
-    atr = Decimal.to_float(atr)
+  def buy(state, config, position) do
+    buy_signal = buy_signal(state, config)
+    atr = atr(state, config)
 
-    TradingKernel.Common.buy(buy_signal, atr, position, atr_add_step)
+    TradingKernel.Common.buy(
+      buy_signal, atr, 
+      position: position, 
+      add_step: config.atr_add_step
+    )
   end
 
   @doc """
@@ -46,23 +46,28 @@ defmodule TradingSystem.Web.StockView do
   ## Example
 
     iex> alias TradingSystem.Web.StockView
-    iex> buy_signal = Decimal.new(167.51)
-    iex> atr = Decimal.new(5.40)
-    iex> StockView.buy_avg(buy_signal, atr, 1)
+    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40)}
+    iex> config = %{create_days: 20, atr_add_step: 0.5}
+    iex> StockView.buy_avg(state, config, 1)
     167.51
-    iex> StockView.buy_avg(buy_signal, atr, 2)
+    iex> StockView.buy_avg(state, config, 2)
     168.86
-    iex> StockView.buy_avg(buy_signal, atr, 3)
+    iex> StockView.buy_avg(state, config, 3)
     170.21
-    iex> StockView.buy_avg(buy_signal, atr, 4)
+    iex> StockView.buy_avg(state, config, 4)
     171.56
   """
-  def buy_avg(buy_signal, atr, position, atr_add_step) do
-    buy_signal = Decimal.to_float(buy_signal)
-    atr = Decimal.to_float(atr)
+  def buy_avg(state, config, position) do
+    buy_signal = buy_signal(state, config)
+    atr = atr(state, config)
 
-    TradingKernel.Common.buy_avg(buy_signal, atr, position, atr_add_step)
+    TradingKernel.Common.buy_avg(
+      buy_signal, atr, 
+      position: position, 
+      add_step: config.atr_add_step
+    )
   end
+
 
   @doc """
   一次止损 4个ATR的损失，总账户的2%
@@ -70,22 +75,27 @@ defmodule TradingSystem.Web.StockView do
   ## Example
 
     iex> alias TradingSystem.Web.StockView
-    iex> buy_signal = Decimal.new(167.51)
-    iex> atr = Decimal.new(5.40)
-    iex> StockView.stop_loss(buy_signal, atr, 1)
+    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40)}
+    iex> config = %{create_days: 20, atr_add_step: 0.5, atr_stop_step: 4}
+    iex> StockView.stop_loss(state, config, 1)
     145.91
-    iex> StockView.stop_loss(buy_signal, atr, 2)
+    iex> StockView.stop_loss(state, config, 2)
     158.06
-    iex> StockView.stop_loss(buy_signal, atr, 3)
+    iex> StockView.stop_loss(state, config, 3)
     163.01
-    iex> StockView.stop_loss(buy_signal, atr, 4)
+    iex> StockView.stop_loss(state, config, 4)
     166.16
   """
-  def stop_loss(buy_signal, atr, position, atr_add_step, atr_stop_step) do
-    buy_signal = Decimal.to_float(buy_signal)
-    atr = Decimal.to_float(atr)
+  def stop_loss(state, config, position) do
+    buy_signal = buy_signal(state, config)
+    atr = atr(state, config)
 
-    TradingKernel.Common.stop_loss(buy_signal, atr, position, atr_add_step, atr_stop_step)
+    TradingKernel.Common.stop_loss(
+      buy_signal, atr, 
+      position: position, 
+      add_step: config.atr_add_step, 
+      stop_step: config.atr_stop_step
+    )
   end
 
   @doc """
@@ -94,17 +104,19 @@ defmodule TradingSystem.Web.StockView do
   ## Example
 
     iex> alias TradingSystem.Web.StockView
-    iex> atr = Decimal.new(5.40)
-    iex> StockView.unit(0, atr)
-    0
-    iex> StockView.unit(100000, atr)
+    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40)}
+    iex> config = %{account: 100000, atr_account_ratio: 0.5}
+    iex> StockView.unit(state, config)
     93
   """
-  def unit(account, _atr, _atr_account_ratio) when account <= 0, do: 0
-  def unit(account, atr, atr_account_ratio) do
-    atr = Decimal.to_float(atr)
-    
-    TradingKernel.Common.unit(account, atr, atr_account_ratio)
+  def unit(state, config) do
+    atr = atr(state, config)
+
+    TradingKernel.Common.unit(
+      config.account, 
+      atr, 
+      config.atr_account_ratio
+    )
   end
 
   @doc """
@@ -113,23 +125,27 @@ defmodule TradingSystem.Web.StockView do
   ## Example
 
     iex> alias TradingSystem.Web.StockView
-    iex> account = 100000
-    iex> buy_signal = Decimal.new(167.51)
-    iex> atr = Decimal.new(5.40)
-    iex> StockView.unit_cost(account, buy_signal, atr, 1)
+    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40)}
+    iex> config = %{account: 100000, create_days: 20, atr_account_ratio: 0.5, atr_add_step: 0.5}
+    iex> StockView.unit_cost(state, config, 1)
     15578.43
-    iex> StockView.unit_cost(account, buy_signal, atr, 2)
+    iex> StockView.unit_cost(state, config, 2)
     15829.53
-    iex> StockView.unit_cost(account, buy_signal, atr, 3)
+    iex> StockView.unit_cost(state, config, 3)
     16080.63
-    iex> StockView.unit_cost(account, buy_signal, atr, 4)
+    iex> StockView.unit_cost(state, config, 4)
     16331.73
   """
-  def unit_cost(account, buy_signal, atr, atr_account_ratio, position, atr_add_step) do
-    buy_signal = Decimal.to_float(buy_signal)
-    atr = Decimal.to_float(atr)
+  def unit_cost(state, config, position) do
+    buy_signal = buy_signal(state, config)
+    atr = atr(state, config)
 
-    TradingKernel.Common.unit_cost(account, buy_signal, atr, atr_account_ratio, position, atr_add_step)
+    TradingKernel.Common.unit_cost(
+      config.account, buy_signal, atr,
+      position: position,
+      atr_account_ratio: config.atr_account_ratio,
+      add_step: config.atr_add_step
+    )
   end
 
   @doc """
@@ -138,17 +154,24 @@ defmodule TradingSystem.Web.StockView do
   ## Example
 
     iex> alias TradingSystem.Web.StockView
-    iex> account = 100000
-    iex> buy_signal = Decimal.new(167.51)
-    iex> atr = Decimal.new(5.40)
-    iex> StockView.all_cost(account, buy_signal, atr)
+    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40)}
+    iex> config = %{account: 100000, create_days: 20, atr_account_ratio: 0.5, atr_add_step: 0.5, position: 4}
+    iex> StockView.all_cost(state, config)
     63820.32
   """
-  def all_cost(account, buy_signal, atr, atr_account_ratio, max_position, atr_add_step) do
-    (for position <- 1..max_position, do: unit_cost(account, buy_signal, atr, atr_account_ratio, position, atr_add_step)) 
+  def all_cost(state, config) do
+    (for position <- 1..config.position, do: unit_cost(state, config, position)) 
     |> Enum.sum 
     |> Float.round(2)
   end
 
   def float_to_string(float), do: :erlang.float_to_binary(float, decimals: 2)
+
+  defp buy_signal(state, config) do
+    Decimal.to_float(Map.get(state, String.to_atom("dcu" <> Integer.to_string(config.create_days))))
+  end
+
+  defp atr(state, _config) do
+    Decimal.to_float(state.atr20)
+  end
 end
