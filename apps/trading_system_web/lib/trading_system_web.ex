@@ -39,6 +39,7 @@ defmodule TradingSystem.Web do
       import TradingSystem.Web.Router.Helpers
       import TradingSystem.Web.ErrorHelpers
       import TradingSystem.Web.Gettext
+      import TradingSystem.Web.Helpers
     end
   end
 

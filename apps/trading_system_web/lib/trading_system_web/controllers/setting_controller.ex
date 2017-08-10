@@ -9,7 +9,7 @@ defmodule TradingSystem.Web.SettingController do
 
   def index(conn, _params) do
     conn
-    |> redirect(to: setting_path(conn, :show, "config"))
+    |> redirect(to: setting_path(conn, :show, "profile"))
   end
 
   def show(conn, %{"page" => "config"}) do

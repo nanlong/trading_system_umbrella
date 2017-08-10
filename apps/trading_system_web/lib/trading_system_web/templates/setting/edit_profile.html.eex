@@ -10,6 +10,14 @@
   </div>
   <div class="column is-6">
     <div class="box">
+      <%= if vip?(@current_user) do %>
+      付费用户，不限制功能，到期时间 <%= to_date(@current_user.vip_expire) %>
+      <% else %>
+      非付费用户，功能限制
+      <% end %>
+    </div>
+
+    <div class="box">
       <h3 class="title is-4">修改个人信息</h3>
       <%= form_for @changeset_profile, setting_path(@conn, :update, "profile"), fn f -> %>
 
