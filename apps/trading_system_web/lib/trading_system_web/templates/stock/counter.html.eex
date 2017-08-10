@@ -19,7 +19,7 @@
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
-          <%= label f, :position, "头寸规模", class: "label" %>
+          <%= label f, :position, "最大头寸规模", class: "label" %>
         </div>
         <div class="field-body">
           <div class="field">
