@@ -48,9 +48,11 @@ defmodule TradingSystem.Web.StockController do
     changeset = Counter.changeset(%Counter{}, conter_params)
     
     if changeset.valid? do
+      {account, _} = Float.parse(changeset.changes.account)
+      
       user_config = 
         changeset.changes
-        |> Map.update!(:account, &(String.to_float(&1)))
+        |> Map.put(:account, account)
         |> Map.put(:create_days, 20)
 
       state = %{

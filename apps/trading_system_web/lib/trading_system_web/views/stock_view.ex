@@ -159,10 +159,27 @@ defmodule TradingSystem.Web.StockView do
     iex> StockView.all_cost(state, config)
     63820.32
   """
-  def all_cost(state, config) do
-    (for position <- 1..config.position, do: unit_cost(state, config, position)) 
+  def all_cost(state, config, position \\ 0) do
+    range_end = if position > 0, do: position, else: config.position
+    
+    (for position <- 1..range_end, do: unit_cost(state, config, position)) 
     |> Enum.sum 
     |> Float.round(2)
+  end
+
+  def max_position(state, config) do
+    if all_cost(state, config) < config.account do
+      config.position
+    else
+      max_position(state, config, 1)
+    end
+  end
+  defp max_position(state, config, position) do
+    if all_cost(state, config, position + 1) > config.account do
+      position
+    else
+      max_position(state, config, position + 1)
+    end
   end
 
   def float_to_string(float), do: :erlang.float_to_binary(float, decimals: 2)

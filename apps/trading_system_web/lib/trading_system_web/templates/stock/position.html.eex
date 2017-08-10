@@ -1,3 +1,5 @@
+| ATR: <%= @state.atr20 %>
+| 触及止损价会损失总资金的 <%= @user_config.atr_account_ratio * @user_config.atr_stop_step %>%
 <table class="table">
   <thead>
     <tr>
@@ -9,7 +11,7 @@
     </tr>
   </thead>
   <tbody>
-    <%= for position <- 1..@user_config.position do %>
+    <%= for position <- 1..max_position(@state, @user_config) do %>
     <tr>
       <th>第 <%= position %> 单位</th>
       <td>$<%= buy(@state, @user_config, position) |> float_to_string %></td>
@@ -23,7 +25,7 @@
       <td>平均 $<%= buy_avg(@state, @user_config, @user_config.position) |> float_to_string %></td>
       <td>--</td>
       <td>共 <%= unit(@state, @user_config) * @user_config.position %> 股</td>
-      <td>总 $<%= all_cost(@state, @user_config) |> float_to_string %></td>
+      <td>总 $<%= all_cost(@state, @user_config, max_position(@state, @user_config)) |> float_to_string %></td>
     </tr>
   </tbody>
 </table>

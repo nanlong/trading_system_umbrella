@@ -18,7 +18,7 @@
       </div>
 
       <div class="field">
-        <%= label f, :position, "头寸规模", class: "label" %>
+        <%= label f, :position, "最大头寸规模", class: "label" %>
         <div class="control">
           <%= select f, :position, 
             (for value <- [1, 2, 3, 4, 5, 6, 7, 8], do: {value, value}), 
