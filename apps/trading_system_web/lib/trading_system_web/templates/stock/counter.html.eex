@@ -1,43 +1,134 @@
-
-<h1>计算器</h1>
 <div class="columns">
   <div class="column">
-    <form method="POST" action="<%= stock_path(@conn, :post_counter) %>">
-      <input type="hidden" name="_csrf_token" value="<%= get_csrf_token() %>">
-      <div class="field">
-        <label class="label">总资金</label>
-        <div class="control">
-          <input class="input" type="text" name="account" placeholder="总资金" value="<%= @account || "" %>">
+
+    <%= form_for @changeset, stock_path(@conn, :post_counter), fn f -> %>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <%= label f, :account, "账户资金", class: "label" %>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <%= text_input f, :account, class: "input" %>
+              <%= error_tag f, :account %>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="field">
-        <label class="label">买入价</label>
-        <div class="control">
-          <input class="input" type="text" name="buy" placeholder="买入价" value="<%= @buy_signal || "" %>">
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <%= label f, :position, "头寸规模", class: "label" %>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <%= select f, :position, 
+                (for value <- [1, 2, 3, 4, 5, 6, 7, 8], do: {value, value}), 
+                class: "select is-fullwidth" %>
+              <%= error_tag f, :position %>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="field">
-        <label class="label">ATR</label>
-        <div class="control">
-          <input class="input" type="text" name="atr" placeholder="ATR" value="<%= @atr || "" %>">
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <%= label f, :atr_account_ratio, "ATR对应净值", class: "label" %>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <%= select f, :atr_account_ratio, 
+                (for value <- [0.5, 1.0, 1.5, 2.0], do: {value, value}), 
+                class: "select is-fullwidth" %>
+              <%= error_tag f, :atr_account_ratio %>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div class="field is-grouped">
-        <div class="control">
-          <button class="button is-primary">确定</button>
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <%= label f, :atr_add_step, "加仓ATR", class: "label" %>
         </div>
-        <div class="control">
-          <button class="button is-link">取消</button>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <%= select f, :atr_add_step, 
+                (for value <- [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0], do: {value, value}), 
+                class: "select is-fullwidth" %>
+              <%= error_tag f, :atr_add_step %>
+            </div>
+          </div>
         </div>
       </div>
-    </form>   
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <%= label f, :atr_stop_step, "止损ATR", class: "label" %>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <%= select f, :atr_stop_step, 
+                (for value <- [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0], do: {value, value}), 
+                class: "select is-fullwidth" %>
+              <%= error_tag f, :atr_stop_step %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <%= label f, :buy_price, "买入价", class: "label" %>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <%= text_input f, :buy_price, class: "input" %>
+              <%= error_tag f, :buy_price %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <%= label f, :atr, "ATR", class: "label" %>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <%= text_input f, :atr, class: "input" %>
+              <%= error_tag f, :atr %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label">
+          <!-- Left empty for spacing -->
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <button class="button is-info" type="submit">
+                确定
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    <% end %>
   </div>
   <div class="column">
-    <%= if @account && @account > 0 do %>
-      <%= render "position.html", account: @account, buy_signal: @buy_signal, atr: @atr %>
+    <%= if assigns[:state] && assigns[:user_config] do %>
+      <%= render "position.html", state: @state, user_config: @user_config %>
     <% end %>
   </div>
 </div>

@@ -7,7 +7,7 @@ defmodule TradingSystem.Accounts.Session do
 
   embedded_schema do
     field :email, :string, virtual: true
-    field :password, :string, virtual: false
+    field :password, :string, virtual: true
   end
 
   @required_fields ~w(email password)a

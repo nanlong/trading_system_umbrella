@@ -2,7 +2,7 @@ defmodule TradingSystem.Web.StockController do
   use TradingSystem.Web, :controller
 
   alias TradingSystem.Stocks
-
+  alias TradingSystem.Stocks.Counter
 
   def index(conn, _params) do
     conn
@@ -31,26 +31,47 @@ defmodule TradingSystem.Web.StockController do
   end
 
   def new_counter(conn, _params) do
+    attrs =
+      conn.assigns.user_config
+      |> Map.from_struct()
+      |> Map.update!(:account, &(:erlang.float_to_binary(&1, decimals: 2)))
+      
+    changeset = Counter.changeset(%Counter{}, attrs)
+
     conn
     |> assign(:title, "计算器")
-    |> assign(:account, nil)
-    |> assign(:buy_signal, nil)
-    |> assign(:atr, nil)
+    |> assign(:changeset, changeset)
     |> render(:counter)
   end
 
-  def post_counter(conn, %{"account" => account, "buy" => buy, "atr" => atr}) do
-    buy_signal = Decimal.new(buy)
-    atr = Decimal.new(atr)
-    IO.inspect account
-    {account, _} = Float.parse(account)
+  def post_counter(conn, %{"counter" => conter_params}) do
+    changeset = Counter.changeset(%Counter{}, conter_params)
+    
+    if changeset.valid? do
+      user_config = 
+        changeset.changes
+        |> Map.update!(:account, &(String.to_float(&1)))
+        |> Map.put(:create_days, 20)
 
-    conn
-    |> assign(:title, "计算器")
-    |> assign(:account, account)
-    |> assign(:buy_signal, buy_signal)
-    |> assign(:atr, atr)
-    |> render(:counter)
+      state = %{
+        atr20: Decimal.new(user_config.atr),
+        dcu20: Decimal.new(user_config.buy_price)
+      }
+      
+      conn
+      |> assign(:title, "计算器")
+      |> assign(:state, state)
+      |> assign(:user_config, user_config)
+      |> assign(:changeset, changeset)
+      |> render(:counter)
+    else
+      changeset = %{changeset | action: :post}
+
+      conn
+      |> assign(:title, "计算器")
+      |> assign(:changeset, changeset)
+      |> render(:counter)
+    end
   end
 
   def star_index(conn, _params) do
