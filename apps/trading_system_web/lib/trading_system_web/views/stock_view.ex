@@ -35,6 +35,7 @@ defmodule TradingSystem.Web.StockView do
 
     TradingKernel.Common.buy(
       buy_signal, atr, 
+      tread: tread(state),
       position: position, 
       add_step: config.atr_add_step
     )
@@ -63,6 +64,7 @@ defmodule TradingSystem.Web.StockView do
 
     TradingKernel.Common.buy_avg(
       buy_signal, atr, 
+      tread: tread(state),
       position: position, 
       add_step: config.atr_add_step
     )
@@ -92,6 +94,7 @@ defmodule TradingSystem.Web.StockView do
 
     TradingKernel.Common.stop_loss(
       buy_signal, atr, 
+      tread: tread(state),
       position: position, 
       add_step: config.atr_add_step, 
       stop_step: config.atr_stop_step
@@ -142,6 +145,7 @@ defmodule TradingSystem.Web.StockView do
 
     TradingKernel.Common.unit_cost(
       config.account, buy_signal, atr,
+      tread: tread(state),
       position: position,
       atr_account_ratio: config.atr_account_ratio,
       add_step: config.atr_add_step
@@ -161,7 +165,7 @@ defmodule TradingSystem.Web.StockView do
   """
   def all_cost(state, config, position \\ 0) do
     range_end = if position > 0, do: position, else: config.position
-    
+
     (for position <- 1..range_end, do: unit_cost(state, config, position)) 
     |> Enum.sum 
     |> Float.round(2)
@@ -185,10 +189,15 @@ defmodule TradingSystem.Web.StockView do
   def float_to_string(float), do: :erlang.float_to_binary(float, decimals: 2)
 
   defp buy_signal(state, config) do
-    Decimal.to_float(Map.get(state, String.to_atom("dcu" <> Integer.to_string(config.create_days))))
+    prefix = if tread(state) == :bull, do: "dcu", else: "dcl"
+    Decimal.to_float(Map.get(state, String.to_atom(prefix <> Integer.to_string(config.create_days))))
   end
 
   defp atr(state, _config) do
     Decimal.to_float(state.atr20)
+  end
+
+  defp tread(state) do
+    if Decimal.cmp(state.ma50, state.ma300) == :lt, do: :bear, else: :bull
   end
 end

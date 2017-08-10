@@ -16,7 +16,7 @@ defmodule TradingSystem.Web.SettingControllerTest do
 
     test "redirect", %{conn: conn} do
       conn = get conn, setting_path(conn, :index)
-      assert redirected_to(conn) == setting_path(conn, :show, "config")
+      assert redirected_to(conn) == setting_path(conn, :show, "profile")
     end
   end
 

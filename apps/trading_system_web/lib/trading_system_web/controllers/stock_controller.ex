@@ -49,7 +49,7 @@ defmodule TradingSystem.Web.StockController do
     
     if changeset.valid? do
       {account, _} = Float.parse(changeset.changes.account)
-      
+
       user_config = 
         changeset.changes
         |> Map.put(:account, account)
@@ -57,7 +57,10 @@ defmodule TradingSystem.Web.StockController do
 
       state = %{
         atr20: Decimal.new(user_config.atr),
-        dcu20: Decimal.new(user_config.buy_price)
+        dcu20: Decimal.new(user_config.buy_price),
+        dcl20: Decimal.new(user_config.buy_price),
+        ma50: (if user_config.trade == "bull", do: Decimal.new(1), else: Decimal.new(0)),
+        ma300: (if user_config.trade == "bull", do: Decimal.new(0), else: Decimal.new(1)),
       }
       
       conn

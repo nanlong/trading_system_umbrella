@@ -128,10 +128,15 @@ defmodule TradingKernel.Common do
     168.65
   """
   def buy(buy_signal, atr, opts \\ []) do
+    tread = Keyword.get(opts, :tread, :bull)
     position = Keyword.get(opts, :position, 1)
     add_step = Keyword.get(opts, :add_step, 0.5)
 
-    (buy_signal + atr * add_step * (position - 1)) |> Float.round(2)
+    num1 = buy_signal
+    num2 = atr * add_step * (position - 1)
+
+    (if tread == :bull, do: num1 + num2, else: num1 - num2)
+    |> Float.round(2)
   end
 
   @doc """
@@ -146,17 +151,26 @@ defmodule TradingKernel.Common do
     166.0
     iex> TradingKernel.Common.buy_avg(buy_signal, atr, position: 2, add_step: 1)
     166.88
+    iex> TradingKernel.Common.buy_avg(buy_signal, atr, position: 2, add_step: 1, tread: :bear)
+    163.36
+    iex> TradingKernel.Common.buy_avg(buy_signal, atr, position: 4, tread: :bear)
+    162.47
   """
   def buy_avg(buy_signal, atr, opts \\ [])
   def buy_avg(buy_signal, atr, opts) do
+    tread = Keyword.get(opts, :tread, :bull)
     position = Keyword.get(opts, :position, 1)
     add_step = Keyword.get(opts, :add_step, 0.5)
 
-    if position == 1 do
-      buy_signal
-    else
-      ((buy_signal * position + atr * add_step * Enum.sum(1..position - 1)) / position) |> Float.round(2)
+    num1 = buy_signal * position
+    num2 = atr * add_step * Enum.sum(1..position - 1)
+    
+    cond do
+      position == 1 -> num1
+      tread == :bull -> (num1 + num2) / position
+      tread == :bear -> (num1 - num2) / position
     end
+    |> Float.round(2)
   end
 
   @doc """
@@ -173,11 +187,16 @@ defmodule TradingKernel.Common do
     162.47
   """
   def stop_loss(buy_signal, atr, opts \\ []) do
+    tread = Keyword.get(opts, :tread, :bull)
     position = Keyword.get(opts, :position, 1)
     add_step = Keyword.get(opts, :add_step, 0.5)
     stop_step = Keyword.get(opts, :stop_step, 4)
 
-    (buy_avg(buy_signal, atr, position: position, add_step: add_step) - atr * (stop_step / position)) |> Float.round(2)
+    num1 = buy_avg(buy_signal, atr, tread: tread, position: position, add_step: add_step)
+    num2 = atr * (stop_step / position)
+
+    (if tread == :bull, do: num1 - num2, else: num1 + num2)
+    |> Float.round(2)
   end
 
 
@@ -194,10 +213,14 @@ defmodule TradingKernel.Common do
     23696.96
   """
   def unit_cost(account, buy_signal, atr, opts \\ []) do
+    tread = Keyword.get(opts, :tread, :bull)
     atr_account_ratio = Keyword.get(opts, :atr_account_ratio, 0.5)
     position = Keyword.get(opts, :position, 1)
     add_step = Keyword.get(opts, :add_step, 0.5)
 
-    (unit(account, atr, atr_account_ratio) * buy(buy_signal, atr, position: position, add_step: add_step)) |> Float.round(2)
+    num1 = unit(account, atr, atr_account_ratio)
+    num2 = buy(buy_signal, atr, tread: tread, position: position, add_step: add_step)
+
+    (num1 * num2) |> Float.round(2)
   end
 end

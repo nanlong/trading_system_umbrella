@@ -110,6 +110,27 @@
       </div>
 
       <div class="field is-horizontal">
+        <div class="field-label is-normal">
+          <%= label f, :trade, "交易操作方向", class: "label" %>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <%= label f, :trade_bull, class: "radio" do %>
+                <%= radio_button f, :trade, :bull %>
+                <span>做多</span>
+              <% end %>
+              
+              <%= label f, :trade_bear, class: "radio" do %>
+                <%= radio_button f, :trade, :bear %>
+                <span>做空</span>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-horizontal">
         <div class="field-label">
           <!-- Left empty for spacing -->
         </div>
