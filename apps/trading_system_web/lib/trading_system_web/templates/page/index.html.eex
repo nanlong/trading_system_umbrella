@@ -1,1 +1,57 @@
+<div class="hero is-primary" style="margin-bottom: 20px;">
+  <div class="hero-body">
+    <div class="container">
+      <div class="columns is-vcentered">
+        <div class="column is-6">
+          <p class="title" style="padding-bottom: 20px;">趋势跟踪系统</p>
+          <p class="subtitle">基于<%= link "《海龟交易法则》", to: "https://www.amazon.cn/%E5%9B%BE%E4%B9%A6/dp/B00CDKFCJY", target: "_blank" %></p>
+          <p class="subtitle">K线图表一目了然</p>
+          <p class="subtitle">支持做多做空</p>
+          <p class="subtitle">官方QQ群号: 516902689</p>
+        </div>
+        <div class="column is-narrow">
+          <div class="box">
+            <img class="image" width="450" src="<%= static_path(@conn, "/images/screen-stock.jpg") %>" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+
+<div class="columns">
+  <div class="column">
+    <div class="box">
+      <h1>股票数据</h1>
+      <ul>
+        <li>当前支持美股</li>
+        <li>支持8000+支美股</li>
+        <li>K线图建仓、平仓标识</li>
+        <li>每日计算ATR</li>
+      </ul>
+    </div>
+  </div>
+  <div class="column">
+    <div class="box">
+      <h1>独立配置</h1>
+      <ul>
+        <li>头寸规模</li>
+        <li>建仓指标</li>
+        <li>加仓指标</li>
+        <li>止损控制</li>
+      </ul>
+    </div>
+  </div>
+  <div class="column">
+    <div class="box">
+      <h1>资金管理</h1>
+      <ul>
+        <li>简单、易学、易用</li>
+        <li>计算器绑定配置</li>
+        <li>多项参数调整</li>
+        <li>支持做多和做空选择</li>
+      </ul>
+    </div>
+  </div>
+</div>
