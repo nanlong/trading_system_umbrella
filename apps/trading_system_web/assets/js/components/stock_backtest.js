@@ -18,14 +18,13 @@ class StockBacktest extends React.Component {
       source.account.push(Math.ceil((item.account + item.marketCap - 10000) / 10000 * 1000) / 1000)
     }
 
-    console.log(source.account)
     return source
   }
 
   setChartOption(data) {
     return {
       grid: {
-        top: '10%',
+        top: '15%',
         left: '5%',
         right: '2%',
         bottom: '10%'
@@ -107,7 +106,7 @@ class StockBacktest extends React.Component {
     const options = this.setChartOption(data)
     const years = this.dateDiff(data.xAxisData[0], data.xAxisData[data.xAxisData.length - 1])
 
-    this.refs.yearYieldRate.innerText = `年化收益率: ${this.yearYieldRate(data)}%`
+    this.refs.yearYieldRate.innerText = this.yearYieldRate(data)
 
     chart.setOption(options)
   }
@@ -115,10 +114,9 @@ class StockBacktest extends React.Component {
   render() {
     return (
       <div>
-        <div><span ref="yearYieldRate"></span></div>
-        <div ref="stockBacktest" style={{width: '100%', height: '360px'}}></div>
+        <div>最近三年年化收益率: <span ref="yearYieldRate"></span>%</div>
+        <div ref="stockBacktest" style={{width: '100%', height: '220px'}}></div>
       </div>
-      
     )
   }
 }

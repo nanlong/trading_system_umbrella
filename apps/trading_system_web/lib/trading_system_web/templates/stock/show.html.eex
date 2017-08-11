@@ -30,12 +30,16 @@
   <div class="column">
     <div id="stock-backtest"></div>
   </div>
-</div>
-
-<%= if @authenticated? do %>
-<div class="columns">
+  <%= if @authenticated? do %>
   <div class="column">
+    <div>
+      <span class="title is-4">资金管理</span>
+      <span>当前日期: <%= DateTime.utc_now() |> DateTime.to_date() %></span>
+      <span>数据日期: <%= @state.date %></span>
+    </div>
     <%= render "position.html", assigns %>
   </div>
+  <% end %>
 </div>
-<% end %>
+
+

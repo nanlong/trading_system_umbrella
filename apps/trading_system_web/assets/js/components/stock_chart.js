@@ -39,6 +39,7 @@ class StockChart extends React.Component {
       dcl10Data: [],
       dcl20Data: [],
       dcu20Point: [],
+      atrData: [],
       dcl10Point: [],
       dcu60Point: [],
       dcl20Point: [],
@@ -76,6 +77,7 @@ class StockChart extends React.Component {
       source.dcu20Data.push(dcu20)
       source.dcl20Data.push(dcl20)
       source.dcl10Data.push(dcl10)
+      source.atrData.push(atr20)
 
       // 20日突破点
       if (highest > dcu20 && is_pre_break_down(source.line20Cache)) {
@@ -138,6 +140,21 @@ class StockChart extends React.Component {
         trigger: 'axis',
         axisPointer: {
           type: 'cross'
+        },
+        borderWidth: 1,
+        borderColor: '#ccc',
+        padding: 10,
+        position: function (pos, params, el, elRect, size) {
+          let obj = {top: 10}
+          obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30
+          return obj;
+        },
+        extraCssText: 'width: 170px'
+      },
+      axisPointer: {
+        link: {xAxisIndex: 'all'},
+        label: {
+          backgroundColor: '#777'
         }
       },
       legend: {
@@ -358,16 +375,9 @@ class StockChart extends React.Component {
           }
         },
         {
-          name: 'ma50',
+          name: 'ATR',
           type: 'line',
-          data: data.ma50Data,
-          xAxisIndex: 1,
-          yAxisIndex: 1,
-        },
-        {
-          name: 'ma300',
-          type: 'line',
-          data: data.ma300Data,
+          data: data.atrData,
           xAxisIndex: 1,
           yAxisIndex: 1,
         }
