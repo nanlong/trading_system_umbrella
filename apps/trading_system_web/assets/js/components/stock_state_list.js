@@ -4,10 +4,6 @@ import { Table } from 'antd'
 
 class StockStateList extends React.Component {
 
-  componentDidUpdate({data: {refetch}}, state) {
-    setTimeout(() => refetch(), 1000)
-  }
-
   diff(a) {
     return a.price < a.dcu60 ? -(1 - a.price / a.dcu60) : a.price / a.dcu60 - 1
   }
@@ -32,8 +28,8 @@ class StockStateList extends React.Component {
       {title: '20日最高', dataIndex: 'dcu20', key: 'dcu20', render: (text, record, index) => `$${text}`},
       {title: '60日最低', dataIndex: 'dcl60', key: 'dcl60', render: (text, record, index) => `$${text}`},
       {title: '60日最高', dataIndex: 'dcu60', key: 'dcu60', render: (text, record, index) => `$${text}`},
-      {title: '实时', dataIndex: 'price', key: 'price', 
-      sorter: (a, b) => this.diff(b) - this.diff(a), sortOrder: 'ascend', render: (text, record, index) => `$${this.round(text, 2)}`},
+      // {title: '实时', dataIndex: 'price', key: 'price', 
+      // sorter: (a, b) => this.diff(b) - this.diff(a), sortOrder: 'ascend', render: (text, record, index) => `$${this.round(text, 2)}`},
     ]
 
     return (
@@ -55,7 +51,6 @@ const graphqlQuery = gql`
       dcl60
       dcu60
       atr20
-      price
       stock {
         cname
         category
