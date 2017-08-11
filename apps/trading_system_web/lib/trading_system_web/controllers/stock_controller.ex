@@ -32,7 +32,7 @@ defmodule TradingSystem.Web.StockController do
       symbol: symbol,
       isBlacklist: Stocks.blacklist?(symbol),
       isStar: Stocks.star?(symbol),
-      is_vip: TradingSystem.Web.Helpers.vip?(conn.assigns.current_user)
+      is_vip: Accounts.vip?(conn.assigns.current_user)
     }
 
     conn
