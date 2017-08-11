@@ -1,6 +1,12 @@
 <!-- <div id="usstock-state-list"></div> -->
 <div class="columns">
   <div class="column">
+    <%= render "component_tabs.html", assigns %>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column">
     <nav class="breadcrumb" aria-label="breadcrumbs">
       <ul>
         <li><a>数据日期 <%= @date %></a></li>
@@ -13,6 +19,9 @@
   <div class="column">
     <form>
       <div class="field has-addons has-addons-right">
+        <%= if Map.get(@params, "tab") do %>
+        <input type="hidden" name="tab" value="<%= Map.get(@params, "tab") %>">
+        <% end %>
         <p class="control">
           <input class="input" type="text" name="q" placeholder="股票代码或公司名称" value="<%= Map.get(@params, "q", "")%>">
         </p>
@@ -28,6 +37,7 @@
 
 <div class="columns">
   <div class="column">
+    
     <div>
       <table class="table is-bordered is-striped is-narrow is-fullwidth">
         <tr>

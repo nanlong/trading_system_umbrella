@@ -200,4 +200,12 @@ defmodule TradingSystem.Web.StockView do
   defp tread(state) do
     if Decimal.cmp(state.ma50, state.ma300) == :lt, do: :bear, else: :bull
   end
+
+  def tabs(conn) do
+    [
+      {"全部", "all", stock_path(conn, :index, tab: "all")},
+      {"适合做多的", "bull", stock_path(conn, :index, tab: "bull")},
+      {"适合做空的", "bear", stock_path(conn, :index, tab: "bear")},
+    ]
+  end
 end

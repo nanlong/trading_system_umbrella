@@ -163,6 +163,13 @@ defmodule TradingSystem.Stocks do
         query
       end
 
+    query =
+      case Map.get(params, "tab") do
+        "bull" -> where(query, [_stock, state], state.ma50 > state.ma300)
+        "bear" -> where(query, [_stock, state], state.ma50 < state.ma300)
+        _ -> query
+      end
+
     Repo.paginate(query, params)
   end
 
