@@ -1,0 +1,15 @@
+<div class="hero is-danger">
+  <div class="hero-body">
+    <div class="container">
+      <p class="title">
+        还不是VIP会员!
+      </p>
+      <p class="subtitle">
+        此功能限制使用，请联系站长开通VIP，一天只需一块钱. 
+      </p>
+      <p class="subtitle">
+        官方QQ群号: 516902689
+      </p>
+    </div>
+  </div>
+</div>

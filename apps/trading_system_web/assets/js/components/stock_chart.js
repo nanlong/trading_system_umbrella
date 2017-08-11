@@ -135,84 +135,7 @@ class StockChart extends React.Component {
   }
 
   setChartOption(data) {
-    return {
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          type: 'cross'
-        },
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 10,
-        position: function (pos, params, el, elRect, size) {
-          let obj = {top: 10}
-          obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30
-          return obj;
-        },
-        extraCssText: 'width: 170px'
-      },
-      axisPointer: {
-        link: {xAxisIndex: 'all'},
-        label: {
-          backgroundColor: '#777'
-        }
-      },
-      legend: {
-        data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30', '20日最高', '10日最低', '60日最高', '20日最低'],
-        selected: {'60日最高': false, '20日最低': false}
-      },
-      grid: [
-        {
-          top: '8%',
-          left: '5%',
-          right: '5%',
-          bottom: '25%'
-        },
-        {
-          left: '5%',
-          right: '5%',
-          top: '82%',
-          height: '8%'
-        }
-      ],
-      xAxis: [
-        {
-          type: 'category',
-          data: data.categoryData,
-          axisLine: { lineStyle: { color: '#8392A5' } }
-        },
-        {
-          gridIndex: 1,
-          type: 'category',
-          data: data.categoryData,
-          show: false,
-        }
-      ],
-      yAxis: [
-        {
-          scale: true,
-          splitArea: {
-            show: true
-          }
-        },
-        {
-          gridIndex: 1,
-          type: 'value',
-        }
-      ],
-      dataZoom: [
-        {
-          start: (1 - 120 / data.categoryData.length) * 100,
-          end: 100,
-          xAxisIndex: [0, 1]
-        },
-        {
-          start: (1 - 120 / data.categoryData.length) * 100,
-          end: 100,
-          xAxisIndex: [0, 1]
-        },
-      ],
-      series: [
+    let series = [
         {
           name: '日K',
           type: 'candlestick',
@@ -291,90 +214,6 @@ class StockChart extends React.Component {
           }
         },
         {
-          name: '20日最高',
-          type: 'line',
-          data: data.dcu20Data,
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            normal: {
-              color: '#014EA2',
-              width: 1
-            }
-          },
-          itemStyle: {
-            normal: {
-              color: '#014EA2'
-            }
-          },
-          markPoint: {
-            data: data.dcu20Point
-          }
-        },
-        {
-          name: '10日最低',
-          type: 'line',
-          data: data.dcl10Data,
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            normal: {
-              color: '#014EA2',
-              width: 1
-            }
-          },
-          itemStyle: {
-            normal: {
-              color: '#014EA2'
-            }
-          },
-          markPoint: {
-            data: data.dcl10Point
-          }
-        },
-        {
-          name: '60日最高',
-          type: 'line',
-          data: data.dcu60Data,
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            normal: {
-              color: '#014EA2',
-              width: 1
-            }
-          },
-          itemStyle: {
-            normal: {
-              color: '#014EA2'
-            }
-          },
-          markPoint: {
-            data: data.dcu60Point
-          }
-        },
-        {
-          name: '20日最低',
-          type: 'line',
-          data: data.dcl20Data,
-          smooth: true,
-          showSymbol: false,
-          lineStyle: {
-            normal: {
-              color: '#014EA2',
-              width: 1
-            }
-          },
-          itemStyle: {
-            normal: {
-              color: '#014EA2'
-            }
-          },
-          markPoint: {
-            data: data.dcl20Point
-          }
-        },
-        {
           name: 'ATR',
           type: 'line',
           data: data.atrData,
@@ -382,6 +221,176 @@ class StockChart extends React.Component {
           yAxisIndex: 1,
         }
       ]
+
+    let vip_series = [
+      {
+        name: '20日最高',
+        type: 'line',
+        data: data.dcu20Data,
+        smooth: true,
+        showSymbol: false,
+        lineStyle: {
+          normal: {
+            color: '#014EA2',
+            width: 1
+          }
+        },
+        itemStyle: {
+          normal: {
+            color: '#014EA2'
+          }
+        },
+        markPoint: {
+          data: data.dcu20Point
+        }
+      },
+      {
+        name: '10日最低',
+        type: 'line',
+        data: data.dcl10Data,
+        smooth: true,
+        showSymbol: false,
+        lineStyle: {
+          normal: {
+            color: '#014EA2',
+            width: 1
+          }
+        },
+        itemStyle: {
+          normal: {
+            color: '#014EA2'
+          }
+        },
+        markPoint: {
+          data: data.dcl10Point
+        }
+      },
+      {
+        name: '60日最高',
+        type: 'line',
+        data: data.dcu60Data,
+        smooth: true,
+        showSymbol: false,
+        lineStyle: {
+          normal: {
+            color: '#014EA2',
+            width: 1
+          }
+        },
+        itemStyle: {
+          normal: {
+            color: '#014EA2'
+          }
+        },
+        markPoint: {
+          data: data.dcu60Point
+        }
+      },
+      {
+        name: '20日最低',
+        type: 'line',
+        data: data.dcl20Data,
+        smooth: true,
+        showSymbol: false,
+        lineStyle: {
+          normal: {
+            color: '#014EA2',
+            width: 1
+          }
+        },
+        itemStyle: {
+          normal: {
+            color: '#014EA2'
+          }
+        },
+        markPoint: {
+          data: data.dcl20Point
+        }
+      }
+    ]
+
+    if (CONFIG['is_vip']) {
+      series = series.concat(vip_series)
+    }
+
+    return {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross'
+        },
+        borderWidth: 1,
+        borderColor: '#ccc',
+        padding: 10,
+        position: function (pos, params, el, elRect, size) {
+          let obj = {top: 10}
+          obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30
+          return obj;
+        },
+        extraCssText: 'width: 170px'
+      },
+      axisPointer: {
+        link: {xAxisIndex: 'all'},
+        label: {
+          backgroundColor: '#777'
+        }
+      },
+      legend: {
+        data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30', '20日最高', '10日最低', '60日最高', '20日最低'],
+        selected: {'60日最高': false, '20日最低': false}
+      },
+      grid: [
+        {
+          top: '8%',
+          left: '5%',
+          right: '5%',
+          bottom: '25%'
+        },
+        {
+          left: '5%',
+          right: '5%',
+          top: '82%',
+          height: '8%'
+        }
+      ],
+      xAxis: [
+        {
+          type: 'category',
+          data: data.categoryData,
+          axisLine: { lineStyle: { color: '#8392A5' } }
+        },
+        {
+          gridIndex: 1,
+          type: 'category',
+          data: data.categoryData,
+          show: false,
+        }
+      ],
+      yAxis: [
+        {
+          scale: true,
+          splitArea: {
+            show: true
+          }
+        },
+        {
+          gridIndex: 1,
+          type: 'value',
+        }
+      ],
+      dataZoom: [
+        {
+          start: (1 - 120 / data.categoryData.length) * 100,
+          end: 100,
+          xAxisIndex: [0, 1]
+        },
+        {
+          start: (1 - 120 / data.categoryData.length) * 100,
+          end: 100,
+          xAxisIndex: [0, 1]
+        },
+      ],
+      series: series
     }
   }
 

@@ -36,7 +36,7 @@
           <div class="navbar-start">
             <%= link "股票列表", to: stock_path(@conn, :index), class: "navbar-item" %>
             <%= link "股票关注列表", to: stock_path(@conn, :star_index), class: "navbar-item" %>
-            <%= link "计算器", to: stock_path(@conn, :new_counter), class: "navbar-item", target: "_blank" %>
+            <%= link "(VIP)计算器", to: stock_path(@conn, :new_counter), class: "navbar-item", target: "_blank" %>
           </div>
         </div>
 
@@ -65,8 +65,13 @@
     </div>
 
     <div class="container">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+      <%= if get_flash(@conn, :info) do %>
+      <p class="notification is-info"><%= get_flash(@conn, :info) %></p>
+      <% end %>
+
+      <%= if get_flash(@conn, :error) do %>
+      <p class="notification is-danger"><%= get_flash(@conn, :error) %></p>
+      <% end %>
 
       <main role="main">
         <%= render @view_module, @view_template, assigns %>

@@ -3,9 +3,7 @@ defmodule TradingSystem.Web.SettingController do
 
   alias TradingSystem.Accounts
 
-  plug Guardian.Plug.EnsureAuthenticated, 
-    [handler: TradingSystem.Web.Guardian.ErrorHandler]
-    when action in [:index, :show, :update]
+  plug Guardian.Plug.EnsureAuthenticated, [handler: TradingSystem.Web.Guardian.ErrorHandler]
 
   def index(conn, _params) do
     conn

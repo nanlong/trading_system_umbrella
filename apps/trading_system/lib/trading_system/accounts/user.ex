@@ -22,7 +22,7 @@ defmodule TradingSystem.Accounts.User do
   end
 
   @required_fields ~w(email password password_confirmation)a
-  @optional_fields ~w()
+  @optional_fields ~w(vip_expire)
   @regex_email ~r/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/
 
   @doc false
@@ -36,6 +36,7 @@ defmodule TradingSystem.Accounts.User do
     |> validate_confirmation(:password, message: "两次输入密码不一致")
     |> put_password_hash
     |> put_nickname
+    |> put_vip(30)
   end
 
   def changeset_profile(%User{} = user, attrs) do
@@ -82,5 +83,11 @@ defmodule TradingSystem.Accounts.User do
     else
       add_error(changeset, field, message)
     end
+  end
+
+  defp put_vip(%{valid?: false} = changeset, _days), do: changeset
+  defp put_vip(changeset, days) do
+    vip_expire = Timex.add(Timex.now, Timex.Duration.from_days(days)) |> Timex.to_datetime()
+    put_change(changeset, :vip_expire, vip_expire)
   end
 end

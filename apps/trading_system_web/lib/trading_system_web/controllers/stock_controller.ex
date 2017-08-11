@@ -1,8 +1,22 @@
 defmodule TradingSystem.Web.StockController do
   use TradingSystem.Web, :controller
 
+  alias TradingSystem.Accounts
   alias TradingSystem.Stocks
   alias TradingSystem.Stocks.Counter
+
+  plug Guardian.Plug.EnsureAuthenticated, [handler: TradingSystem.Web.Guardian.ErrorHandler]
+  plug :vip when action in [:new_counter, :post_counter]
+
+  def vip(conn, _params) do
+    if Accounts.vip?(conn.assigns.current_user) do
+      conn
+    else
+      conn
+      |> render(:vip)
+      |> halt()
+    end
+  end
 
   def index(conn, _params) do
     conn
@@ -13,18 +27,17 @@ defmodule TradingSystem.Web.StockController do
   def show(conn, %{"symbol" => symbol}) do
     stock = Stocks.get_stock!(symbol)
     state = Stocks.get_last_stock_state(symbol)
-    account = 100000
     
     config = %{
       symbol: symbol,
       isBlacklist: Stocks.blacklist?(symbol),
       isStar: Stocks.star?(symbol),
+      is_vip: TradingSystem.Web.Helpers.vip?(conn.assigns.current_user)
     }
 
     conn
     |> assign(:title, stock.cname)
     |> assign(:config, config)
-    |> assign(:account, account)
     |> assign(:stock, stock)
     |> assign(:state, state)
     |> render(:show)

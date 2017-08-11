@@ -19,6 +19,18 @@
   </div>
 </div>
 
+<div class="hero is-danger" style="margin-bottom: 20px;">
+  <div class="hero-body">
+    <div class="container">
+      <p class="title">
+        新会员注册!
+      </p>
+      <p class="subtitle">
+        自动获得30天VIP权限
+      </p>
+    </div>
+  </div>
+</div>
 
 <div class="columns">
   <div class="column">
@@ -54,4 +66,16 @@
       </ul>
     </div>
   </div>
+  <div class="column">
+    <div class="box">
+      <h1>VIP权限</h1>
+      <ul>
+        <li>日K图中显示唐奇安通道</li>
+        <li>股票详情页展示资金管理</li>
+        <li>开放资金管理计算器</li>
+        <li>更多功能，敬请期待...</li>
+      </ul>
+    </div>
+  </div>
 </div>
+
