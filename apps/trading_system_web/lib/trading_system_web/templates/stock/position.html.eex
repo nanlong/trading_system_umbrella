@@ -1,5 +1,6 @@
 | 操作方向: <%= if Decimal.cmp(@state.ma50, @state.ma300) == :gt, do: "做多", else: "做空" %>
 | ATR: <%= @state.atr20 %>
+| 资金总量: <%= @user_config.account |> float_to_string %>
 | 触及止损价会损失总资金的 <%= @user_config.atr_account_ratio * @user_config.atr_stop_step %>%
 <table class="table">
   <thead>
