@@ -18,9 +18,14 @@ defmodule TradingSystem.Web.StockController do
     end
   end
 
-  def index(conn, _params) do
+  def index(conn, params) do
+    page = Stocks.stocks_paginate(params)
+    
     conn
     |> assign(:title, "股票列表")
+    |> assign(:params, params)
+    |> assign(:date, Stocks.get_stock_state_last_date())
+    |> assign(:page, page)
     |> render(:index)
   end
 

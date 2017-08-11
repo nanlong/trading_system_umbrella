@@ -40,6 +40,8 @@ defmodule TradingSystem.Web do
       import TradingSystem.Web.ErrorHelpers
       import TradingSystem.Web.Gettext
       import TradingSystem.Web.Helpers
+
+      import Scrivener.HTML
     end
   end
 

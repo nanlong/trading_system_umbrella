@@ -143,6 +143,28 @@ defmodule TradingSystem.Stocks do
     |> Repo.all()
   end
   
+  def stocks_paginate(params) do
+    date = get_stock_state_last_date()
+
+    query =
+      Stock
+      |> order_by(desc: :volume)
+      |> join(:inner, [stock], state in StockState, stock.symbol == state.symbol and state.date == ^date)
+      |> join(:inner, [stock], dailyk in StockDailyK, stock.symbol == dailyk.symbol and dailyk.date == ^date)
+      |> select([stock, state, dailyk], {stock, state, dailyk})
+    
+    query =
+      if Map.get(params, "q") do
+        q = "%#{Map.get(params, "q")}%"
+
+        query
+        |> where([stock], ilike(stock.symbol, ^q) or ilike(stock.name, ^q) or ilike(stock.cname, ^q))
+      else
+        query
+      end
+
+    Repo.paginate(query, params)
+  end
 
   def get_stock_state_last_date do
     (from s in StockState, select: s.date, order_by: [desc: :date]) |> first() |> Repo.one()

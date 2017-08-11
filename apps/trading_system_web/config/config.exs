@@ -38,6 +38,12 @@ config :guardian, Guardian,
   secret_key: "ptpsaF+erxh8Lo9/tl5UilXZfgbyAwnx7exifvod4uIABa8gc5Qf/tw768h5azaO",
   serializer: TradingSystem.Accounts.GuardianSerializer
 
+
+config :scrivener_html,
+  routes_helper: TradingSystem.Web.Router.Helpers,
+  # If you use a single view style everywhere, you can configure it here. See View Styles below for more info.
+  view_style: :bulma
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

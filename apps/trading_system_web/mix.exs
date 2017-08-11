@@ -47,6 +47,7 @@ defmodule TradingSystem.Web.Mixfile do
       {:poison, "~> 3.1"},
       {:timex, "~> 3.1"},
       {:guardian, "~> 0.14"},
+      {:scrivener_html, "~> 1.7"},
     ]
   end
 

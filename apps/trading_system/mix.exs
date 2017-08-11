@@ -38,6 +38,7 @@ defmodule TradingSystem.Mixfile do
       {:progress_bar, "~> 1.6"},
       {:comeonin, "~> 4.0"},
       {:bcrypt_elixir, "~> 0.12.0"},
+      {:scrivener_ecto, "~> 1.0"},
     ]
   end
 
