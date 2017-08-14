@@ -33,14 +33,24 @@ defmodule TradingSystem.Web.StockController do
     stock = Stocks.get_stock!(symbol)
     state = Stocks.get_last_stock_state(symbol)
     
+    user_config =
+      Accounts.get_config(user_id: conn.assigns.current_user.id)
+      |> Map.from_struct()
+      |> Map.delete(:__meta__)
+      |> Map.delete(:id)
+      |> Map.delete(:user_id)
+      |> Map.delete(:inserted_at)
+      |> Map.delete(:updated_at)
+
     config = %{
       symbol: symbol,
       tread: (if Decimal.cmp(state.ma50, state.ma300) == :gt, do: "bull", else: "bear"),
       isBlacklist: Stocks.blacklist?(symbol),
       isStar: Stocks.star?(symbol),
       isVip: Accounts.vip?(conn.assigns.current_user),
+      userConfig: user_config,
     }
-
+    
     conn
     |> assign(:title, stock.cname)
     |> assign(:config, config)
