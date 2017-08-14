@@ -19,6 +19,10 @@ defmodule TradingSystem.Web.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :graphql do
+    plug TradingSystem.Graphql.Context
+  end
+
   scope "/", TradingSystem.Web do
     pipe_through [:browser, :browser_session] # Use the default browser stack
 
@@ -43,11 +47,19 @@ defmodule TradingSystem.Web.Router do
     get "/star", StockController, :star_index
   end
 
-  forward "/api", Absinthe.Plug,
-    schema: TradingSystem.Graphql.Schema
+  scope "/api" do
+    pipe_through [:graphql]
 
-  forward "/graphiql", Absinthe.Plug.GraphiQL,
-    schema: TradingSystem.Graphql.Schema
+    forward "/", Absinthe.Plug,
+      schema: TradingSystem.Graphql.Schema
+  end
+
+  scope "/graphiql" do
+    pipe_through [:graphql]
+
+    forward "/", Absinthe.Plug.GraphiQL,
+      schema: TradingSystem.Graphql.Schema
+  end
 
   # Other scopes may use custom stacks.
   # scope "/api", TradingSystem.Web do

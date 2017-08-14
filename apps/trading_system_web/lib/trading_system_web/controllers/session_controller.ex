@@ -18,6 +18,7 @@ defmodule TradingSystem.Web.SessionController do
       {:ok, user} ->
         conn
         |> Guardian.Plug.sign_in(user)
+        |> put_resp_cookie("token", Accounts.sign_token(user), [http_only: false])
         |> put_flash(:info, "登录成功.")
         |> redirect(to: page_path(conn, :index))
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -31,6 +32,7 @@ defmodule TradingSystem.Web.SessionController do
   def delete(conn, _params) do
     conn
     |> Guardian.Plug.sign_out()
+    |> delete_resp_cookie("token")
     |> put_flash(:info, "退出登录.")
     |> redirect(to: page_path(conn, :index))
   end

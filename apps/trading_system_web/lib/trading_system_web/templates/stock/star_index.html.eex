@@ -1,3 +1,41 @@
-<div id="stock-star-list">
-  
+<div class="columns">
+  <div class="column">
+    <div>
+      <table class="table is-bordered is-striped is-narrow is-fullwidth">
+        <tr>
+          <th>代码</th>
+          <th>名称</th>
+          <th>行业</th>
+          <th>开盘价</th>
+          <th>收盘价</th>
+          <th>20日最高</th>
+          <th>10日最低</th>
+          <th>60日最高</th>
+          <th>20日最低</th>
+          <th>ATR</th>
+          <th>成交量</th>
+          <th></th>
+        </tr>
+        <%= for {stock, state, dailyk} <- @page do %>
+        <tr>
+          <td><%= stock.symbol %></td>
+          <td><%= stock.cname %></td>
+          <td><%= stock.category %></td>
+          <td><%= dailyk.open %></td>
+          <td><%= dailyk.close %></td>
+          <td><%= state.dcu20 %></td>
+          <td><%= state.dcl10 %></td>
+          <td><%= state.dcu60 %></td>
+          <td><%= state.dcl20 %></td>
+          <td><%= state.atr20 %></td>
+          <td><%= stock.volume %></td>
+          <td><%= link "查看", to: stock_path(@conn, :show, stock.symbol), target: "_blank" %></td>
+        </tr>
+        <% end %>
+      </table>
+      <%= if @page.total_pages > 1 do %>
+        <%= pagination_links @page, to_keyword(@params) |> Keyword.drop([:page]) %>
+      <% end %>
+    </div>
+  </div>
 </div>

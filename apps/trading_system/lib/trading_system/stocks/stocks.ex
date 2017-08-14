@@ -169,6 +169,27 @@ defmodule TradingSystem.Stocks do
         "bear" -> where(query, [_stock, state], state.ma50 < state.ma300)
         _ -> query
       end
+    
+    query =
+      if Map.get(params, "tab") == "blacklist" do
+        join(query, :inner, [stock], black in StockBlacklist, stock.symbol == black.symbol and black.user_id == ^Map.get(params, "user_id"))
+      else
+        where(query, [stock], fragment("? NOT IN (SELECT symbol FROM stock_blacklist where user_id = ?)", stock.symbol, type(^Map.get(params, "user_id"), Ecto.UUID)) )
+      end
+
+    Repo.paginate(query, params)
+  end
+
+  def stock_stars_paginate(params) do
+    date = get_stock_state_last_date()
+
+    query =
+      Stock
+      |> order_by(desc: :volume)
+      |> join(:inner, [stock], state in StockState, stock.symbol == state.symbol and state.date == ^date)
+      |> join(:inner, [stock], dailyk in StockDailyK, stock.symbol == dailyk.symbol and dailyk.date == ^date)
+      |> join(:inner, [stock], star in StockStar, stock.symbol == star.symbol and star.user_id == ^Map.get(params, "user_id"))
+      |> select([stock, state, dailyk], {stock, state, dailyk})
 
     Repo.paginate(query, params)
   end

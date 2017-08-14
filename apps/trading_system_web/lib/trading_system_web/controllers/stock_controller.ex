@@ -19,7 +19,7 @@ defmodule TradingSystem.Web.StockController do
   end
 
   def index(conn, params) do
-    page = Stocks.stocks_paginate(params)
+    page = Stocks.stocks_paginate(Map.put(params, "user_id", conn.assigns.current_user.id))
     
     conn
     |> assign(:title, "股票列表")
@@ -97,9 +97,13 @@ defmodule TradingSystem.Web.StockController do
     end
   end
 
-  def star_index(conn, _params) do
+  def star_index(conn, params) do
+    page = Stocks.stock_stars_paginate(Map.put(params, "user_id", conn.assigns.current_user.id))
+    
     conn
     |> assign(:title, "关注列表")
+    |> assign(:params, params)
+    |> assign(:page, page)
     |> render(:star_index)
   end
 end

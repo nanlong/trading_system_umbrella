@@ -45,6 +45,7 @@ defmodule TradingSystem.Accounts do
   def get_user!(email: email), do: Repo.get_by!(User, email: email)
   def get_user!(id), do: Repo.get!(User, id)
   def get_user(email: email), do: Repo.get_by(User, email: email)
+  def get_user(id), do: Repo.get(User, id)
   @doc """
   Creates a user.
 
@@ -254,5 +255,20 @@ defmodule TradingSystem.Accounts do
   """
   def change_config(%Config{} = config) do
     Config.changeset(config, %{})
+  end
+
+  def sign_token(user, token_name \\ "user_id") do
+    Phoenix.Token.sign(TradingSystem.Web.Endpoint, token_name, user.id)
+  end
+
+  def verify_token(token, token_name \\ "user_id", max_age \\ 60 * 60 * 12 * 30) do
+    case Phoenix.Token.verify(TradingSystem.Web.Endpoint, token_name, token, max_age: max_age) do
+      {:ok, user_id} -> 
+        case get_user(user_id) do
+          nil -> {:error, "invalid authorization token"}
+          user -> {:ok, user}
+        end
+      {:error, _} -> {:error, "invalid authorization token"}
+    end
   end
 end

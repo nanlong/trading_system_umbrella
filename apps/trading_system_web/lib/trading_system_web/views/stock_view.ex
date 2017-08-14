@@ -206,6 +206,7 @@ defmodule TradingSystem.Web.StockView do
       {"全部", "all", stock_path(conn, :index, tab: "all")},
       {"适合做多的", "bull", stock_path(conn, :index, tab: "bull")},
       {"适合做空的", "bear", stock_path(conn, :index, tab: "bear")},
+      {"黑名单", "blacklist", stock_path(conn, :index, tab: "blacklist")}
     ]
   end
 end
