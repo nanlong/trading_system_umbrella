@@ -10,6 +10,4 @@ defmodule TradingSystem.Graphql.StockStateResolver do
   def all(_args, _info) do
     {:ok, Stocks.list_stock_state()}
   end
-
-  defp timestamp, do: :os.system_time(:milli_seconds)
 end

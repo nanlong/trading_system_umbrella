@@ -18,7 +18,7 @@ defmodule TradingSystem.Web.StockView do
   ## Example
 
     iex> alias TradingSystem.Web.StockView
-    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40)}
+    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40), ma50: Decimal.new(1), ma300: Decimal.new(0)}
     iex> config = %{create_days: 20, atr_add_step: 0.5}
     iex> StockView.buy(state, config, 1)
     167.51
@@ -47,7 +47,7 @@ defmodule TradingSystem.Web.StockView do
   ## Example
 
     iex> alias TradingSystem.Web.StockView
-    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40)}
+    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40), ma50: Decimal.new(1), ma300: Decimal.new(0)}
     iex> config = %{create_days: 20, atr_add_step: 0.5}
     iex> StockView.buy_avg(state, config, 1)
     167.51
@@ -77,7 +77,7 @@ defmodule TradingSystem.Web.StockView do
   ## Example
 
     iex> alias TradingSystem.Web.StockView
-    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40)}
+    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40), ma50: Decimal.new(1), ma300: Decimal.new(0)}
     iex> config = %{create_days: 20, atr_add_step: 0.5, atr_stop_step: 4}
     iex> StockView.stop_loss(state, config, 1)
     145.91
@@ -128,7 +128,7 @@ defmodule TradingSystem.Web.StockView do
   ## Example
 
     iex> alias TradingSystem.Web.StockView
-    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40)}
+    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40), ma50: Decimal.new(1), ma300: Decimal.new(0)}
     iex> config = %{account: 100000, create_days: 20, atr_account_ratio: 0.5, atr_add_step: 0.5}
     iex> StockView.unit_cost(state, config, 1)
     15578.43
@@ -158,7 +158,7 @@ defmodule TradingSystem.Web.StockView do
   ## Example
 
     iex> alias TradingSystem.Web.StockView
-    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40)}
+    iex> state = %{dcu20: Decimal.new(167.51), atr20: Decimal.new(5.40), ma50: Decimal.new(1), ma300: Decimal.new(0)}
     iex> config = %{account: 100000, create_days: 20, atr_account_ratio: 0.5, atr_add_step: 0.5, position: 4}
     iex> StockView.all_cost(state, config)
     63820.32

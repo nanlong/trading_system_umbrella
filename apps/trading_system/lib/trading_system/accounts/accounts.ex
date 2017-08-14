@@ -8,7 +8,7 @@ defmodule TradingSystem.Accounts do
 
   alias TradingSystem.Accounts.User
 
-  def vip?(%{vip_expire: vip_expire} = user) when is_nil(vip_expire), do: false
+  def vip?(%{vip_expire: vip_expire}) when is_nil(vip_expire), do: false
   def vip?(user) do 
     now = DateTime.utc_now()
     vip_expire = DateTime.from_naive!(user.vip_expire, "Etc/UTC")
@@ -44,7 +44,7 @@ defmodule TradingSystem.Accounts do
   """
   def get_user!(email: email), do: Repo.get_by!(User, email: email)
   def get_user!(id), do: Repo.get!(User, id)
-  
+  def get_user(email: email), do: Repo.get_by(User, email: email)
   @doc """
   Creates a user.
 

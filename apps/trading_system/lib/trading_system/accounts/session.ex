@@ -22,12 +22,12 @@ defmodule TradingSystem.Accounts.Session do
 
   defp validate_user(%{valid?: false} = changeset), do: changeset
   defp validate_user(changeset) do
-    with email <- get_field(changeset, :email),
-      user <- Accounts.get_user!(email: email) do
-        put_change(changeset, :user, user)
-      else
-        {:error, _} -> add_error(changeset, :email, "用户不存在")
-      end
+    email = get_field(changeset, :email)
+
+    case Accounts.get_user(email: email) do
+      nil -> add_error(changeset, :email, "用户不存在")
+      user -> put_change(changeset, :user, user)
+    end
   end
 
   defp validate_password(%{valid?: false} = changeset), do: changeset
