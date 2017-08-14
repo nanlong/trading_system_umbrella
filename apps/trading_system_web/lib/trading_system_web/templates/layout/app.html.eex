@@ -14,7 +14,7 @@
       var CONFIG = {};
       <%= if assigns[:config] do %>
       <%= for {key, value} <- @config do %>
-      CONFIG['<%= key %>'] = <%= raw Poison.encode!(value) %>;
+      CONFIG["<%= key %>"] = <%= raw Poison.encode!(value) %>;
       <% end %>
       <% end %>
     </script>

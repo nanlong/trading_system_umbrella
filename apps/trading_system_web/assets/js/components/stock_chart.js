@@ -309,7 +309,7 @@ class StockChart extends React.Component {
       }
     ]
 
-    if (CONFIG['is_vip']) {
+    if (CONFIG['isVip']) {
       series = series.concat(vip_series)
     }
 

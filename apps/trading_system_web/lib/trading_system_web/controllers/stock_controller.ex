@@ -35,9 +35,10 @@ defmodule TradingSystem.Web.StockController do
     
     config = %{
       symbol: symbol,
+      tread: (if Decimal.cmp(state.ma50, state.ma300) == :gt, do: "bull", else: "bear"),
       isBlacklist: Stocks.blacklist?(symbol),
       isStar: Stocks.star?(symbol),
-      is_vip: Accounts.vip?(conn.assigns.current_user)
+      isVip: Accounts.vip?(conn.assigns.current_user),
     }
 
     conn
