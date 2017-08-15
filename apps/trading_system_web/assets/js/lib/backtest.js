@@ -35,7 +35,6 @@ class Backtest {
       }
     })
 
-    console.log(this.lineData)
     return this.lineData
   }
 
@@ -103,8 +102,6 @@ class Backtest {
   }
 
   stopLoss(dataItem) {
-    console.log(dataItem)
-    console.log(this.position)
     if (this.current_tread == this.position.tread) {
       const {date} = dataItem
       const price = this.position.stopLossPrice
