@@ -8,3 +8,11 @@ html {
 table {
   width: 100%;
 }
+.icon-vip {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: url('/images/icon/vip.png') no-repeat;
+  background-size: cover;
+  
+}

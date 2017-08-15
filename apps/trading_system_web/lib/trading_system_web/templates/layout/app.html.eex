@@ -36,7 +36,9 @@
           <div class="navbar-start">
             <%= link "股票列表", to: stock_path(@conn, :index), class: "navbar-item" %>
             <%= link "股票关注列表", to: stock_path(@conn, :star_index), class: "navbar-item" %>
-            <%= link "(VIP)计算器", to: stock_path(@conn, :new_counter), class: "navbar-item", target: "_blank" %>
+            <%= link to: stock_path(@conn, :new_counter), class: "navbar-item", target: "_blank" do %>
+              <span class="icon-vip"></span>计算器
+            <% end %>
           </div>
         </div>
 

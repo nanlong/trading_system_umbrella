@@ -48,7 +48,8 @@
   <%= if vip?(@current_user) do %>
   <div class="column">
     <div>
-      <span class="title is-4">(VIP)资金管理</span>
+      <span class="icon-vip"></span>
+      <span class="title is-4">资金管理</span>
       <span>当前日期: <%= DateTime.utc_now() |> DateTime.to_date() %></span>
       <span>数据日期: <%= @state.date %></span>
     </div>

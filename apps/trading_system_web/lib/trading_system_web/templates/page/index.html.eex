@@ -68,7 +68,7 @@
   </div>
   <div class="column">
     <div class="box">
-      <h1>VIP权限</h1>
+      <h1><span class="has-text-danger">VIP</span>权限</h1>
       <ul>
         <li>日K图中显示唐奇安通道</li>
         <li>股票详情页展示资金管理</li>
