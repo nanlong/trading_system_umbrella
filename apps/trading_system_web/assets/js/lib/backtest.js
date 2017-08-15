@@ -1,6 +1,6 @@
 class Backtest {
   constructor(data, config) {
-    this.data = data.slice(300, -1)
+    this.data = data.slice(300, data.length)
     this.config = config
     this.current_tread = this.tread(data[data.length - 1])
     this.lineData = []
@@ -38,6 +38,7 @@ class Backtest {
     return this.lineData
   }
 
+  // 执行建仓
   createPosition(dataItem) {
     const {date, atr} = dataItem
     const price = this.breakPoint(dataItem)
@@ -49,7 +50,7 @@ class Backtest {
       atr: atr,
       breakPrice: price,
       avgPrice: this.avgPrice(dataItem, price, atr, 1),
-      addPositionPrice: this.price(dataItem, price, atr, 2),
+      addPositionPrice: this.bidPrice(dataItem, price, atr, 2),
       stopLossPrice: this.stopLossPrice(dataItem, price, atr, 1),
     }
 
@@ -62,6 +63,7 @@ class Backtest {
     }
   }
 
+  // 执行加仓
   addPosition(dataItem) {
     const {tread, amount, unit, atr, breakPrice} = this.position
     const current_amount = amount + 1
@@ -73,11 +75,12 @@ class Backtest {
       atr: atr,
       breakPrice: breakPrice,
       avgPrice: this.avgPrice(dataItem, breakPrice, atr, current_amount),
-      addPositionPrice: this.price(dataItem, breakPrice, atr, current_amount + 1),
+      addPositionPrice: this.bidPrice(dataItem, breakPrice, atr, current_amount + 1),
       stopLossPrice: this.stopLossPrice(dataItem, breakPrice, atr, current_amount),
     }
   }
 
+  // 执行平仓
   closePosition(dataItem) {
     if (this.current_tread == this.position.tread) {
       const {date} = dataItem
@@ -101,6 +104,7 @@ class Backtest {
     }    
   }
 
+  // 执行止损
   stopLoss(dataItem) {
     if (this.current_tread == this.position.tread) {
       const {date} = dataItem
@@ -124,7 +128,8 @@ class Backtest {
     }
   }
   
-  price(dataItem, price, atr, position) {
+  // 买入价
+  bidPrice(dataItem, price, atr, position) {
     let num1 = price
     let num2 = atr * this.config.atr_add_step * (position - 1)
 
@@ -136,6 +141,7 @@ class Backtest {
     }
   }
 
+  // 平均价
   avgPrice(dataItem, price, atr, position) {
     if (position == 1) {
       return price
@@ -159,6 +165,7 @@ class Backtest {
     }
   }
 
+  // 止损价
   stopLossPrice(dataItem, price, atr, position) {
     let num1 = this.avgPrice(dataItem, price, atr, position)
     let num2 = atr * (this.config.atr_stop_step / position)
@@ -170,44 +177,66 @@ class Backtest {
       return num1 + num2
     }
   }
-
-  isBull(dataItem) {
-    return this.tread(dataItem) == 'bull'
-  }
-
+  
+  // 交易方向
   tread(dataItem) {
     const {ma50, ma300} = dataItem
     return ma50 > ma300 ? 'bull' : 'bear'
   }
 
-  // TODO: 正确判断价格
+  // 是否做多
+  isBull(dataItem) {
+    return this.tread(dataItem) == 'bull'
+  }
+
+  // 是否建仓
   isCreatePosition(dataItem) {
     const price = this.breakPoint(dataItem)
     const {lowest, highest} = dataItem
+    
     return lowest < price && price < highest
   }
 
-  // TODO: 正确判断价格
+  // 是否加仓
   isAddPosition(dataItem) {
     const price = this.position.addPositionPrice
     const {lowest, highest} = dataItem
-    return lowest < price && price < highest
+    
+    if (this.isBull(dataItem)) {
+      return price < highest
+    }
+    else {
+      return lowest < price
+    }
   }
 
-  // TODO: 正确判断价格
+  // 是否平仓
   isClosePosition(dataItem) {
     const price = this.closePoint(dataItem)
     const {lowest, highest} = dataItem
-    return lowest < price && price < highest
+
+    if (this.isBull(dataItem)) {
+      return lowest < price
+    }
+    else {
+      return price < highest
+    }
   }
 
-  // TODO: 正确判断价格
+  // 是否止损
   isStopLoss(dataItem) {
     const price = this.position.stopLossPrice
     const {lowest, highest} = dataItem
-    return lowest < price && price < highest
+    
+    if (this.isBull(dataItem)) {
+      return lowest < price
+    }
+    else {
+      return price < highest
+    }
   }
-  // 突破点
+
+  // 计算突破点
   breakPoint(dataItem) {
     const {dcu20, dcu60, dcl20, dcl60} = dataItem
 
@@ -231,7 +260,7 @@ class Backtest {
     }
   }
 
-  // 止盈点
+  // 计算止盈点
   closePoint(dataItem) {
     const {dcl10, dcl20, dcu10, dcu20} = dataItem
 
