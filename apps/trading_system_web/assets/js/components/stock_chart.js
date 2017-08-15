@@ -72,8 +72,8 @@ class StockChart extends React.Component {
       })
     }
 
-    let backtest = new Backtest(lineData, CONFIG['userConfig'])
-    let backtestData = backtest.run()
+    const backtest = new Backtest(lineData, CONFIG['userConfig'])
+    const backtestData = backtest.run()
     
     backtestData.map(x => {
       const {action, date, price} = x
@@ -94,8 +94,8 @@ class StockChart extends React.Component {
       source.pointData.push(this.markPoint(date, price, color))
     })
 
-    for (let i = 0; i < lineData.length; i++) {
-      const {date, open, close, highest, lowest, ma5, ma10, ma20, ma30, ma50, ma300, dcu60, dcu20, dcl20, dcl10, atr} = lineData[i]
+    lineData.map(x => {
+      const {date, open, close, highest, lowest, ma5, ma10, ma20, ma30, ma50, ma300, dcu60, dcu20, dcl20, dcl10, atr} = x
       source.categoryData.push(date)
       source.dailykData.push([open, close, lowest, highest])
       source.ma5Data.push(ma5)
@@ -109,7 +109,7 @@ class StockChart extends React.Component {
       source.dcl20Data.push(dcl20)
       source.dcl10Data.push(dcl10)
       source.atrData.push(atr)
-    }
+    })
 
     return source
   }
@@ -121,7 +121,7 @@ class StockChart extends React.Component {
           type: 'candlestick',
           data: data.dailykData,
           markPoint: {
-            data: data.pointData
+            data: CONFIG['isVip'] ? data.pointData : []
           }
         },
         {
