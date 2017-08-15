@@ -7,16 +7,14 @@ class StockBacktest extends React.Component {
   dataHandler(data) {
     let source = {
       xAxisData: [],
-      position: [],
-      account: [],
+      ratioData: []
     }
 
-    for (let i = 0; i < data.stockBacktest.length; i++) {
-      let item = data.stockBacktest[i]
-      source.xAxisData.push(item.date)
-      source.position.push(item.position * item.unit)
-      source.account.push(Math.ceil((item.account + item.marketCap - 10000) / 10000 * 1000) / 1000)
-    }
+    data.stockBacktest.map(x => {
+      const {date, ratio} = x
+      source.xAxisData.push(date)
+      source.ratioData.push(ratio)
+    })
 
     return source
   }
@@ -59,7 +57,7 @@ class StockBacktest extends React.Component {
           name: '累计收益率',
           type: 'line',
           stack: 'one',
-          data: data.account,
+          data: data.ratioData,
           barGap: '-100%'
         }
       ]
@@ -104,9 +102,9 @@ class StockBacktest extends React.Component {
     const data = this.dataHandler(this.props.data)
     const chart = echarts.init(this.refs.stockBacktest)
     const options = this.setChartOption(data)
-    const years = this.dateDiff(data.xAxisData[0], data.xAxisData[data.xAxisData.length - 1])
+    // const years = this.dateDiff(data.xAxisData[0], data.xAxisData[data.xAxisData.length - 1])
 
-    this.refs.yearYieldRate.innerText = this.yearYieldRate(data)
+    // this.refs.yearYieldRate.innerText = this.yearYieldRate(data)
 
     chart.setOption(options)
   }
@@ -125,13 +123,7 @@ const graphqlQuery = gql`
   query Backtest($symbol: String) {
     stockBacktest(symbol: $symbol) {
       date
-			initAccount
-    	account
-    	action
-    	price
-    	unit
-      position
-      marketCap
+			ratio
     }
   }
 `

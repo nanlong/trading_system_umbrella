@@ -1,234 +1,230 @@
 defmodule TradingKernel.Backtest do
-  @moduledoc """
-  回测
-  """
-  alias TradingKernel.Common
+
+  alias TradingSystem.Accounts
   alias TradingSystem.Stocks
-  alias Decimal, as: D
-  require Logger
+  alias TradingKernel.Common
 
-  def run(symbol, options \\ []) do
-    config = %{
-      begin_date: Keyword.get(options, :begin_date, Timex.shift(DateTime.utc_now(), years: -3) |> Timex.to_date),
-      account: Keyword.get(options, :account, 10000),
-      max_position: Keyword.get(options, :max_position, 4),
-      add_step: Keyword.get(options, :add_step, 0.5),
-      stop_step: Keyword.get(options, :stop_step, 4)
+
+  def run(symbol, user) do
+    {position, data, config} = init_data(symbol, user)
+    
+    trading(position, data, config, [])
+  end
+
+  def trading(_position, [], _config, results), do: results
+  def trading(position, [data | rest], config, results) do
+    position =
+      cond do
+        create_position?(position, data, config) -> create_position(position, data, config)
+        add_position?(position, data, config) -> add_position(position, data, config)
+        close_position?(position, data, config) -> close_position(position, data, config)
+        stop_loss?(position, data, config) -> stop_loss(position, data, config)
+        true -> position
+      end
+    
+    result = %{
+      date: data.date,
+      ratio: (cast(position, data) - config.account) / config.account
     }
+    
+    trading(position, rest, config, results ++ [result])
+  end
 
-    # 读取状态数据
-    state = Stocks.list_stock_state(symbol: symbol)
-    # 读取日线数据
-    dailyk = Stocks.list_stock_dailyk(symbol: symbol)
-    if length(dailyk) < 300 do
-      Logger.info "股票 #{symbol} 数据不足，跳过"
-      %{symbol: symbol, begin_date: nil, account: config.account, profit: 0}
+  def cast(%{amount: amount} = position, _data) when amount == 0, do: position.account
+  def cast(position, data) do
+    %{account: account, tread: tread, amount: amount, unit: unit, avg_price: avg_price} = position
+    %{close: close} = data
+    price = Decimal.to_float(close)
+
+    if tread == :bull do
+      account + price * unit * amount
     else
-      start_index = Enum.find_index(dailyk, fn x -> Date.compare(x.date, config.begin_date) == :gt end)
-      data = Enum.zip(dailyk, state) |> Enum.slice(start_index..-1)
-
-      run(data, config, %{}, {})
+      account + (avg_price * 2 - price) * unit * amount
     end
   end
 
-  def run([], config, %{position: position} = status, history) when position > 0 do
-    begin_date = Map.get(status, :begin_date)
-    symbol = Map.get(status, :symbol)
-    buy = Map.get(status, :buy, 0)
-    atr = Map.get(status, :atr, 0)
-    unit = Map.get(status, :unit, 0)
-    position = Map.get(status, :position, 0)
-    now_account = (status.account + Common.buy_avg(buy, atr, position: position, add_step: config.add_step) * unit * position) |> Float.round(2) 
+  def init_data(symbol, user) do
+    config = Accounts.get_config(user_id: user.id)
+    list_dailyk = Stocks.list_stock_dailyk(symbol: symbol)
+    list_state = Stocks.list_stock_state(symbol: symbol)
 
+    data = 
+      Enum.zip(list_dailyk, list_state)
+      |> Enum.map(fn({dailyk, state}) -> 
+        dailyk_map = Map.from_struct(dailyk)
+        state_map = Map.from_struct(state)
+        Map.merge(dailyk_map, state_map)
+      end)
+      |> Enum.slice(300..-1)
+    
+    {init_position(config.account), data, config}
+  end
+
+  def init_position(account) do
     %{
-      symbol: symbol,
-      begin_date: begin_date,
-      account: config.account,
-      profit: Float.round(now_account - config.account, 2),
-      history: history,
+      account: account,
+      tread: "",
+      amount: 0,
+      unit: 0,
+      atr: 0,
+      break_price: 0,
+      avg_price: 0,
+      add_position_price: 0,
+      stop_loss_price: 0,
     }
   end
-  def run([], config, status, history) do
-    begin_date = Map.get(status, :begin_date)
-    symbol = Map.get(status, :symbol)
+
+  def create_position(position, data, config) do
+    %{account: account} = position
+    tread = tread(data)
+    break_price = break_point(data, config)
+    atr = data.atr20 |> Decimal.to_float()
+    unit = Common.unit(config.account, atr, config.atr_account_ratio)
+    opts = [
+      tread: tread, 
+      position: 1, 
+      add_step: config.atr_add_step, 
+      stop_step: config.atr_stop_step,
+      atr_account_ratio: config.atr_account_ratio
+    ]    
 
     %{
-      symbol: symbol,
-      begin_date: begin_date,
-      account: config.account,
-      profit: Float.round(status.account - config.account, 2),
-      history: history
+      account: account - Common.unit_cost(account, break_price, atr, opts),
+      tread: tread,
+      amount: 1,
+      unit: unit,
+      atr: atr,
+      break_price: break_price,
+      avg_price: break_price,
+      add_position_price: Common.buy(break_price, atr, Keyword.put(opts, :position, 2)),
+      stop_loss_price: Common.stop_loss(break_price, atr, opts)
     }
   end
-  def run([{dailyk, state} | rest], config, status, history) do
-    {status, history} =
-      cond do
-        is_create_position?(dailyk, state, status) ->
-          # IO.inspect "#{dailyk.date} 建仓"
-          begin_date = Map.get(status, :begin_date, state.date)
-          account = Map.get(status, :account, config.account)
-          atr = D.to_float(state.atr20)
-          buy = D.to_float(state.dcu20)
-          position = 1
-          unit = Common.unit(account, atr)
-          surplus = (account - Common.unit_cost(account, buy, atr, position: position, add_step: config.add_step)) |> Float.round
-          
-          status =
-            status
-            |> Map.put(:begin_date, begin_date)
-            |> Map.put(:symbol, state.symbol)
-            |> Map.put(:date, state.date)
-            |> Map.put(:position, position)
-            |> Map.put(:unit, unit)
-            |> Map.put(:atr, atr)
-            |> Map.put(:buy, buy)
-            |> Map.put(:stop_loss, Common.stop_loss(buy, atr, position: position, add_step: config.add_step, stop_step: config.stop_step))
-            |> Map.put(:init_account, account)
-            |> Map.put(:account, surplus)
-            
 
-          history = Tuple.append(history, %{
-            date: state.date,
-            action: "create",
-            init_account: account,
-            account: surplus,
-            price: buy,
-            unit: unit,
-            position: position,
-            market_cap: market_cap(dailyk.close, unit * position),
-          })
+  def add_position(position, _data, config) do
+    %{account: account, tread: tread, amount: amount, unit: unit, atr: atr, break_price: break_price} = position
+    amount = amount + 1
+    opts = [
+      tread: tread, 
+      position: amount, 
+      add_step: config.atr_add_step, 
+      stop_step: config.atr_stop_step,
+      atr_account_ratio: config.atr_account_ratio
+    ]
 
-          {status, history}
+    %{
+      account: account - Common.unit_cost(account, break_price, atr, opts),
+      tread: tread,
+      amount: amount,
+      unit: unit,
+      atr: atr,
+      break_price: break_price,
+      avg_price: Common.buy_avg(break_price, atr, opts),
+      add_position_price: Common.buy(break_price, atr, Keyword.update!(opts, :position, &(&1 + 1))),
+      stop_loss_price: Common.stop_loss(break_price, atr, opts)
+    }
+  end
 
-        is_add_position?(dailyk, status, config) ->
-          # IO.inspect "#{dailyk.date} 加仓"
-          init_account = Map.get(status, :init_account)
-          account = Map.get(status, :account, 0)
-          buy = Map.get(status, :buy, 0)
-          atr = Map.get(status, :atr, 0)
-          position = Map.get(status, :position, 0) + 1
-          unit = Map.get(status, :unit)
-          surplus = (account - Common.unit_cost(init_account, buy, atr, position: position, add_step: config.add_step)) |> Float.round
+  def close_position(position, data, config) do
+    %{account: account, tread: tread, amount: amount, unit: unit, avg_price: avg_price} = position
+    price = close_point(data, config)
 
-          status =
-            status
-            |> Map.put(:position, position)
-            |> Map.put(:stop_loss, Common.stop_loss(buy, atr, position: position, add_step: config.add_step, stop_step: config.stop_step))
-            |> Map.put(:account, surplus)
+    account =
+      if tread == :bull do
+        account + price * unit * amount
+      else
+        account + (avg_price * 2 - price) * unit * amount
+      end
+      
+    init_position(account)
+  end
 
-          history = Tuple.append(history, %{
-            date: state.date,
-            action: "add",
-            init_account: init_account,
-            account: surplus,
-            price: Common.buy(buy, atr, position: position, add_step: config.add_step),
-            unit: Map.get(status, :unit),
-            position: position,
-            market_cap: market_cap(dailyk.close, unit * position),
-          })
+  def stop_loss(position, _data, _config) do
+    %{account: account, tread: tread, amount: amount, unit: unit, avg_price: avg_price, stop_loss_price: stop_loss_price} = position
 
-          {status, history}
-
-        is_stop_loss?(dailyk, status) ->
-          # IO.inspect "#{dailyk.date} 止损, 卖出价格: #{Map.get(status, :stop_loss)}"
-          sell = (Map.get(status, :stop_loss) * Map.get(status, :unit) * Map.get(status, :position)) |> Float.round(2)
-          surplus = (Map.get(status, :account) + sell) |> Float.round
-
-          status =
-            status
-            |> Map.put(:position, 0)
-            |> Map.put(:account, surplus)
-
-          history = Tuple.append(history, %{
-            date: state.date,
-            action: "stop loss",
-            init_account: Map.get(status, :init_account),
-            account: surplus,
-            price: Map.get(status, :stop_loss),
-            unit: Map.get(status, :unit),
-            position: Map.get(status, :position),
-            market_cap: 0,
-          })
-
-          {status, history}
-          
-        is_stop_profit?(dailyk, state, status) ->
-          # IO.inspect "#{dailyk.date} 止盈, 卖出价格：#{state.dcl10}"
-          sell = (D.to_float(state.dcl10) * Map.get(status, :unit) * Map.get(status, :position)) |> Float.round(2)
-          surplus = (Map.get(status, :account) + sell) |> Float.round
-
-          status = 
-            status
-            |> Map.put(:position, 0)
-            |> Map.put(:account, surplus)
-
-          history = Tuple.append(history, %{
-            date: state.date,
-            action: "stop profit",
-            init_account: Map.get(status, :init_account),
-            account: surplus,
-            price: D.to_float(state.dcl10),
-            unit: Map.get(status, :unit),
-            position: Map.get(status, :position),
-            market_cap: 0
-          })
-
-          {status, history}
-
-        true ->
-          init_history_item = %{
-            date: state.date,
-            action: "empty",
-            init_account: config.account,
-            account: config.account,
-            price: 0,
-            unit: 0,
-            position: 0,
-            market_cap: 0
-          }
-
-          history_item = if tuple_size(history) > 0, do: elem(history, tuple_size(history) - 1), else: init_history_item
-          history_item = Map.put(history_item, :market_cap, market_cap(dailyk.close, Map.get(status, :position, 0) * Map.get(status, :unit, 0)))
-
-          history = Tuple.append(history, history_item)
-          {status, history}
+    account =
+      if tread == :bull do
+        account + stop_loss_price * unit * amount
+      else
+        account + (avg_price * 2 - stop_loss_price) * unit * amount
       end
 
-    run(rest, config, status, history)
+    init_position(account)
   end
 
-  defp market_cap(price, amount) do
-    D.to_float(price) * amount |> Float.round(2)
+  def create_position?(position, data, config) do
+    price = break_point(data, config)
+    %{lowest: lowest, highest: highest} = data
+
+    position.amount == 0 && 
+    Decimal.to_float(lowest) < price && 
+    price < Decimal.to_float(highest)
   end
 
-  defp is_create_position?(dailyk, state, status) do
-    D.cmp(state.ma50, state.ma300) == :gt and 
-    D.cmp(dailyk.highest, state.dcu20) == :gt and
-    Map.get(status, :position, 0) == 0
+  def add_position?(position, data, config) do
+    price = position.add_position_price
+    %{lowest: lowest, highest: highest} = data
+
+    position.amount > 0 &&
+    position.amount < config.position && 
+    (if bull?(data), do: price < Decimal.to_float(highest), else: Decimal.to_float(lowest) < price)
   end
 
-  defp is_add_position?(dailyk, status, config) do
-    init_account = Map.get(status, :init_account)
-    account = Map.get(status, :account, 0)
-    buy = Map.get(status, :buy, 0)
-    atr = Map.get(status, :atr, 0)
-    position = Map.get(status, :position, 0)
-    break = Common.buy(buy, atr, position: position + 1, add_step: config.add_step)
+  def close_position?(position, data, config) do
+    price = close_point(data, config)
+    %{lowest: lowest, highest: highest} = data
 
-    position > 0 and
-    position < config.max_position and
-    account > Common.unit_cost(init_account, buy, atr, position: position + 1, add_step: config.add_step) and
-    D.to_float(dailyk.highest) > break
+    position.amount > 0 &&
+    (if bull?(data), do: Decimal.to_float(lowest) < price, else: price < Decimal.to_float(highest))
   end
 
-  defp is_stop_loss?(dailyk, status) do
-    Map.get(status, :position, 0) > 0 and
-    Map.get(status, :stop_loss, 0) > D.to_float(dailyk.lowest)
+  def stop_loss?(position, data, _config) do
+    price = position.stop_loss_price
+    %{lowest: lowest, highest: highest} = data
+
+    position.amount > 0 &&
+    (if bull?(data), do: Decimal.to_float(lowest) < price, else: price < Decimal.to_float(highest))
   end
 
-  defp is_stop_profit?(dailyk, state, status) do
-    Map.get(status, :position, 0) > 0 and
-    D.cmp(dailyk.lowest, state.dcl10) == :lt
+  def break_point(data, config) do
+    %{dcu20: dcu20, dcu60: dcu60, dcl20: dcl20, dcl60: dcl60} = data
+
+    if bull?(data) do
+      case config.create_days do
+        20 -> dcu20
+        60 -> dcu60
+      end
+    else
+      case config.create_days do
+        20 -> dcl20
+        60 -> dcl60
+      end
+    end
+    |> Decimal.to_float()
+  end
+
+  def close_point(data, config) do
+    %{dcl10: dcl10, dcl20: dcl20, dcu10: dcu10, dcu20: dcu20} = data
+
+    if bull?(data) do
+      case config.close_days do
+        10 -> dcl10
+        20 -> dcl20
+      end
+    else
+      case config.close_days do
+        10 -> dcu10
+        20 -> dcu20
+      end
+    end
+    |> Decimal.to_float()
+  end
+
+  def tread(data) do
+    if bull?(data), do: :bull, else: :bear
+  end
+
+  def bull?(data) do
+    data.ma50 > data.ma300
   end
 end
-
