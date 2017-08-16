@@ -94,7 +94,7 @@ class StockBacktest extends React.Component {
 
   yearYieldRate(data) {
     const years = this.dateDiff(data.xAxisData[0], data.xAxisData[data.xAxisData.length - 1])
-    const yieldRate = data.account[data.account.length - 1]
+    const yieldRate = data.ratioData[data.ratioData.length - 1]
     return Math.ceil(yieldRate / years * 10000) / 100
   }
 
@@ -102,17 +102,19 @@ class StockBacktest extends React.Component {
     const data = this.dataHandler(this.props.data)
     const chart = echarts.init(this.refs.stockBacktest)
     const options = this.setChartOption(data)
-    // const years = this.dateDiff(data.xAxisData[0], data.xAxisData[data.xAxisData.length - 1])
+    const years = this.dateDiff(data.xAxisData[0], data.xAxisData[data.xAxisData.length - 1])
 
-    // this.refs.yearYieldRate.innerText = this.yearYieldRate(data)
-
+    this.refs.yearYieldRate.innerText = this.yearYieldRate(data)
     chart.setOption(options)
   }
 
   render() {
     return (
       <div>
-        <div>最近三年年化收益率: <span ref="yearYieldRate"></span>%</div>
+        <div>
+          <strong className="is-size-5">最近3年年化收益率: <span ref="yearYieldRate"></span>%</strong>
+          (收益率计算过程中包括做空和做多)
+        </div>
         <div ref="stockBacktest" style={{width: '100%', height: '220px'}}></div>
       </div>
     )

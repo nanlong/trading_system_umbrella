@@ -7,7 +7,6 @@ defmodule TradingKernel.Backtest do
 
   def run(symbol, user) do
     {position, data, config} = init_data(symbol, user)
-    
     trading(position, data, config, [])
   end
 
@@ -24,7 +23,9 @@ defmodule TradingKernel.Backtest do
     
     result = %{
       date: data.date,
-      ratio: (cast(position, data) - config.account) / config.account
+      cast: cast(position, data),
+      ratio: Float.round((cast(position, data) - config.account) / config.account, 2),
+      position: position,
     }
     
     trading(position, rest, config, results ++ [result])
@@ -47,6 +48,7 @@ defmodule TradingKernel.Backtest do
     config = Accounts.get_config(user_id: user.id)
     list_dailyk = Stocks.list_stock_dailyk(symbol: symbol)
     list_state = Stocks.list_stock_state(symbol: symbol)
+    begin_date = Timex.shift(DateTime.utc_now(), years: -3) |> Timex.to_date()
 
     data = 
       Enum.zip(list_dailyk, list_state)
@@ -55,7 +57,7 @@ defmodule TradingKernel.Backtest do
         state_map = Map.from_struct(state)
         Map.merge(dailyk_map, state_map)
       end)
-      |> Enum.slice(300..-1)
+      |> Enum.filter(&(Date.compare(&1.date, begin_date) == :gt))
     
     {init_position(config.account), data, config}
   end
@@ -79,7 +81,7 @@ defmodule TradingKernel.Backtest do
     tread = tread(data)
     break_price = break_point(data, config)
     atr = data.atr20 |> Decimal.to_float()
-    unit = Common.unit(config.account, atr, config.atr_account_ratio)
+    unit = Common.unit(account, atr, config.atr_account_ratio)
     opts = [
       tread: tread, 
       position: 1, 
@@ -87,9 +89,9 @@ defmodule TradingKernel.Backtest do
       stop_step: config.atr_stop_step,
       atr_account_ratio: config.atr_account_ratio
     ]    
-
+    
     %{
-      account: account - Common.unit_cost(account, break_price, atr, opts),
+      account: account - break_price * unit,
       tread: tread,
       amount: 1,
       unit: unit,
@@ -102,7 +104,7 @@ defmodule TradingKernel.Backtest do
   end
 
   def add_position(position, _data, config) do
-    %{account: account, tread: tread, amount: amount, unit: unit, atr: atr, break_price: break_price} = position
+    %{account: account, tread: tread, amount: amount, unit: unit, atr: atr, break_price: break_price, add_position_price: add_position_price} = position
     amount = amount + 1
     opts = [
       tread: tread, 
@@ -113,7 +115,7 @@ defmodule TradingKernel.Backtest do
     ]
 
     %{
-      account: account - Common.unit_cost(account, break_price, atr, opts),
+      account: account - add_position_price * unit,
       tread: tread,
       amount: amount,
       unit: unit,
