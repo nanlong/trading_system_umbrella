@@ -35,11 +35,12 @@ class StockChart extends React.Component {
       ma30Data: [],
       ma50Data: [],
       ma300Data: [],
+      dcu10Data: [],
       dcu20Data: [],
       dcu60Data: [],
       dcl10Data: [],
       dcl20Data: [],
-      dcu20Point: [],
+      dcl60Data: [],
       atrData: [],
       pointData: [],
     }
@@ -97,7 +98,7 @@ class StockChart extends React.Component {
     })
 
     lineData.map(x => {
-      const {date, open, close, highest, lowest, ma5, ma10, ma20, ma30, ma50, ma300, dcu60, dcu20, dcl20, dcl10, atr} = x
+      const {date, open, close, highest, lowest, ma5, ma10, ma20, ma30, ma50, ma300, dcu10, dcu20, dcu60, dcl10, dcl20, dcl60, atr} = x
       source.categoryData.push(date)
       source.dailykData.push([open, close, lowest, highest])
       source.ma5Data.push(ma5)
@@ -106,10 +107,12 @@ class StockChart extends React.Component {
       source.ma30Data.push(ma30)
       source.ma50Data.push(ma50)
       source.ma300Data.push(ma300)
-      source.dcu60Data.push(dcu60)
+      source.dcu10Data.push(dcu10)
       source.dcu20Data.push(dcu20)
-      source.dcl20Data.push(dcl20)
+      source.dcu60Data.push(dcu60)
       source.dcl10Data.push(dcl10)
+      source.dcl20Data.push(dcl20)
+      source.dcl60Data.push(dcl60)
       source.atrData.push(atr)
     })
 
@@ -207,85 +210,58 @@ class StockChart extends React.Component {
         }
       ]
 
-    let vip_series = [
-      {
-        name: '20日最高',
-        type: 'line',
-        data: data.dcu20Data,
-        smooth: true,
-        showSymbol: false,
-        lineStyle: {
-          normal: {
-            color: '#014EA2',
-            width: 1
-          }
-        },
-        itemStyle: {
-          normal: {
-            color: '#014EA2'
-          }
-        }
-      },
-      {
-        name: '10日最低',
-        type: 'line',
-        data: data.dcl10Data,
-        smooth: true,
-        showSymbol: false,
-        lineStyle: {
-          normal: {
-            color: '#014EA2',
-            width: 1
-          }
-        },
-        itemStyle: {
-          normal: {
-            color: '#014EA2'
-          }
-        }
-      },
-      {
-        name: '60日最高',
-        type: 'line',
-        data: data.dcu60Data,
-        smooth: true,
-        showSymbol: false,
-        lineStyle: {
-          normal: {
-            color: '#014EA2',
-            width: 1
-          }
-        },
-        itemStyle: {
-          normal: {
-            color: '#014EA2'
-          }
-        }
-      },
-      {
-        name: '20日最低',
-        type: 'line',
-        data: data.dcl20Data,
-        smooth: true,
-        showSymbol: false,
-        lineStyle: {
-          normal: {
-            color: '#014EA2',
-            width: 1
-          }
-        },
-        itemStyle: {
-          normal: {
-            color: '#014EA2'
-          }
-        }
+    let legendData = ['日K', 'MA5', 'MA10', 'MA20', 'MA30']
+    let legendSelected = {}
+
+    if (CONFIG["isVip"] == true) {
+      let seriesLine = []
+      let upName = CONFIG['userConfig'].create_days + '日' + (CONFIG["tread"] == 'bull' ? '最高' : '最低')
+      let upData = data['dc' + (CONFIG["tread"] == 'bull' ? 'u' : 'l') + CONFIG['userConfig'].create_days + 'Data']
+      let lowName = CONFIG['userConfig'].close_days + '日' + (CONFIG["tread"] == 'bull' ? '最低' : '最高')
+      let lowData = data['dc' + (CONFIG["tread"] == 'bull' ? 'l' : 'u') + CONFIG['userConfig'].close_days + 'Data']
+      
+      legendData.push(upName)
+      legendData.push(lowName)
+      seriesLine.push({name: upName, data: upData, color: '#014EA2'})
+      seriesLine.push({name: lowName, data: lowData, color: '#014EA2'})
+      
+      if (CONFIG['userConfig'].create_days == 20) {
+        let secondUpName = '60日最' + (CONFIG["tread"] == 'bull' ? '高' : '低')
+        let secondUpData = data['dc' + (CONFIG["tread"] == 'bull' ? 'u' : 'l') + '60Data']
+        let secondLowName = '20日最' + (CONFIG["tread"] == 'bull' ? '低' : '高')
+        let secondLowData = data['dc' + (CONFIG["tread"] == 'bull' ? 'l' : 'u') + '20Data']
+  
+        legendData.push(secondUpName)
+        legendData.push(secondLowName)
+        seriesLine.push({name: secondUpName, data: secondUpData, color: '#014EA2'})
+        seriesLine.push({name: secondLowName, data: secondLowData, color: '#014EA2'})
+        legendSelected[secondUpName] = false
+        legendSelected[secondLowName] = false
       }
-    ]
-
-    if (CONFIG['isVip']) {
-      series = series.concat(vip_series)
+  
+      seriesLine.map(x => {
+        const {name, data, color} = x
+        series.push({
+          name: name,
+          type: 'line',
+          data: data,
+          smooth: true,
+          showSymbol: false,
+          lineStyle: {
+            normal: {
+              color: color,
+              width: 1
+            }
+          },
+          itemStyle: {
+            normal: {
+              color: color
+            }
+          }
+        })
+      })
     }
-
+    
     return {
       tooltip: {
         trigger: 'axis',
@@ -309,8 +285,8 @@ class StockChart extends React.Component {
         }
       },
       legend: {
-        data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30', '20日最高', '10日最低', '60日最高', '20日最低'],
-        selected: {'60日最高': false, '20日最低': false}
+        data: legendData,
+        selected: legendSelected
       },
       grid: [
         {
