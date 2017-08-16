@@ -43,6 +43,8 @@ class StockChart extends React.Component {
       dcl60Data: [],
       atrData: [],
       pointData: [],
+      createPointData: [],
+      closePointData: [],
     }
 
     let lineData = []
@@ -94,6 +96,12 @@ class StockChart extends React.Component {
           color = '#34a853'
       }
 
+      if (action == 'create') {
+        source.createPointData.push(this.markPoint(date, price, color))
+      }
+      else {
+        source.closePointData.push(this.markPoint(date, price, color))
+      }
       source.pointData.push(this.markPoint(date, price, color))
     })
 
@@ -124,10 +132,7 @@ class StockChart extends React.Component {
         {
           name: '日K',
           type: 'candlestick',
-          data: data.dailykData,
-          markPoint: {
-            data: CONFIG['isVip'] ? data.pointData : []
-          }
+          data: data.dailykData
         },
         {
           name: 'MA5',
@@ -222,15 +227,15 @@ class StockChart extends React.Component {
       
       legendData.push(upName)
       legendData.push(lowName)
-      seriesLine.push({name: upName, data: upData, color: '#014EA2'})
-      seriesLine.push({name: lowName, data: lowData, color: '#014EA2'})
+      seriesLine.push({name: upName, data: upData, color: '#014EA2', point: data.createPointData})
+      seriesLine.push({name: lowName, data: lowData, color: '#014EA2', point: data.closePointData})
       
       if (CONFIG['userConfig'].create_days == 20) {
         let secondUpName = '60日最' + (CONFIG["tread"] == 'bull' ? '高' : '低')
         let secondUpData = data['dc' + (CONFIG["tread"] == 'bull' ? 'u' : 'l') + '60Data']
         let secondLowName = '20日最' + (CONFIG["tread"] == 'bull' ? '低' : '高')
         let secondLowData = data['dc' + (CONFIG["tread"] == 'bull' ? 'l' : 'u') + '20Data']
-  
+        
         legendData.push(secondUpName)
         legendData.push(secondLowName)
         seriesLine.push({name: secondUpName, data: secondUpData, color: '#014EA2'})
@@ -257,6 +262,9 @@ class StockChart extends React.Component {
             normal: {
               color: color
             }
+          },
+          markPoint: {
+            data: x.point || []
           }
         })
       })
