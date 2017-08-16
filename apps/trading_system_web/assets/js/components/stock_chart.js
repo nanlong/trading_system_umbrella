@@ -50,7 +50,7 @@ class StockChart extends React.Component {
       if (! data.stockDailykLine[i] || ! data.stockStateLine[i]) { break }
 
       const {date, open, close, highest, lowest} = data.stockDailykLine[i]
-      const {ma5, ma10, ma20, ma30, ma50, ma300, dcu60, dcu20, dcl20, dcl10, atr20} = data.stockStateLine[i]
+      const {ma5, ma10, ma20, ma30, ma50, ma300, dcu10, dcu20, dcu60, dcl10, dcl20, dcl60, atr20} = data.stockStateLine[i]
 
       lineData.push({
         date: date,
@@ -65,10 +65,12 @@ class StockChart extends React.Component {
         ma30: ma30,
         ma50: ma50,
         ma300: ma300,
+        dcu10: dcu10,
         dcu20: dcu20,
-        dcl10: dcl10,
         dcu60: dcu60,
+        dcl10: dcl10,
         dcl20: dcl20,
+        dcl60: dcl60,
       })
     }
 
@@ -398,10 +400,12 @@ const graphqlQuery = gql`
       ma30
       ma50
       ma300
+      dcu10
       dcu20
       dcu60
       dcl10
       dcl20
+      dcl60
       atr20
     }
   }

@@ -133,7 +133,7 @@ class Backtest {
     let num1 = price
     let num2 = atr * this.config.atr_add_step * (position - 1)
 
-    if (this.isBull(dataItem)) {
+    if ((this.position.tread != '' && this.position.tread == 'bull') || this.isBull(dataItem)) {
       return num1 + num2
     }
     else {
@@ -156,7 +156,7 @@ class Backtest {
       let num1 = price * position
       let num2 = atr * this.config.atr_add_step * positionSum
 
-      if (this.isBull(dataItem)) {
+      if ((this.position.tread != '' && this.position.tread == 'bull') || this.isBull(dataItem)) {
         return (num1 + num2) / position
       }
       else {
@@ -170,7 +170,7 @@ class Backtest {
     let num1 = this.avgPrice(dataItem, price, atr, position)
     let num2 = atr * (this.config.atr_stop_step / position)
 
-    if (this.isBull(dataItem)) {
+    if ((this.position.tread != '' && this.position.tread == 'bull') || this.isBull(dataItem)) {
       return num1 - num2
     }
     else {
@@ -202,7 +202,7 @@ class Backtest {
     const price = this.position.addPositionPrice
     const {lowest, highest} = dataItem
     
-    if (this.isBull(dataItem)) {
+    if (this.position.tread == 'bull') {
       return price < highest
     }
     else {
@@ -215,7 +215,7 @@ class Backtest {
     const price = this.closePoint(dataItem)
     const {lowest, highest} = dataItem
 
-    if (this.isBull(dataItem)) {
+    if (this.position.tread == 'bull') {
       return lowest < price
     }
     else {
@@ -228,7 +228,7 @@ class Backtest {
     const price = this.position.stopLossPrice
     const {lowest, highest} = dataItem
     
-    if (this.isBull(dataItem)) {
+    if (this.position.tread == 'bull') {
       return lowest < price
     }
     else {
@@ -263,8 +263,7 @@ class Backtest {
   // 计算止盈点
   closePoint(dataItem) {
     const {dcl10, dcl20, dcu10, dcu20} = dataItem
-
-    if (this.isBull(dataItem)) {
+    if (this.position.tread == 'bull') {
       switch (this.config.close_days) {
         case 20:
           return dcl20
