@@ -23,9 +23,7 @@ defmodule TradingKernel.Backtest do
     
     result = %{
       date: data.date,
-      cast: cast(position, data),
       ratio: Float.round((cast(position, data) - config.account) / config.account, 2),
-      position: position,
     }
     
     trading(position, rest, config, results ++ [result])
