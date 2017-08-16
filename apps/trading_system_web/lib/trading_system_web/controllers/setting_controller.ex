@@ -37,6 +37,10 @@ defmodule TradingSystem.Web.SettingController do
       Accounts.get_config(user_id: conn.assigns.current_user.id)
       |> Map.update!(:account, &(:erlang.float_to_binary(&1, decimals: 2)))
 
+    create_days = config_params |> Map.get("create_days") |> String.to_integer()
+
+    config_params = Map.put(config_params, "close_days", TradingSystem.Web.SettingView.close_days(create_days))
+
     case Accounts.update_config(config, config_params) do
       {:ok, _config} ->
         conn

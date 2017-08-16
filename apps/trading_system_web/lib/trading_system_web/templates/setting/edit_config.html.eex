@@ -35,19 +35,10 @@
       </div>
 
       <div class="field">
-        <%= label f, :create_days, "唐奇安上通道日线（建仓）", class: "label" %>
+        <%= label f, :create_days, "唐奇安通道（建仓-平仓）", class: "label" %>
         <div class="control">
           <%= select f, :create_days, 
-            (for value <- [20, 60], do: {value, value}), 
-            class: "select is-fullwidth" %>
-        </div>
-      </div>
-
-      <div class="field">
-        <%= label f, :close_days, "唐奇安下通道日线（平仓）", class: "label" %>
-        <div class="control">
-          <%= select f, :close_days, 
-            (for value <- [10, 20], do: {value, value}), 
+            (for value <- [20, 60], do: {"#{value} - #{close_days(value)}", value}), 
             class: "select is-fullwidth" %>
         </div>
       </div>
