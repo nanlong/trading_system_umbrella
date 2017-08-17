@@ -43,12 +43,8 @@ defmodule TradingSystem.Web.Router do
       resources "/US_Stocks", USStocksController, param: "symbol", only: [:index, :show]
     end
 
-    resources "/stocks", StockController, param: "symbol", only: [:index, :show]
-
     get "/counter", StockController, :new_counter
     post "/counter", StockController, :post_counter
-
-    get "/star", StockController, :star_index
   end
 
   scope "/api" do

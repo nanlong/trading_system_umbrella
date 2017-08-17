@@ -19,7 +19,8 @@ defmodule TradingSystem.Web.USStocksController do
   end
 
   def index(conn, params) do
-    page = Stocks.stocks_paginate(Map.put(params, "user_id", conn.assigns.current_user.id))
+    params = Map.put(params, "user_id", conn.assigns.current_user.id)
+    page = Stocks.stocks_paginate(params)
     
     conn
     |> assign(:title, "股票列表")
