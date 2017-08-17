@@ -46,6 +46,12 @@ defmodule TradingSystem.Accounts do
   def get_user!(id), do: Repo.get!(User, id)
   def get_user(email: email), do: Repo.get_by(User, email: email)
   def get_user(id), do: Repo.get(User, id)
+  def get_user_by(email: email) do
+    case Repo.get_by(User, email: email) do
+      nil -> {:error, nil}
+      user -> {:ok, user}
+    end
+  end
   @doc """
   Creates a user.
 
@@ -269,6 +275,23 @@ defmodule TradingSystem.Accounts do
           user -> {:ok, user}
         end
       {:error, _} -> {:error, "invalid authorization token"}
+    end
+  end
+
+  alias TradingSystem.Accounts.PasswordReset
+
+  def change_password_reset(attrs \\ %{}) do
+    %PasswordReset{}
+    |> PasswordReset.changeset(attrs)
+  end
+
+  def create_password_reset(attrs \\ %{}) do
+    changeset = change_password_reset(attrs)
+    
+    if changeset.valid? do
+      {:ok, PasswordReset.get_user(changeset)}
+    else
+      {:error, %{changeset | action: :create}}
     end
   end
 end

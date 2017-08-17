@@ -36,6 +36,10 @@ defmodule TradingSystem.Web.Router do
 
     get "/logout", SessionController, :delete
 
+    get "/password_reset", PasswordResetController, :new
+    post "/password_reset", PasswordResetController, :create
+    put "/password_reset", PasswordResetController, :update
+
     get "/settings", SettingController, :index
     resources "/settings/:page", SettingController, only: [:show, :update], singleton: true
 
@@ -45,8 +49,7 @@ defmodule TradingSystem.Web.Router do
 
     resources "/toolbox/calculator", CalculatorController, singleton: true, only: [:show, :create]
 
-    get "/counter", StockController, :new_counter
-    post "/counter", StockController, :post_counter
+
   end
 
   scope "/api" do
