@@ -4,19 +4,19 @@
         <p class="panel-heading">
           市场
         </p>
-        <span class="panel-block">
+        <span class="panel-block" link="/market/CN_Stocks">
           沪深 <i class="is-size-7">(后续支持)</i>
         </span>
-        <span class="panel-block">
+        <span class="panel-block" link="/market/HK_Stocks">
           港股 <i class="is-size-7">(后续支持)</i>
         </span>
-        <a class="panel-block is-active">
-          美股
-        </a>
-        <span class="panel-block">
+
+        <%= link "美股", to: market_us_stocks_path(@conn, :index), class: "panel-block is-active" %>
+
+        <span class="panel-block" link="/market/I_Futures">
           国内期货 <i class="is-size-7">(后续支持)</i>
         </span>
-        <span class="panel-block">
+        <span class="panel-block" link="/market/G_Futures">
           外盘期货 <i class="is-size-7">(后续支持)</i>
         </span>
       </nav>
