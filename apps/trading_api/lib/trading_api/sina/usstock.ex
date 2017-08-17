@@ -143,10 +143,11 @@ defmodule TradingApi.Sina.USStock do
     |> Poison.decode
   end
 
-  defp update_key({:ok, data}, "List") do
+  defp update_key({:ok, %{"count" => count, "data" => "null"}}, "List"), do: %{count: String.to_integer(count), data: []}
+  defp update_key({:ok, %{"count" => count, "data" => data}}, "List") do
     %{
-      count: Map.get(data, "count") |> String.to_integer,
-      data: Enum.map(Map.get(data, "data"), fn(x) -> 
+      count: count |> String.to_integer,
+      data: Enum.map(data, fn(x) -> 
         %{
           symbol: Map.get(x, "symbol"),
           name: Map.get(x, "name"),
