@@ -8,6 +8,11 @@ html {
 table {
   width: 100%;
 }
+.logo {
+  background: url('/favicon.ico') no-repeat 10px 8px;
+  background-size: 24px 24px;
+  padding-left: 36px;
+}
 .icon-vip {
   display: inline-block;
   width: 16px;
