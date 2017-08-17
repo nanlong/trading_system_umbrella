@@ -21,7 +21,7 @@
   </head>
 
   <body>
-    <div class="container">
+    <div class="container" style="margin-bottom: 20px;">
       <nav class="navbar ">
         <div class="navbar-brand">
           <%= link to: page_path(@conn, :index), class: "navbar-item" do %>
@@ -34,7 +34,7 @@
 
         <div class="navbar-menu">
           <div class="navbar-start">
-            <%= link "股票列表", to: stock_path(@conn, :index), class: "navbar-item" %>
+            <%= link "市场", to: market_path(@conn, :show), class: "navbar-item" %>
             <%= link "股票关注列表", to: stock_path(@conn, :star_index), class: "navbar-item" %>
             <%= link to: stock_path(@conn, :new_counter), class: "navbar-item", target: "_blank" do %>
               <span class="icon-vip"></span>计算器

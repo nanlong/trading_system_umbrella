@@ -1,0 +1,63 @@
+<%= if not vip?(@current_user) do %>
+<div class="hero is-danger">
+  <div class="hero-body">
+    <div class="container">
+      <p class="title">
+        还不是VIP会员!
+      </p>
+      <p class="subtitle">
+        唐奇安通道未显示. 资金管理未显示. 
+      </p>
+    </div>
+  </div>
+</div>
+<% end %>
+
+<div class="columns">
+  <div class="column is-8">
+    <div>
+      <strong style="font-size: 24px;">
+        <%= @stock.cname %> 
+        <%= @stock.market %>:<%= @stock.symbol %>
+      </strong>
+      <span><%= @stock.name %></span>
+    </div>
+  </div>
+  <div class="column" style="padding-top: 20px;"> 
+    <span id="stock-star-btn" class="is-pulled-right"></span>
+    <span id="stock-backlist-btn" class="is-pulled-right" style="margin-right: 20px;"></span>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column is-9">
+    <!-- React Component: StockChart  -->
+    <div id="stock-chart"></div>
+    <div id="slider"></div>
+  </div>
+  <div class="column is-3">
+    <!-- React Component: StockRealtime  -->
+    <div id="stock-realtime"></div>
+  </div>
+</div>
+
+<div class="columns">
+  <div class="column">
+    <div id="stock-backtest"></div>
+  </div>
+  <%= if vip?(@current_user) do %>
+  <div class="column">
+    <div>
+      <span class="icon-vip"></span>
+      <span class="title is-4">资金管理</span>
+      <span>当前日期: <%= DateTime.utc_now() |> DateTime.to_date() %></span>
+      <span>数据日期: <%= @state.date %></span>
+    </div>
+    <%= render "component_position.html", assigns %>    
+  </div>
+  <% end %>
+</div>
+
+
+
+

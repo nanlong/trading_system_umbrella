@@ -1,42 +1,57 @@
-<!-- <div id="usstock-state-list"></div> -->
 <div class="columns">
-  <div class="column">
-    <%= render "component_tabs.html", assigns %>
-  </div>
-</div>
-
-<div class="columns">
-  <div class="column">
-    <nav class="breadcrumb" aria-label="breadcrumbs">
-      <ul>
-        <li><a>数据日期 <%= @date %></a></li>
-        <li><a>共 <%= @page.total_entries %> 条记录</a></li>
-        <li><a>共 <%= @page.total_pages %> 页</a></li>
-        <li><a>当前第 <%= @page.page_number %> 页</a></li>
-      </ul>
+  <div class="column is-2">
+    <nav class="panel">
+      <p class="panel-heading">
+        市场
+      </p>
+      <span class="panel-block">
+        沪深 <i class="is-size-7">(后续支持)</i>
+      </span>
+      <span class="panel-block">
+        港股 <i class="is-size-7">(后续支持)</i>
+      </span>
+      <a class="panel-block is-active">
+        美股
+      </a>
+      <span class="panel-block">
+        国内期货 <i class="is-size-7">(后续支持)</i>
+      </span>
+      <span class="panel-block">
+        外盘期货 <i class="is-size-7">(后续支持)</i>
+      </span>
     </nav>
   </div>
   <div class="column">
-    <form>
-      <div class="field has-addons has-addons-right">
-        <%= if Map.get(@params, "tab") do %>
-        <input type="hidden" name="tab" value="<%= Map.get(@params, "tab") %>">
-        <% end %>
-        <p class="control">
-          <input class="input" type="text" name="q" placeholder="股票代码或公司名称" value="<%= Map.get(@params, "q", "")%>">
-        </p>
-        <p class="control">
-          <button class="button is-primary">
-            搜索
-          </button>
-        </p>
+    <%= render "component_tabs.html", assigns %>
+    <div class="columns">
+      <div class="column">
+        <nav class="breadcrumb" aria-label="breadcrumbs">
+          <ul>
+            <li><a>数据日期 <%= @date %></a></li>
+            <li><a>共 <%= @page.total_entries %> 条记录</a></li>
+            <li><a>共 <%= @page.total_pages %> 页</a></li>
+            <li><a>当前第 <%= @page.page_number %> 页</a></li>
+          </ul>
+        </nav>
       </div>
-    </form>
-  </div>
-</div>
-
-<div class="columns">
-  <div class="column">
+      <div class="column">
+        <form>
+          <div class="field has-addons has-addons-right">
+            <%= if Map.get(@params, "tab") do %>
+            <input type="hidden" name="tab" value="<%= Map.get(@params, "tab") %>">
+            <% end %>
+            <p class="control">
+              <input class="input" type="text" name="q" placeholder="股票代码或公司名称" value="<%= Map.get(@params, "q", "")%>">
+            </p>
+            <p class="control">
+              <button class="button is-primary">
+                搜索
+              </button>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
     <div>
       <table class="table is-bordered is-striped is-narrow is-fullwidth">
         <tr>
