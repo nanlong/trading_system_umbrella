@@ -36,13 +36,17 @@ config :guardian, Guardian,
   allowed_drift: 2000,
   verify_issuer: true, # optional
   secret_key: "ptpsaF+erxh8Lo9/tl5UilXZfgbyAwnx7exifvod4uIABa8gc5Qf/tw768h5azaO",
-  serializer: TradingSystem.Accounts.GuardianSerializer
+  serializer: TradingSystem.Web.Guardian.Serializer
 
 
 config :scrivener_html,
   routes_helper: TradingSystem.Web.Router.Helpers,
-  # If you use a single view style everywhere, you can configure it here. See View Styles below for more info.
   view_style: :bulma
+
+config :trading_system_web, TradingSystem.Web.Mailer,
+  adapter: Bamboo.MailgunAdapter,
+  api_key: "key-bb2d3d19408d7ccf5abc25e0a9281cd7",
+  domain: "mg.trendfollowing.cc"
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

@@ -1,4 +1,4 @@
-defmodule TradingSystem.Accounts.GuardianSerializer do
+defmodule TradingSystem.Web.Guardian.Serializer do
   
   @behaviour Guardian.Serializer
 

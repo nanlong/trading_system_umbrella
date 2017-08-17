@@ -12,7 +12,7 @@ defmodule TradingSystem.Web.Router do
   pipeline :browser_session do
     plug Guardian.Plug.VerifySession
     plug Guardian.Plug.LoadResource
-    plug TradingSystem.Web.Plug.CurrentUser
+    plug TradingSystem.Web.Guardian.CurrentUser
   end
 
   pipeline :api do

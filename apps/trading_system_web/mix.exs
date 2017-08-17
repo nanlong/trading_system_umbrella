@@ -48,6 +48,7 @@ defmodule TradingSystem.Web.Mixfile do
       {:timex, "~> 3.1"},
       {:guardian, "~> 0.14"},
       {:scrivener_html, "~> 1.7"},
+      {:bamboo, "~> 0.8"},
     ]
   end
 

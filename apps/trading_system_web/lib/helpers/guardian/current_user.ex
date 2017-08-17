@@ -1,4 +1,4 @@
-defmodule TradingSystem.Web.Plug.CurrentUser do
+defmodule TradingSystem.Web.Guardian.CurrentUser do
   import Plug.Conn, only: [assign: 3]
 
   alias TradingSystem.Accounts
