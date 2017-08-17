@@ -35,7 +35,7 @@
         <div class="navbar-menu">
           <div class="navbar-start">
             <%= link "市场", to: market_path(@conn, :show), class: "navbar-item" %>
-            <%= link to: stock_path(@conn, :new_counter), class: "navbar-item", target: "_blank" do %>
+            <%= link to: calculator_path(@conn, :show), class: "navbar-item", target: "_blank" do %>
               <span class="icon-vip"></span>计算器
             <% end %>
           </div>

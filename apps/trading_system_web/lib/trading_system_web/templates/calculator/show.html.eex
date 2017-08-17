@@ -1,7 +1,7 @@
 <div class="columns">
   <div class="column">
 
-    <%= form_for @changeset, stock_path(@conn, :post_counter), fn f -> %>
+    <%= form_for @changeset, calculator_path(@conn, :create), fn f -> %>
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
@@ -149,7 +149,7 @@
   </div>
   <div class="column">
     <%= if assigns[:state] && assigns[:user_config] do %>
-      <%= render "position.html", state: @state, user_config: @user_config %>
+      <%= render TradingSystem.Web.USStocksView, "component_position.html", state: @state, user_config: @user_config %>
     <% end %>
   </div>
 </div>

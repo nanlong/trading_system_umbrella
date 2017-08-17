@@ -43,6 +43,8 @@ defmodule TradingSystem.Web.Router do
       resources "/US_Stocks", USStocksController, param: "symbol", only: [:index, :show]
     end
 
+    resources "/toolbox/calculator", CalculatorController, singleton: true, only: [:show, :create]
+
     get "/counter", StockController, :new_counter
     post "/counter", StockController, :post_counter
   end
