@@ -55,6 +55,15 @@ defmodule TradingSystem.Accounts.User do
     |> put_password_hash
   end
 
+  def changeset_password_reset(%User{} = user, attrs) do
+    user
+    |> cast(attrs, [:password, :password_confirmation])
+    |> validate_required([:password, :password_confirmation], message: "不能为空")
+    |> validate_length(:password, min: 6, max: 128, message: "密码长度6-128位")
+    |> validate_confirmation(:password, message: "两次输入密码不一致")
+    |> put_password_hash
+  end
+
   defp put_password_hash(%{valid?: false} = changeset), do: changeset
   defp put_password_hash(changeset) do
     password_hash = 

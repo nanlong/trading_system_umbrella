@@ -5,9 +5,8 @@ defmodule TradingSystem.Web.PasswordResetController do
   alias TradingSystem.Web.Email
   
   def new(conn, %{"token" => token}) do
-    with {:ok, user_id} <- Accounts.verify_token(token) do
-      user = Accounts.get_user!(user_id)
-      changeset = Accounts.change_password_reset(user)
+    with {:ok, user} <- Accounts.verify_token(token) do
+      changeset = Accounts.change_user(:password_reset, user)
 
       conn
       |> assign(:title, "密码重置")
@@ -52,7 +51,8 @@ defmodule TradingSystem.Web.PasswordResetController do
   end
 
   def update(conn, %{"token" => token, "user" => user_params}) do
-    with {:ok, _user} <- UserContext.update(token, user_params) do
+    with {:ok, user} <- Accounts.verify_token(token),
+    {:ok, _user} <- Accounts.update_user(:password_reset, user, user_params) do
       conn
       |> put_flash(:info, "密码重置成功，请登陆")
       |> redirect(to: session_path(conn, :create))

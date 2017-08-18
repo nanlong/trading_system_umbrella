@@ -101,6 +101,12 @@ defmodule TradingSystem.Accounts do
     |> Repo.update()
   end
 
+  def update_user(:password_reset, %User{} = user, attrs) do
+    user
+    |> User.changeset_password_reset(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a User.
 
@@ -136,6 +142,10 @@ defmodule TradingSystem.Accounts do
 
   def change_user(:password, %User{} = user) do
     User.changeset_password(user, %{})
+  end
+
+  def change_user(:password_reset, %User{} = user) do
+    User.changeset_password_reset(user, %{})
   end
 
 
@@ -282,7 +292,7 @@ defmodule TradingSystem.Accounts do
 
   def change_password_reset(attrs \\ %{}) do
     %PasswordReset{}
-    |> PasswordReset.changeset(attrs)
+    |> PasswordReset.changeset_email(attrs)
   end
 
   def create_password_reset(attrs \\ %{}) do

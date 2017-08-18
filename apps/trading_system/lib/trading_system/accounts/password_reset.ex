@@ -11,7 +11,7 @@ defmodule TradingSystem.Accounts.PasswordReset do
 
   @required_fields ~w(email)a
 
-  def changeset(struct, params) do
+  def changeset_email(struct, params) do
     struct
     |> cast(params, @required_fields)
     |> validate_required(@required_fields, message: "不能为空")
