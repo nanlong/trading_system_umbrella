@@ -123,23 +123,23 @@ defmodule TradingApi.Sina.USStock do
   defp to_json(data), do: data |> Poison.decode |> update_key("TradeDays")
 
   defp decode_json("((" <> data) do
-    data
-    |> String.slice(0..-4)
-    |> String.replace("null", "\"null\"")
-    |> String.replace(":[", "\":[")
-    |> String.replace("{", "{\"")
-    |> String.replace("\",", "\",\"")
-    |> String.replace(":\"", "\":\"")
-    |> String.replace("\\'", "\'")
+    data = 
+      data
+      |> String.slice(0..-4)
+      |> String.replace("null", "\"null\"")
+
+    ~r/(?<={|,)\w+(?=:)/
+    |> Regex.replace(data, "\"\\g{0}\"")
     |> Poison.decode
   end
 
   defp decode_json(data) do
-    data
-    |> String.slice(1..-3)
-    |> String.replace("{", "{\"")
-    |> String.replace("\",", "\",\"")
-    |> String.replace(":\"", "\":\"")
+    data = 
+      data
+      |> String.slice(1..-3)
+    
+    ~r/(?<={|,)\w+(?=:)/
+    |> Regex.replace(data, "\"\\g{0}\"")
     |> Poison.decode
   end
 
