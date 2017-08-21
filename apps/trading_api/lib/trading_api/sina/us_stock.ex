@@ -127,7 +127,8 @@ defmodule TradingApi.Sina.USStock do
       data
       |> String.slice(0..-4)
       |> String.replace("null", "\"null\"")
-
+      |> String.replace("\\'", "\'")
+    
     ~r/(?<={|,)\w+(?=:)/
     |> Regex.replace(data, "\"\\g{0}\"")
     |> Poison.decode
@@ -137,7 +138,7 @@ defmodule TradingApi.Sina.USStock do
     data = 
       data
       |> String.slice(1..-3)
-    
+      
     ~r/(?<={|,)\w+(?=:)/
     |> Regex.replace(data, "\"\\g{0}\"")
     |> Poison.decode
