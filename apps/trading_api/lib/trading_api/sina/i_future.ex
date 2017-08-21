@@ -28,9 +28,12 @@ defmodule TradingApi.Sina.IFuture do
   end
 
   def process_response_body(body) do
-    body
-    |> IO.iodata_to_binary()
-    |> decode()
+    {:ok, data} =
+      body
+      |> IO.iodata_to_binary()
+      |> decode()
+
+    data
   end
 
   def decode("data" <> data) do

@@ -52,8 +52,11 @@ defmodule TradingApi.Sina.CNStock do
   def process_response_body(body) do
     data = IO.iodata_to_binary(body)
 
-    ~r/(?<={|,)\w+(?=:)/
-    |> Regex.replace(data, "\"\\g{0}\"")
-    |> Poison.decode
+    {:ok, data} =
+      ~r/(?<={|,)\w+(?=:)/
+      |> Regex.replace(data, "\"\\g{0}\"")
+      |> Poison.decode
+      
+    data
   end
 end

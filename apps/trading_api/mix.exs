@@ -37,10 +37,11 @@ defmodule TradingApi.Mixfile do
   # Type "mix help deps" for more examples and options
   defp deps do
     [
-      {:httpotion, "~> 3.0.2"},
+      {:httpotion, "~> 3.0"},
       {:poison, "~> 3.1"},
       {:iconv, "~> 1.0"},
       {:execjs, git: "https://github.com/devinus/execjs.git"},
+      {:floki, "~> 0.18.0"},
     ]
   end
 end
