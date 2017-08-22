@@ -70,51 +70,51 @@ defmodule StockDailyK do
 end
 
 
-defmodule StockMinK do
-  @types [5]
+# defmodule StockMinK do
+#   @types [5]
   
-  def save do
-    stocks = Stocks.list_stock()
-    args = for stock <- stocks, type <- @types, do: {stock, type}
-    total = length(args)
-    Logger.info "加载美股5分钟K数据，合计： #{length(stocks)} 个股票"
-    save(args, 1, total)
-  end
-  defp save([], _current, _total), do: nil
-  defp save([{stock, type} | rest], current, total) do
-    ProgressBar.render(current, total)
-    data = 
-      TradingApi.get("min_k", symbol: stock.symbol, type: type)
-      |> Enum.map(&Map.put_new(&1, :symbol, stock.symbol))
+#   def save do
+#     stocks = Stocks.list_stock()
+#     args = for stock <- stocks, type <- @types, do: {stock, type}
+#     total = length(args)
+#     Logger.info "加载美股5分钟K数据，合计： #{length(stocks)} 个股票"
+#     save(args, 1, total)
+#   end
+#   defp save([], _current, _total), do: nil
+#   defp save([{stock, type} | rest], current, total) do
+#     ProgressBar.render(current, total)
+#     data = 
+#       TradingApi.get("min_k", symbol: stock.symbol, type: type)
+#       |> Enum.map(&Map.put_new(&1, :symbol, stock.symbol))
 
-    data =
-      case Stocks.get_last_stock_5mink(stock.symbol) do
-        nil -> data
-        stock_5mink -> Enum.filter(data, &compare_datetime?(&1, stock_5mink))
-      end
+#     data =
+#       case Stocks.get_last_stock_5mink(stock.symbol) do
+#         nil -> data
+#         stock_5mink -> Enum.filter(data, &compare_datetime?(&1, stock_5mink))
+#       end
 
-    create_all(data, type)
+#     create_all(data, type)
 
-    save(rest, current + 1, total)
-  end
+#     save(rest, current + 1, total)
+#   end
 
-  defp create_all([], _type), do: nil
-  defp create_all([attrs | rest], type) do
-    case type do
-      5 -> {:ok, _} = Stocks.create_stock_5mink(attrs)
-      true -> nil
-    end
+#   defp create_all([], _type), do: nil
+#   defp create_all([attrs | rest], type) do
+#     case type do
+#       5 -> {:ok, _} = Stocks.create_stock_5mink(attrs)
+#       true -> nil
+#     end
 
-    create_all(rest, type)
-  end
+#     create_all(rest, type)
+#   end
 
-  defp compare_datetime?(%{datetime: d1}, %{datetime: d2}) do
-    case d1 |> NaiveDateTime.from_iso8601! |> NaiveDateTime.compare(d2) do
-      :gt -> true
-      _ -> false
-    end
-  end
-end
+#   defp compare_datetime?(%{datetime: d1}, %{datetime: d2}) do
+#     case d1 |> NaiveDateTime.from_iso8601! |> NaiveDateTime.compare(d2) do
+#       :gt -> true
+#       _ -> false
+#     end
+#   end
+# end
 
 
 defmodule StockState do
