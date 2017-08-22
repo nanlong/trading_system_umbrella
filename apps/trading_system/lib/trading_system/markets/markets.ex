@@ -9,6 +9,12 @@ defmodule TradingSystem.Markets do
   defdelegate paginate_stocks(market, params), to: StocksContext, as: :paginate
   
 
+  # stock dayk
+  alias TradingSystem.Markets.StockDaykContext
+
+  defdelegate create_dayk(attrs), to: StockDaykContext, as: :create
+
+  
   # stock state
   alias TradingSystem.Markets.StockStateContext
 

@@ -1,7 +1,7 @@
-defmodule TradingSystem.Markets.StockDailyK do
+defmodule TradingSystem.Markets.StockDayk do
   use Ecto.Schema
   import Ecto.Changeset
-  alias TradingSystem.Markets.StockDailyK
+  alias TradingSystem.Markets.StockDayk
 
 
   @primary_key {:id, :binary_id, autogenerate: true}
@@ -23,8 +23,8 @@ defmodule TradingSystem.Markets.StockDailyK do
   @optional_fields ~w(open highest lowest close pre_close volume)a
 
   @doc false
-  def changeset(%StockDailyK{} = stock_dailyk, attrs) do
-    stock_dailyk
+  def changeset(%StockDayk{} = stock_dayk, attrs) do
+    stock_dayk
     |> cast(attrs, @required_fields ++ @optional_fields)
     |> validate_required(@required_fields)
   end
