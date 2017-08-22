@@ -4,7 +4,6 @@ defmodule TradingSystem.Markets.StocksContext do
   alias TradingSystem.Repo
 
   alias TradingSystem.Markets.Stocks
-  alias TradingSystem.Markets.StockState
   alias TradingSystem.Markets.StockBlacklist
   alias TradingSystem.Markets.StockStar
 
@@ -42,11 +41,12 @@ defmodule TradingSystem.Markets.StocksContext do
   def paginate(:us_blacklist, params), do: query_blacklist_with_market(@us_markets, params)
   def paginate(:us_star, params), do: query_star_with_market(@us_markets, params)
 
-  
+
   defp query_all_with_market(market, params) do
     query =
       Stocks
       |> query_with_market(market)
+      |> query_load_state()
       |> query_exclude_blacklist(Map.get(params, "user_id"))
 
     Repo.paginate(query, params)
@@ -56,6 +56,7 @@ defmodule TradingSystem.Markets.StocksContext do
     query =
       Stocks
       |> query_with_market(market)
+      |> query_load_state()
       |> query_exclude_blacklist(Map.get(params, "user_id"))
       |> query_bull()
 
@@ -66,6 +67,7 @@ defmodule TradingSystem.Markets.StocksContext do
     query =
       Stocks
       |> query_with_market(market)
+      |> query_load_state()
       |> query_exclude_blacklist(Map.get(params, "user_id"))
       |> query_bear()
 
@@ -76,6 +78,7 @@ defmodule TradingSystem.Markets.StocksContext do
     query = 
       Stocks
       |> query_with_market(market)
+      |> query_load_state()
       |> query_include_blacklist(Map.get(params, "user_id"))
 
     Repo.paginate(query, params)
@@ -85,6 +88,7 @@ defmodule TradingSystem.Markets.StocksContext do
     query =
       Stocks
       |> query_with_market(market)
+      |> query_load_state()
       |> query_include_star(Map.get(params, "user_id"))
 
     Repo.paginate(query, params)
@@ -115,5 +119,9 @@ defmodule TradingSystem.Markets.StocksContext do
   defp query_include_star(query, user_id) when is_nil(user_id), do: query
   defp query_include_star(query, user_id) do
     join(query, :inner, [stock], star in StockStar, star.user_id == ^user_id and star.symbol == stock.symbol)
+  end
+
+  defp query_load_state(query) do
+    preload(query, [], [:state])
   end
 end
