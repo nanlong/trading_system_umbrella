@@ -1,8 +1,9 @@
 defmodule TradingSystem.Markets.StockStateContext do
   
   import Ecto.Query, warn: false
-  alias Ecto.Multi
   alias TradingSystem.Repo
+  
+  alias Ecto.Multi
   alias TradingSystem.Markets.StockState
   alias TradingSystem.Markets.StocksContext
 

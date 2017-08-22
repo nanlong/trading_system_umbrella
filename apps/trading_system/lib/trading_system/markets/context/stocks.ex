@@ -24,6 +24,11 @@ defmodule TradingSystem.Markets.StocksContext do
   end
 
   def get(symbol: symbol), do: Repo.get_by(Stocks, symbol: symbol)
+  def get!(symbol: symbol) do 
+    Stocks
+    |> query_load_state()
+    |> Repo.get_by!(symbol: symbol)
+  end
 
   def paginate(:cn, params), do: query_all_with_market(@cn_markets, params)
   def paginate(:cn_bull, params), do: query_bull_with_market(@cn_markets, params)
@@ -48,6 +53,7 @@ defmodule TradingSystem.Markets.StocksContext do
       |> query_with_market(market)
       |> query_load_state()
       |> query_exclude_blacklist(Map.get(params, "user_id"))
+      |> query_order_by()
 
     Repo.paginate(query, params)
   end
@@ -59,6 +65,7 @@ defmodule TradingSystem.Markets.StocksContext do
       |> query_load_state()
       |> query_exclude_blacklist(Map.get(params, "user_id"))
       |> query_bull()
+      |> query_order_by()
 
     Repo.paginate(query, params)
   end
@@ -70,6 +77,7 @@ defmodule TradingSystem.Markets.StocksContext do
       |> query_load_state()
       |> query_exclude_blacklist(Map.get(params, "user_id"))
       |> query_bear()
+      |> query_order_by()
 
     Repo.paginate(query, params)
   end
@@ -80,6 +88,7 @@ defmodule TradingSystem.Markets.StocksContext do
       |> query_with_market(market)
       |> query_load_state()
       |> query_include_blacklist(Map.get(params, "user_id"))
+      |> query_order_by()
 
     Repo.paginate(query, params)
   end
@@ -90,6 +99,7 @@ defmodule TradingSystem.Markets.StocksContext do
       |> query_with_market(market)
       |> query_load_state()
       |> query_include_star(Map.get(params, "user_id"))
+      |> query_order_by()
 
     Repo.paginate(query, params)
   end
@@ -122,6 +132,12 @@ defmodule TradingSystem.Markets.StocksContext do
   end
 
   defp query_load_state(query) do
-    preload(query, [], [:state])
+    query
+    |> where([stock], not is_nil(stock.stock_state_id))
+    |> preload([], [:state])
+  end
+
+  defp query_order_by(query) do
+    order_by(query, [stock], desc: stock.volume)
   end
 end

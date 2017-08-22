@@ -27,7 +27,6 @@
         <div class="column">
           <nav class="breadcrumb" aria-label="breadcrumbs">
             <ul>
-              <li><a>数据日期 <%= @date %></a></li>
               <li><a>共 <%= @page.total_entries %> 条记录</a></li>
               <li><a>共 <%= @page.total_pages %> 页</a></li>
               <li><a>当前第 <%= @page.page_number %> 页</a></li>
@@ -59,7 +58,7 @@
             <th>名称</th>
             <th>行业</th>
             <th>开盘价</th>
-            <th>收盘价</th>
+            <th>前收盘价</th>
             <th>20日最高</th>
             <th>10日最低</th>
             <th>60日最高</th>
@@ -68,18 +67,18 @@
             <th>成交量</th>
             <th></th>
           </tr>
-          <%= for {stock, state, dailyk} <- @page do %>
+          <%= for stock <- @page do %>
           <tr>
             <td><%= stock.symbol %></td>
             <td><%= stock.cname %></td>
             <td><%= stock.category %></td>
-            <td><%= dailyk.open %></td>
-            <td><%= dailyk.close %></td>
-            <td><%= state.dcu20 %></td>
-            <td><%= state.dcl10 %></td>
-            <td><%= state.dcu60 %></td>
-            <td><%= state.dcl20 %></td>
-            <td><%= state.atr20 %></td>
+            <td><%= stock.open %></td>
+            <td><%= stock.pre_close %></td>
+            <td><%= stock.state.dcu20 %></td>
+            <td><%= stock.state.dcl10 %></td>
+            <td><%= stock.state.dcu60 %></td>
+            <td><%= stock.state.dcl20 %></td>
+            <td><%= stock.state.atr20 %></td>
             <td><%= stock.volume %></td>
             <td><%= link "查看", to: market_us_stocks_path(@conn, :show, stock.symbol), target: "_blank" %></td>
           </tr>

@@ -2,6 +2,7 @@ defmodule TradingSystem.Web.USStocksController do
   use TradingSystem.Web, :controller
 
   alias TradingSystem.Accounts
+  alias TradingSystem.Markets
   alias TradingSystem.Stocks
 
   plug Guardian.Plug.EnsureAuthenticated, [handler: TradingSystem.Web.Guardian.ErrorHandler]
@@ -19,34 +20,34 @@ defmodule TradingSystem.Web.USStocksController do
 
   def index(conn, params) do
     params = Map.put(params, "user_id", conn.assigns.current_user.id)
-    page = Stocks.stocks_paginate(params)
-    
+
+    market =
+      case Map.get(params, "tab", "all") do
+        "all" -> :us
+        "bull" -> :us_bull
+        "bear" -> :us_bear
+        "star" -> :us_star
+        "blacklist" -> :us_blacklist
+      end
+
+    page = Markets.paginate_stocks(market, params)
+
     conn
     |> assign(:title, "股票列表")
     |> assign(:params, params)
-    |> assign(:date, Stocks.get_stock_state_last_date())
     |> assign(:page, page)
     |> render(:index)
   end
 
   def show(conn, %{"symbol" => symbol}) do
-    stock = Stocks.get_stock!(symbol)
-    state = Stocks.get_last_stock_state(symbol)
+    stock = Markets.get_stock!(symbol: symbol)
+    user_config = Accounts.get_config(user_id: conn.assigns.current_user.id)
     
-    user_config =
-      Accounts.get_config(user_id: conn.assigns.current_user.id)
-      |> Map.from_struct()
-      |> Map.delete(:__meta__)
-      |> Map.delete(:id)
-      |> Map.delete(:user_id)
-      |> Map.delete(:inserted_at)
-      |> Map.delete(:updated_at)
-
     config = %{
       symbol: symbol,
-      tread: (if Decimal.cmp(state.ma50, state.ma300) == :gt, do: "bull", else: "bear"),
-      isBlacklist: Stocks.blacklist?(symbol),
-      isStar: Stocks.star?(symbol),
+      tread: (if Decimal.cmp(stock.state.ma50, stock.state.ma300) == :gt, do: "bull", else: "bear"),
+      isBlacklist: Markets.blacklist_stock?(symbol, conn.assigns.current_user.id),
+      isStar: Markets.star_stock?(symbol, conn.assigns.current_user.id),
       isVip: Accounts.vip?(conn.assigns.current_user),
       userConfig: user_config,
     }
@@ -55,7 +56,7 @@ defmodule TradingSystem.Web.USStocksController do
     |> assign(:title, stock.cname)
     |> assign(:config, config)
     |> assign(:stock, stock)
-    |> assign(:state, state)
+    |> assign(:state, stock.state)
     |> render(:show)
   end
 end
