@@ -22,10 +22,6 @@ defmodule TradingSystem.Graphql.Schema do
       resolve &TradingSystem.Graphql.StockResolver.realtime/2
     end
 
-    field :stock_star, list_of(:stock_state) do
-      resolve &TradingSystem.Graphql.StockStarResolver.all/2
-    end
-
     field :stock_backtest, list_of(:stock_backtest) do
       arg :symbol, non_null(:string)
       resolve &TradingSystem.Graphql.StockBacktestResolver.all/2
