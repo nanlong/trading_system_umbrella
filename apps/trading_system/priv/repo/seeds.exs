@@ -1,4 +1,5 @@
 alias TradingSystem.Stocks
+alias TradingSystem.Markets
 alias TradingApi
 require Logger
 
@@ -187,7 +188,7 @@ defmodule StockState do
       dcl60: dc60.lower,
     }
 
-    {:ok, _} = Stocks.create_stock_state(attrs)
+    {:ok, _} = Markets.create_state(attrs)
   end
 
   defp compare_date?(%{date: d1}, %{date: d2}) do
@@ -198,7 +199,7 @@ defmodule StockState do
   end
 end
 
-Stock.save()
-StockDailyK.save()
-StockMinK.save()
+# Stock.save()
+# StockDailyK.save()
+# StockMinK.save()
 StockState.save()

@@ -1,8 +1,8 @@
-defmodule TradingSystem.Market.Stocks do
+defmodule TradingSystem.Markets.Stocks do
   use Ecto.Schema
   import Ecto.Changeset
-  alias TradingSystem.Market.Stocks
-
+  alias TradingSystem.Markets.Stocks
+  
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
@@ -23,11 +23,13 @@ defmodule TradingSystem.Market.Stocks do
     field :pe, :string # 市盈率
     field :market, :string # 市场
     
+    belongs_to :state, TradingSystem.Markets.StockState, foreign_key: :stock_state_id
+
     timestamps()
   end
 
-  @required_fields ~w(symbol name cname)a
-  @optioned_fields ~w(category open highest lowest pre_close diff chg amplitude volume market_cap pe market)a
+  @required_fields ~w(symbol name cname market)a
+  @optioned_fields ~w(category open highest lowest pre_close diff chg amplitude volume market_cap pe stock_state_id)a
 
   @doc false
   def changeset(%Stocks{} = stock, attrs) do
