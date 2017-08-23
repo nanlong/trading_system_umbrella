@@ -12,8 +12,8 @@ defmodule TradingTask.CNStock do
     generate_state()
   end
 
-  def load_list(), do: load_list(page: 1)
-  def load_list(page: page) do
+  defp load_list(), do: load_list(page: 1)
+  defp load_list(page: page) do
     %{body: body} = Api.get("list", page: page)
     data = get_in(body, ["result", "data", "data"])
 
@@ -54,7 +54,7 @@ defmodule TradingTask.CNStock do
   end
 
 
-  def load_dayk() do
+  defp load_dayk() do
     stock_list = Markets.list_stocks(:cn)
     load_dayk(stock_list)
   end
@@ -108,7 +108,7 @@ defmodule TradingTask.CNStock do
     save_dayk(rest)
   end
 
-  def generate_state do
+  defp generate_state do
     stock_list = Markets.list_stocks(:cn)
     generate_state(stock_list)
   end
@@ -167,7 +167,7 @@ defmodule TradingTask.CNStock do
     save_state(rest, all_dayk)
   end
 
-  def list_stock_dayk_before(data, date: date, limit: limit) do
+  defp list_stock_dayk_before(data, date: date, limit: limit) do
     data = Enum.reverse(data)
     cur_index = Enum.find_index(data, &(Date.compare(&1.date, date) == :eq))
     
