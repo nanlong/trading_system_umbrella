@@ -1,8 +1,8 @@
-defmodule TradingTask.CNStock do
-  alias TradingApi.Sina.CNStock, as: Api
+defmodule TradingTask.HKStock do
+  alias TradingApi.Sina.HKStock, as: Api
 
   @moduledoc """
-  交易时间 周一至五9:30-11:30 PM1:00-3:00
+  交易时间 周一至五9:30-12:00 PM1:00-4:00
   """
   alias TradingSystem.Markets
 
@@ -15,22 +15,23 @@ defmodule TradingTask.CNStock do
   defp load_list(), do: load_list(page: 1)
   defp load_list(page: page) do
     %{body: body} = Api.get("list", page: page)
-    data = get_in(body, ["result", "data", "data"])
+    data = if is_nil(body), do: [], else: body
 
+    # TODO: 更新 amplitude
     Enum.map(data, fn(x) -> 
       attrs = %{
         symbol: Map.get(x, "symbol"),
-        name: get_in(x, ["ext", "name"]),
-        cname: get_in(x, ["ext", "name"]),
-        market: Regex.named_captures(~r/(?<market>[sh|sz]+)/, Map.get(x, "symbol")) |> Map.get("market") |> String.upcase(),
-        open: get_in(x, ["ext", "open"]),
-        highest: get_in(x, ["ext", "high"]),
-        lowest: get_in(x, ["ext", "low"]),
-        pre_close: get_in(x, ["ext", "prevclose"]),
-        diff: get_in(x, ["ext", "change"]),
-        chg: get_in(x, ["ext", "percent"]),
-        amplitude: get_in(x, ["ext", "amplitude"]) |> to_string(),
-        volume: get_in(x, ["ext", "totalVolume"]),
+        name: Map.get(x, "engname"),
+        cname: Map.get(x, "name"),
+        market: "HK",
+        open: Map.get(x, "open"),
+        highest: Map.get(x, "high"),
+        lowest: Map.get(x, "low"),
+        pre_close: Map.get(x, "prevclose"),
+        diff: Map.get(x, "pricechange"),
+        chg: Map.get(x, "changepercent"),
+        amplitude: "0",
+        volume: Map.get(x, "volume"),
         # category: "",
         # market_cap: "",
         # pe: ""
@@ -44,18 +45,14 @@ defmodule TradingTask.CNStock do
       end
     end)
     
-    page_cur = get_in(body, ["result", "data", "pageCur"])
-    page_num = get_in(body, ["result", "data", "pageNum"])
-    page_next = page_cur + 1
-    
-    if page_next <= page_num do
-      load_list(page: page_next)
+    if not is_nil(body) do
+      load_list(page: page + 1)
     end
   end
 
 
   defp load_dayk() do
-    stock_list = Markets.list_stocks(:cn)
+    stock_list = Markets.list_stocks(:hk)
     load_dayk(stock_list)
   end
 
@@ -68,7 +65,7 @@ defmodule TradingTask.CNStock do
       |> Map.get(:body)
     
     dayk_list = (if is_nil(dayk_list), do: [], else: dayk_list)
-    
+
     data = 
       dayk_list
       |> Enum.with_index()
@@ -79,25 +76,32 @@ defmodule TradingTask.CNStock do
           else
             x |> Map.get("close")
           end
+        
+        {:ok, datetime, _} =
+          x
+          |> Map.get("date")
+          |> DateTime.from_iso8601()
+        
+        date = DateTime.to_date(datetime)
 
-          %{
-            date: Map.get(x, "day"),
-            symbol: stock.symbol,
-            open: Map.get(x, "open"),
-            highest: Map.get(x, "high"),
-            lowest: Map.get(x, "low"),
-            close: Map.get(x, "close"),
-            pre_close: pre_close,
-            volume: Map.get(x, "volume")
-          }
+        %{
+          date: date,
+          symbol: stock.symbol,
+          open: Map.get(x, "open"),
+          highest: Map.get(x, "high"),
+          lowest: Map.get(x, "low"),
+          close: Map.get(x, "close"),
+          pre_close: pre_close,
+          volume: Map.get(x, "volume")
+        }
       end)
-    
+      
     data =
       case Markets.list_stock_dayk(symbol: stock.symbol) |> List.last() do
         nil -> data
-        dayk_last -> Enum.filter(data, &(Date.compare(Date.from_iso8601!(&1.date), dayk_last.date) == :gt))
+        dayk_last -> Enum.filter(data, &(Date.compare(&1.date, dayk_last.date) == :gt))
       end
-      
+
     save_dayk(data)
     load_dayk(rest)
   end
@@ -110,7 +114,7 @@ defmodule TradingTask.CNStock do
   end
 
   defp generate_state do
-    stock_list = Markets.list_stocks(:cn)
+    stock_list = Markets.list_stocks(:hk)
     generate_state(stock_list)
   end
 
@@ -119,7 +123,7 @@ defmodule TradingTask.CNStock do
     IO.puts "保存state数据 #{stock.symbol}"
 
     dayk_data = Markets.list_stock_dayk(symbol: stock.symbol)
-    
+
     data = case Markets.list_stock_state(symbol: stock.symbol) |> List.last() do
       nil -> dayk_data
       state_last -> Enum.filter(dayk_data, &(Date.compare(&1.date, state_last.date) == :gt))

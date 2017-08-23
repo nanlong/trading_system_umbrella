@@ -74,7 +74,6 @@ defmodule TradingApi.Sina.HKStock do
     {:ok, data} =
       ~r/(?<={|,)\w+(?=:)/
       |> Regex.replace(data, "\"\\g{0}\"")
-      |> IO.inspect()
       |> Poison.decode()
 
     data
