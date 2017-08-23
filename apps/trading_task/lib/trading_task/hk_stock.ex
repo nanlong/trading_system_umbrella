@@ -18,6 +18,7 @@ defmodule TradingTask.HKStock do
     data = if is_nil(body), do: [], else: body
 
     # TODO: 更新 amplitude
+    # TODO: 增加字段 lotsize
     Enum.map(data, fn(x) -> 
       attrs = %{
         symbol: Map.get(x, "symbol"),
