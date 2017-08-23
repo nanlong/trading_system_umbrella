@@ -9,4 +9,8 @@ defmodule TradingSystem.Markets.StockDaykContext do
     |> StockDayk.changeset(attrs)
     |> Repo.insert()
   end
+
+  def get(symbol: symbol, date: date) do
+    Repo.get_by(StockDayk, symbol: symbol, date: date)
+  end
 end

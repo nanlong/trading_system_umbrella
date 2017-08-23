@@ -8,8 +8,8 @@ defmodule TradingTask.CNStock do
 
   def run() do
     # load_list()
-    load_dayk()
-    # generate_state()
+    # load_dayk()
+    generate_state()
   end
 
   def load_list(), do: load_list(page: 1)
@@ -53,6 +53,52 @@ defmodule TradingTask.CNStock do
 
 
   def load_dayk() do
-    data = Markets.list_stocks(:cn)
+    stock_list = Markets.list_stocks(:cn)
+    load_dayk(stock_list)
+  end
+
+  def load_dayk([]), do: nil
+  def load_dayk([stock | rest]) do
+    IO.puts stock.symbol
+
+    dayk_list = 
+      Api.get("dayk", symbol: stock.symbol)
+      |> Map.get(:body)
+    
+    dayk_list = (if is_nil(dayk_list), do: [], else: dayk_list)
+    
+    data = 
+      dayk_list
+      |> Enum.with_index()
+      |> Enum.map(fn({x, index}) -> 
+        pre_close =
+          if index > 0 do
+            dayk_list |> Enum.at(index - 1) |> Map.get("close")
+          else
+            x |> Map.get("close")
+          end
+
+          %{
+            date: Map.get(x, "day"),
+            symbol: stock.symbol,
+            open: Map.get(x, "open"),
+            highest: Map.get(x, "high"),
+            lowest: Map.get(x, "low"),
+            close: Map.get(x, "close"),
+            pre_close: pre_close,
+            volume: Map.get(x, "volume")
+          }
+      end)
+
+    save_dayk(data)
+    load_dayk(rest)
+  end
+
+  def save_dayk([]), do: nil
+  def save_dayk([attrs | rest]) do
+    if is_nil Markets.get_stock_dayk(symbol: attrs.symbol, date: attrs.date) do
+      Markets.create_stock_dayk(attrs)
+    end
+    save_dayk(rest)
   end
 end

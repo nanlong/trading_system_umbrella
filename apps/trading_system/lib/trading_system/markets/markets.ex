@@ -13,7 +13,8 @@ defmodule TradingSystem.Markets do
   # stock dayk
   alias TradingSystem.Markets.StockDaykContext
 
-  defdelegate create_dayk(attrs), to: StockDaykContext, as: :create
+  defdelegate get_stock_dayk(params), to: StockDaykContext, as: :get
+  defdelegate create_stock_dayk(attrs), to: StockDaykContext, as: :create
 
 
   # stock state
