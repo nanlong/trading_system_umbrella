@@ -13,14 +13,14 @@ defmodule TradingSystem.Markets do
   # stock dayk
   alias TradingSystem.Markets.StockDaykContext
 
-  defdelegate get_stock_dayk(params), to: StockDaykContext, as: :get
   defdelegate create_stock_dayk(attrs), to: StockDaykContext, as: :create
-
+  defdelegate get_stock_dayk(params), to: StockDaykContext, as: :get
+  defdelegate list_stock_dayk(params), to: StockDaykContext, as: :list
 
   # stock state
   alias TradingSystem.Markets.StockStateContext
 
-  defdelegate create_state(attrs), to: StockStateContext, as: :create
+  defdelegate create_stock_state(attrs), to: StockStateContext, as: :create
 
 
   # stock blacklist

@@ -188,7 +188,7 @@ defmodule StockState do
       dcl60: dc60.lower,
     }
 
-    {:ok, _} = Markets.create_state(attrs)
+    {:ok, _} = Markets.create_stock_state(attrs)
   end
 
   defp compare_date?(%{date: d1}, %{date: d2}) do

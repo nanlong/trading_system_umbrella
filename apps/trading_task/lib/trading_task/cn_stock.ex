@@ -7,8 +7,8 @@ defmodule TradingTask.CNStock do
   alias TradingSystem.Markets
 
   def run() do
-    # load_list()
-    # load_dayk()
+    load_list()
+    load_dayk()
     generate_state()
   end
 
@@ -23,7 +23,6 @@ defmodule TradingTask.CNStock do
         name: get_in(x, ["ext", "name"]),
         cname: get_in(x, ["ext", "name"]),
         market: Regex.named_captures(~r/(?<market>[sh|sz]+)/, Map.get(x, "symbol")) |> Map.get("market") |> String.upcase(),
-        category: "",
         open: get_in(x, ["ext", "open"]),
         highest: get_in(x, ["ext", "high"]),
         lowest: get_in(x, ["ext", "low"]),
@@ -32,8 +31,9 @@ defmodule TradingTask.CNStock do
         chg: get_in(x, ["ext", "percent"]),
         amplitude: get_in(x, ["ext", "amplitude"]) |> to_string(),
         volume: get_in(x, ["ext", "totalVolume"]),
-        market_cap: "",
-        pe: ""
+        # category: "",
+        # market_cap: "",
+        # pe: ""
       }
   
       case Markets.get_stock(symbol: attrs.symbol) do
@@ -57,8 +57,8 @@ defmodule TradingTask.CNStock do
     load_dayk(stock_list)
   end
 
-  def load_dayk([]), do: nil
-  def load_dayk([stock | rest]) do
+  defp load_dayk([]), do: nil
+  defp load_dayk([stock | rest]) do
     IO.puts stock.symbol
 
     dayk_list = 
@@ -94,11 +94,72 @@ defmodule TradingTask.CNStock do
     load_dayk(rest)
   end
 
-  def save_dayk([]), do: nil
-  def save_dayk([attrs | rest]) do
+  defp save_dayk([]), do: nil
+  defp save_dayk([attrs | rest]) do
     if is_nil Markets.get_stock_dayk(symbol: attrs.symbol, date: attrs.date) do
       Markets.create_stock_dayk(attrs)
     end
     save_dayk(rest)
+  end
+
+  def generate_state do
+    stock_list = Markets.list_stocks(:cn)
+    generate_state(stock_list)
+  end
+
+  defp generate_state([]), do: nil
+  defp generate_state([stock | rest]) do
+    dayk_data = Markets.list_stock_dayk(symbol: stock.symbol)
+    save_state(dayk_data, dayk_data)
+    generate_state(rest)
+  end
+
+  defp save_state([], _all_dayk), do: nil
+  defp save_state([dayk | rest], all_dayk) do
+    history = list_stock_dayk_before(all_dayk, date: dayk.date, limit: 300)
+    dc_history = if length(history) == 1, do: history, else: Enum.slice(history, 0..-2)
+    
+    dc10 = TradingKernel.dc(dc_history, 10)
+    dc20 = TradingKernel.dc(dc_history, 20)
+    dc60 = TradingKernel.dc(dc_history, 60)
+
+    attrs = %{
+      date: dayk.date,
+      symbol: dayk.symbol,
+      tr: TradingKernel.tr(dayk),
+      atr20: TradingKernel.atr(dayk),
+      ma5: TradingKernel.ma(history, 5),
+      ma10: TradingKernel.ma(history, 10),
+      ma20: TradingKernel.ma(history, 20),
+      ma30: TradingKernel.ma(history, 30),
+      ma50: TradingKernel.ma(history, 50),
+      ma60: TradingKernel.ma(history, 60),
+      ma120: TradingKernel.ma(history, 120),
+      ma150: TradingKernel.ma(history, 150),
+      ma240: TradingKernel.ma(history, 240),
+      ma300: TradingKernel.ma(history, 300),
+      dcu10: dc10.up,
+      dca10: dc10.avg,
+      dcl10: dc10.lower,
+      dcu20: dc20.up,
+      dca20: dc20.avg,
+      dcl20: dc20.lower,
+      dcu60: dc60.up,
+      dca60: dc60.avg,
+      dcl60: dc60.lower,
+    }
+
+    Markets.create_stock_state(attrs)
+
+    save_state(rest, all_dayk)
+  end
+
+  def list_stock_dayk_before(data, date: date, limit: limit) do
+    data = Enum.reverse(data)
+    cur_index = Enum.find_index(data, &(Date.compare(&1.date, date) == :eq))
+    
+    data
+    |> Enum.slice(cur_index..cur_index + limit)
+    |> Enum.reverse()
   end
 end

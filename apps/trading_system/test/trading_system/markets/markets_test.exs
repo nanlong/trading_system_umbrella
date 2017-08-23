@@ -65,7 +65,7 @@ defmodule TradingSystem.MarketsTest do
     @tag markets_state: true
     test "create_state/1" do
       stock_fixture()
-      assert {:ok, %{state: state, stock: stock}} = Markets.create_state(@valid_data)
+      assert {:ok, %{state: state, stock: stock}} = Markets.create_stock_state(@valid_data)
       assert state.id == stock.stock_state_id
       assert state.symbol == stock.symbol
     end
