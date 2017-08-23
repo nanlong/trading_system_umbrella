@@ -10,13 +10,15 @@ defmodule TradingTask.HKStock do
     load_list()
     load_dayk()
     generate_state()
+    load_lot_size()
   end
 
   defp load_list(), do: load_list(page: 1)
   defp load_list(page: page) do
     %{body: body} = Api.get("list", page: page)
+    
     data = if is_nil(body), do: [], else: body
-
+    
     # TODO: 更新 amplitude
     # TODO: 增加字段 lotsize
     Enum.map(data, fn(x) -> 
@@ -50,7 +52,6 @@ defmodule TradingTask.HKStock do
       load_list(page: page + 1)
     end
   end
-
 
   defp load_dayk() do
     stock_list = Markets.list_stocks(:hk)
@@ -183,5 +184,17 @@ defmodule TradingTask.HKStock do
     data
     |> Enum.slice(cur_index..cur_index + limit)
     |> Enum.reverse()
+  end
+
+  defp load_lot_size() do
+    stock_list = Markets.list_stocks(:hk)
+    load_lot_size(stock_list)
+  end
+  defp load_lot_size([]), do: nil
+  defp load_lot_size([stock | rest]) do
+    IO.puts "hk 更新股票每手股数 #{stock.symbol}"
+    %{body: attrs} = Api.get("lotSize", symbol: stock.symbol)
+    Markets.update_stock(stock, attrs)
+    load_lot_size(rest)
   end
 end

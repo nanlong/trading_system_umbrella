@@ -23,6 +23,7 @@ defmodule TradingTask.CNStock do
         name: get_in(x, ["ext", "name"]),
         cname: get_in(x, ["ext", "name"]),
         market: Regex.named_captures(~r/(?<market>[sh|sz]+)/, Map.get(x, "symbol")) |> Map.get("market") |> String.upcase(),
+        lot_size: 100,
         open: get_in(x, ["ext", "open"]),
         highest: get_in(x, ["ext", "high"]),
         lowest: get_in(x, ["ext", "low"]),

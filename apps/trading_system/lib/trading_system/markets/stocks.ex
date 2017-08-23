@@ -22,13 +22,14 @@ defmodule TradingSystem.Markets.Stocks do
     field :market_cap, :decimal # 市值
     field :pe, :string # 市盈率
     field :market, :string # 市场
+    field :lot_size, :integer
     
     belongs_to :state, TradingSystem.Markets.StockState, foreign_key: :stock_state_id
 
     timestamps()
   end
 
-  @required_fields ~w(symbol name cname market)a
+  @required_fields ~w(symbol name cname market lot_size)a
   @optioned_fields ~w(category open highest lowest pre_close diff chg amplitude volume market_cap pe stock_state_id)a
 
   @doc false

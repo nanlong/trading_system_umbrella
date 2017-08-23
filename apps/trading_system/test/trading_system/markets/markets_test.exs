@@ -8,9 +8,9 @@ defmodule TradingSystem.MarketsTest do
     alias TradingSystem.Markets.Stocks
 
     @stocks [
-      %{symbol: "ETH", name: "Ethan Allen Interiors Inc", cname: "伊森艾伦室内装饰", market: "NYSE"},
-      %{symbol: "SAH", name: "Sonic Automotive Inc Cl A", cname: "索尼克汽车", market: "NYSE"},
-      %{symbol: "ITOT", name: "iShares Core S&P Total US Stoc", cname: "iShares Core S&P Total US Stoc", market: "NASDAQ"},
+      %{symbol: "ETH", name: "Ethan Allen Interiors Inc", cname: "伊森艾伦室内装饰", market: "NYSE", lot_size: 1},
+      %{symbol: "SAH", name: "Sonic Automotive Inc Cl A", cname: "索尼克汽车", market: "NYSE", lot_size: 1},
+      %{symbol: "ITOT", name: "iShares Core S&P Total US Stoc", cname: "iShares Core S&P Total US Stoc", market: "NASDAQ", lot_size: 1},
     ]
 
     def stock_fixture(attrs \\ %{}) do

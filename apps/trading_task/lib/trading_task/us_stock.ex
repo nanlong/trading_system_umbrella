@@ -21,6 +21,8 @@ defmodule TradingTask.USStock do
     Enum.map(data, fn(attrs) ->       
       IO.puts "us 保存股票数据 #{attrs.symbol}"
 
+      attrs = Map.put(attrs, :lot_size, 1)
+      
       case Markets.get_stock(symbol: attrs.symbol) do
         nil -> Markets.create_stock(attrs)
         stock -> Markets.update_stock(stock, attrs)
