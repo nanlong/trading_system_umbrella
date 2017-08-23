@@ -7,8 +7,8 @@ defmodule TradingTask.USStock do
   alias TradingSystem.Markets
 
   def run() do
-    # load_list()
-    # load_dayk()
+    load_list()
+    load_dayk()
     generate_state()
   end
 
