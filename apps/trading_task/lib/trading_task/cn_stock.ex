@@ -36,7 +36,7 @@ defmodule TradingTask.CNStock do
         # pe: ""
       }
       
-      IO.puts "保存股票数据 #{attrs.symbol}"
+      IO.puts "cn 保存股票数据 #{attrs.symbol}"
 
       case Markets.get_stock(symbol: attrs.symbol) do
         nil -> Markets.create_stock(attrs)
@@ -61,7 +61,7 @@ defmodule TradingTask.CNStock do
 
   defp load_dayk([]), do: nil
   defp load_dayk([stock | rest]) do
-    IO.puts "保存日K数据 #{stock.symbol}"
+    IO.puts "cn 保存日K数据 #{stock.symbol}"
 
     dayk_list = 
       Api.get("dayk", symbol: stock.symbol)
@@ -104,7 +104,7 @@ defmodule TradingTask.CNStock do
 
   defp save_dayk([]), do: nil
   defp save_dayk([attrs | rest]) do
-    IO.puts "保存日K数据 #{attrs.symbol} #{attrs.date}"
+    IO.puts "cn 保存日K数据 #{attrs.symbol} #{attrs.date}"
     Markets.create_stock_dayk(attrs)
     save_dayk(rest)
   end
@@ -116,7 +116,7 @@ defmodule TradingTask.CNStock do
 
   defp generate_state([]), do: nil
   defp generate_state([stock | rest]) do
-    IO.puts "保存state数据 #{stock.symbol}"
+    IO.puts "cn 保存state数据 #{stock.symbol}"
 
     dayk_data = Markets.list_stock_dayk(symbol: stock.symbol)
     
@@ -131,7 +131,7 @@ defmodule TradingTask.CNStock do
 
   defp save_state([], _all_dayk), do: nil
   defp save_state([dayk | rest], all_dayk) do
-    IO.puts "保存state数据 #{dayk.symbol} #{dayk.date}"
+    IO.puts "cn 保存state数据 #{dayk.symbol} #{dayk.date}"
 
     history = list_stock_dayk_before(all_dayk, date: dayk.date, limit: 300)
     dc_history = if length(history) == 1, do: history, else: Enum.slice(history, 0..-2)

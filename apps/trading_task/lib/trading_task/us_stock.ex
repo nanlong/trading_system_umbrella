@@ -1,5 +1,5 @@
-defmodule TradingTask.HKStock do
-  alias TradingApi.Sina.HKStock, as: Api
+defmodule TradingTask.USStock do
+  alias TradingApi.Sina.USStock, as: Api
 
   @moduledoc """
   交易时间 周一至五9:30-12:00 PM1:00-4:00
@@ -7,37 +7,19 @@ defmodule TradingTask.HKStock do
   alias TradingSystem.Markets
 
   def run() do
-    load_list()
-    load_dayk()
+    # load_list()
+    # load_dayk()
     generate_state()
   end
 
   defp load_list(), do: load_list(page: 1)
   defp load_list(page: page) do
     %{body: body} = Api.get("list", page: page)
-    data = if is_nil(body), do: [], else: body
+    
+    data = Map.get(body, :data)
 
-    # TODO: 更新 amplitude
-    Enum.map(data, fn(x) -> 
-      attrs = %{
-        symbol: Map.get(x, "symbol"),
-        name: Map.get(x, "engname"),
-        cname: Map.get(x, "name"),
-        market: "HK",
-        open: Map.get(x, "open"),
-        highest: Map.get(x, "high"),
-        lowest: Map.get(x, "low"),
-        pre_close: Map.get(x, "prevclose"),
-        diff: Map.get(x, "pricechange"),
-        chg: Map.get(x, "changepercent"),
-        amplitude: "0",
-        volume: Map.get(x, "volume"),
-        # category: "",
-        # market_cap: "",
-        # pe: ""
-      }
-      
-      IO.puts "hk 保存股票数据 #{attrs.symbol}"
+    Enum.map(data, fn(attrs) ->       
+      IO.puts "us 保存股票数据 #{attrs.symbol}"
 
       case Markets.get_stock(symbol: attrs.symbol) do
         nil -> Markets.create_stock(attrs)
@@ -45,25 +27,25 @@ defmodule TradingTask.HKStock do
       end
     end)
     
-    if not is_nil(body) do
+    if length(data) > 0 do
       load_list(page: page + 1)
     end
   end
 
 
   defp load_dayk() do
-    stock_list = Markets.list_stocks(:hk)
+    stock_list = Markets.list_stocks(:us)
     load_dayk(stock_list)
   end
 
   defp load_dayk([]), do: nil
   defp load_dayk([stock | rest]) do
-    IO.puts "hk 保存日K数据 #{stock.symbol}"
+    IO.puts "us 保存日K数据 #{stock.symbol}"
 
     dayk_list = 
-      Api.get("dayk", symbol: stock.symbol)
+      Api.get("daily_k", symbol: stock.symbol)
       |> Map.get(:body)
-    
+
     dayk_list = (if is_nil(dayk_list), do: [], else: dayk_list)
 
     data = 
@@ -72,34 +54,18 @@ defmodule TradingTask.HKStock do
       |> Enum.map(fn({x, index}) -> 
         pre_close =
           if index > 0 do
-            dayk_list |> Enum.at(index - 1) |> Map.get("close")
+            dayk_list |> Enum.at(index - 1) |> Map.get(:close)
           else
-            x |> Map.get("close")
+            x |> Map.get(:close)
           end
         
-        {:ok, datetime, _} =
-          x
-          |> Map.get("date")
-          |> DateTime.from_iso8601()
-        
-        date = DateTime.to_date(datetime)
-
-        %{
-          date: date,
-          symbol: stock.symbol,
-          open: Map.get(x, "open"),
-          highest: Map.get(x, "high"),
-          lowest: Map.get(x, "low"),
-          close: Map.get(x, "close"),
-          pre_close: pre_close,
-          volume: Map.get(x, "volume")
-        }
+        Map.put(x, :pre_close, pre_close)
       end)
       
     data =
       case Markets.list_stock_dayk(symbol: stock.symbol) |> List.last() do
         nil -> data
-        dayk_last -> Enum.filter(data, &(Date.compare(&1.date, dayk_last.date) == :gt))
+        dayk_last -> Enum.filter(data, &(Date.compare(Date.from_iso8601!(&1.date), dayk_last.date) == :gt))
       end
 
     save_dayk(data)
@@ -108,19 +74,19 @@ defmodule TradingTask.HKStock do
 
   defp save_dayk([]), do: nil
   defp save_dayk([attrs | rest]) do
-    IO.puts "hk 保存日K数据 #{attrs.symbol} #{attrs.date}"
+    IO.puts "us 保存日K数据 #{attrs.symbol} #{attrs.date}"
     Markets.create_stock_dayk(attrs)
     save_dayk(rest)
   end
 
   defp generate_state do
-    stock_list = Markets.list_stocks(:hk)
+    stock_list = Markets.list_stocks(:us)
     generate_state(stock_list)
   end
 
   defp generate_state([]), do: nil
   defp generate_state([stock | rest]) do
-    IO.puts "hk 保存state数据 #{stock.symbol}"
+    IO.puts "us 保存state数据 #{stock.symbol}"
 
     dayk_data = Markets.list_stock_dayk(symbol: stock.symbol)
 
@@ -135,7 +101,7 @@ defmodule TradingTask.HKStock do
 
   defp save_state([], _all_dayk), do: nil
   defp save_state([dayk | rest], all_dayk) do
-    IO.puts "hk 保存state数据 #{dayk.symbol} #{dayk.date}"
+    IO.puts "us 保存state数据 #{dayk.symbol} #{dayk.date}"
 
     history = list_stock_dayk_before(all_dayk, date: dayk.date, limit: 300)
     dc_history = if length(history) == 1, do: history, else: Enum.slice(history, 0..-2)
