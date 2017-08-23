@@ -35,7 +35,9 @@ defmodule TradingTask.CNStock do
         # market_cap: "",
         # pe: ""
       }
-  
+      
+      IO.puts "保存股票数据 #{attrs.symbol}"
+
       case Markets.get_stock(symbol: attrs.symbol) do
         nil -> Markets.create_stock(attrs)
         stock -> Markets.update_stock(stock, attrs)
@@ -59,7 +61,7 @@ defmodule TradingTask.CNStock do
 
   defp load_dayk([]), do: nil
   defp load_dayk([stock | rest]) do
-    IO.puts stock.symbol
+    IO.puts "保存日K数据 #{stock.symbol}"
 
     dayk_list = 
       Api.get("dayk", symbol: stock.symbol)
@@ -67,6 +69,10 @@ defmodule TradingTask.CNStock do
     
     dayk_list = (if is_nil(dayk_list), do: [], else: dayk_list)
     
+    dayk_last = 
+      Markets.list_stock_dayk(symbol: stock.symbol) 
+      |> List.last()
+
     data = 
       dayk_list
       |> Enum.with_index()
@@ -89,6 +95,7 @@ defmodule TradingTask.CNStock do
             volume: Map.get(x, "volume")
           }
       end)
+      |> Enum.filter(&(Date.compare(Date.from_iso8601!(&1.date), dayk_last.date) == :gt))
 
     save_dayk(data)
     load_dayk(rest)
@@ -96,9 +103,8 @@ defmodule TradingTask.CNStock do
 
   defp save_dayk([]), do: nil
   defp save_dayk([attrs | rest]) do
-    if is_nil Markets.get_stock_dayk(symbol: attrs.symbol, date: attrs.date) do
-      Markets.create_stock_dayk(attrs)
-    end
+    IO.puts "保存日K数据 #{attrs.symbol} #{attrs.date}"
+    Markets.create_stock_dayk(attrs)
     save_dayk(rest)
   end
 
@@ -109,13 +115,20 @@ defmodule TradingTask.CNStock do
 
   defp generate_state([]), do: nil
   defp generate_state([stock | rest]) do
+    IO.puts "保存state数据 #{stock.symbol}"
+
     dayk_data = Markets.list_stock_dayk(symbol: stock.symbol)
-    save_state(dayk_data, dayk_data)
+    state =  Markets.list_stock_state(symbol: stock.symbol) |> List.last()
+    data = Enum.filter(dayk_data, &(Date.compare(&1.date, state.date) == :gt))
+
+    save_state(data, dayk_data)
     generate_state(rest)
   end
 
   defp save_state([], _all_dayk), do: nil
   defp save_state([dayk | rest], all_dayk) do
+    IO.puts "保存state数据 #{dayk.symbol} #{dayk.date}"
+
     history = list_stock_dayk_before(all_dayk, date: dayk.date, limit: 300)
     dc_history = if length(history) == 1, do: history, else: Enum.slice(history, 0..-2)
     

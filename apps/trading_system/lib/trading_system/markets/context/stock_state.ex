@@ -16,4 +16,11 @@ defmodule TradingSystem.Markets.StockStateContext do
     end)
     |> Repo.transaction()
   end
+
+  def list(symbol: symbol) do
+    StockState
+    |> where([s], s.symbol == ^symbol)
+    |> order_by([s], asc: s.date)
+    |> Repo.all()
+  end
 end

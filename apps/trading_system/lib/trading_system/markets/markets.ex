@@ -21,7 +21,7 @@ defmodule TradingSystem.Markets do
   alias TradingSystem.Markets.StockStateContext
 
   defdelegate create_stock_state(attrs), to: StockStateContext, as: :create
-
+  defdelegate list_stock_state(params), to: StockStateContext, as: :list
 
   # stock blacklist
   alias TradingSystem.Markets.StockBlacklistContext
