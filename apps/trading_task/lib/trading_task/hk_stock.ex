@@ -1,5 +1,5 @@
 defmodule TradingTask.HKStock do
-  alias TradingApi.Sina.HKStock, as: Api
+  alias TradingApi, as: Api
 
   @moduledoc """
   交易时间 周一至五9:30-12:00 PM1:00-4:00
@@ -15,7 +15,7 @@ defmodule TradingTask.HKStock do
 
   defp load_list(), do: load_list(page: 1)
   defp load_list(page: page) do
-    %{body: body} = Api.get("list", page: page)
+    %{body: body} = Api.get(:hk, "list", page: page)
     
     data = if is_nil(body), do: [], else: body
     
@@ -63,7 +63,7 @@ defmodule TradingTask.HKStock do
     IO.puts "hk 保存日K数据 #{stock.symbol}"
 
     dayk_list = 
-      Api.get("dayk", symbol: stock.symbol)
+      Api.get(:hk, "dayk", symbol: stock.symbol)
       |> Map.get(:body)
     
     dayk_list = (if is_nil(dayk_list), do: [], else: dayk_list)
@@ -193,7 +193,7 @@ defmodule TradingTask.HKStock do
   defp load_lot_size([]), do: nil
   defp load_lot_size([stock | rest]) do
     IO.puts "hk 更新股票每手股数 #{stock.symbol}"
-    %{body: attrs} = Api.get("lotSize", symbol: stock.symbol)
+    %{body: attrs} = Api.get(:hk, "lotSize", symbol: stock.symbol)
     Markets.update_stock(stock, attrs)
     load_lot_size(rest)
   end

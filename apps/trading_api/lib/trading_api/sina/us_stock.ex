@@ -2,8 +2,8 @@ defmodule TradingApi.Sina.USStock do
   @moduledoc """
   TradingApi.Sina.USStock.get("trade_days")
   TradingApi.Sina.USStock.get("list", page: 1)
-  TradingApi.Sina.USStock.get("daily_k", symbol: "fb")
-  TradingApi.Sina.USStock.get("min_k", symbol: "fb", type: 5)
+  TradingApi.Sina.USStock.get("dayk", symbol: "fb")
+  TradingApi.Sina.USStock.get("mink", symbol: "fb", type: 5)
   TradingApi.Sina.USStock.get("realtime", stocks: ["FB", "BABA"])
   """
   use HTTPotion.Base
@@ -22,12 +22,12 @@ defmodule TradingApi.Sina.USStock do
     process_url(url, query)
   end
   
-  def process_url("daily_k", query) do
+  def process_url("dayk", query) do
     url = EEx.eval_string(@k_service, assigns: [varible: "DailyK", method: "getDailyK"])
     process_url(url, query)
   end
   
-  def process_url("min_k", query) do
+  def process_url("mink", query) do
     url = EEx.eval_string(@k_service, assigns: [varible: "MinK", method: "getMinK"])
     process_url(url, query)
   end

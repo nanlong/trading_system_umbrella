@@ -1,5 +1,5 @@
 defmodule TradingTask.CNStock do
-  alias TradingApi.Sina.CNStock, as: Api
+  alias TradingApi, as: Api
 
   @moduledoc """
   交易时间 周一至五9:30-11:30 PM1:00-3:00
@@ -14,7 +14,7 @@ defmodule TradingTask.CNStock do
 
   defp load_list(), do: load_list(page: 1)
   defp load_list(page: page) do
-    %{body: body} = Api.get("list", page: page)
+    %{body: body} = Api.get(:cn, "list", page: page)
     data = get_in(body, ["result", "data", "data"])
 
     Enum.map(data, fn(x) -> 
@@ -65,7 +65,7 @@ defmodule TradingTask.CNStock do
     IO.puts "cn 保存日K数据 #{stock.symbol}"
 
     dayk_list = 
-      Api.get("dayk", symbol: stock.symbol)
+      Api.get(:cn, "dayk", symbol: stock.symbol)
       |> Map.get(:body)
     
     dayk_list = (if is_nil(dayk_list), do: [], else: dayk_list)

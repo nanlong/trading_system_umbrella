@@ -1,5 +1,5 @@
 defmodule TradingTask.USStock do
-  alias TradingApi.Sina.USStock, as: Api
+  alias TradingApi, as: Api
 
   @moduledoc """
   交易时间 周一至五9:30-12:00 PM1:00-4:00
@@ -14,7 +14,7 @@ defmodule TradingTask.USStock do
 
   defp load_list(), do: load_list(page: 1)
   defp load_list(page: page) do
-    %{body: body} = Api.get("list", page: page)
+    %{body: body} = Api.get(:us, "list", page: page)
     
     data = Map.get(body, :data)
 
@@ -22,7 +22,7 @@ defmodule TradingTask.USStock do
       IO.puts "us 保存股票数据 #{attrs.symbol}"
 
       attrs = Map.put(attrs, :lot_size, 1)
-      
+
       case Markets.get_stock(symbol: attrs.symbol) do
         nil -> Markets.create_stock(attrs)
         stock -> Markets.update_stock(stock, attrs)
@@ -45,7 +45,7 @@ defmodule TradingTask.USStock do
     IO.puts "us 保存日K数据 #{stock.symbol}"
 
     dayk_list = 
-      Api.get("daily_k", symbol: stock.symbol)
+      Api.get(:us, "dayk", symbol: stock.symbol)
       |> Map.get(:body)
 
     dayk_list = (if is_nil(dayk_list), do: [], else: dayk_list)
