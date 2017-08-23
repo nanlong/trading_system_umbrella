@@ -30,78 +30,66 @@ defmodule TradingSystem.Markets.StocksContext do
     |> Repo.get_by!(symbol: symbol)
   end
 
-  def paginate(:cn, params), do: query_all_with_market(@cn_markets, params)
-  def paginate(:cn_bull, params), do: query_bull_with_market(@cn_markets, params)
-  def paginate(:cn_bear, params), do: query_bear_with_market(@cn_markets, params)
-  def paginate(:cn_blacklist, params), do: query_blacklist_with_market(@cn_markets, params)
-  def paginate(:cn_star, params), do: query_star_with_market(@cn_markets, params)
-  def paginate(:hk, params), do: query_all_with_market(@hk_markets, params)
-  def paginate(:hk_bull, params), do: query_bull_with_market(@hk_markets, params)
-  def paginate(:hk_bear, params), do: query_bear_with_market(@hk_markets, params)
-  def paginate(:hk_blacklist, params), do: query_blacklist_with_market(@hk_markets, params)
-  def paginate(:hk_star, params), do: query_blacklist_with_market(@hk_markets, params)
-  def paginate(:us, params), do: query_all_with_market(@us_markets, params)
-  def paginate(:us_bull, params), do: query_bull_with_market(@us_markets, params)
-  def paginate(:us_bear, params), do: query_bear_with_market(@us_markets, params)
-  def paginate(:us_blacklist, params), do: query_blacklist_with_market(@us_markets, params)
-  def paginate(:us_star, params), do: query_star_with_market(@us_markets, params)
+  def paginate(:cn, params), do: query_all_with_market(@cn_markets, params) |> query_paginate(params)
+  def paginate(:cn_bull, params), do: query_bull_with_market(@cn_markets, params) |> query_paginate(params)
+  def paginate(:cn_bear, params), do: query_bear_with_market(@cn_markets, params) |> query_paginate(params)
+  def paginate(:cn_blacklist, params), do: query_blacklist_with_market(@cn_markets, params) |> query_paginate(params)
+  def paginate(:cn_star, params), do: query_star_with_market(@cn_markets, params) |> query_paginate(params)
+  def paginate(:hk, params), do: query_all_with_market(@hk_markets, params) |> query_paginate(params)
+  def paginate(:hk_bull, params), do: query_bull_with_market(@hk_markets, params) |> query_paginate(params)
+  def paginate(:hk_bear, params), do: query_bear_with_market(@hk_markets, params) |> query_paginate(params)
+  def paginate(:hk_blacklist, params), do: query_blacklist_with_market(@hk_markets, params) |> query_paginate(params)
+  def paginate(:hk_star, params), do: query_blacklist_with_market(@hk_markets, params) |> query_paginate(params)
+  def paginate(:us, params), do: query_all_with_market(@us_markets, params) |> query_paginate(params)
+  def paginate(:us_bull, params), do: query_bull_with_market(@us_markets, params) |> query_paginate(params)
+  def paginate(:us_bear, params), do: query_bear_with_market(@us_markets, params) |> query_paginate(params)
+  def paginate(:us_blacklist, params), do: query_blacklist_with_market(@us_markets, params) |> query_paginate(params)
+  def paginate(:us_star, params), do: query_star_with_market(@us_markets, params) |> query_paginate(params)
 
+  def list(:cn), do: query_with_market(Stocks, @cn_markets) |> query_all()
+  def list(:hk), do: query_with_market(Stocks, @hk_markets) |> query_all()
+  def list(:us), do: query_with_market(Stocks, @us_markets) |> query_all()
 
   defp query_all_with_market(market, params) do
-    query =
-      Stocks
-      |> query_with_market(market)
-      |> query_load_state()
-      |> query_exclude_blacklist(Map.get(params, "user_id"))
-      |> query_order_by()
-
-    Repo.paginate(query, params)
+    Stocks
+    |> query_with_market(market)
+    |> query_load_state()
+    |> query_exclude_blacklist(Map.get(params, "user_id"))
+    |> query_order_by()
   end
 
   defp query_bull_with_market(market, params) do
-    query =
-      Stocks
-      |> query_with_market(market)
-      |> query_load_state()
-      |> query_exclude_blacklist(Map.get(params, "user_id"))
-      |> query_bull()
-      |> query_order_by()
-
-    Repo.paginate(query, params)
+    Stocks
+    |> query_with_market(market)
+    |> query_load_state()
+    |> query_exclude_blacklist(Map.get(params, "user_id"))
+    |> query_bull()
+    |> query_order_by()
   end
 
   defp query_bear_with_market(market, params) do
-    query =
-      Stocks
-      |> query_with_market(market)
-      |> query_load_state()
-      |> query_exclude_blacklist(Map.get(params, "user_id"))
-      |> query_bear()
-      |> query_order_by()
-
-    Repo.paginate(query, params)
+    Stocks
+    |> query_with_market(market)
+    |> query_load_state()
+    |> query_exclude_blacklist(Map.get(params, "user_id"))
+    |> query_bear()
+    |> query_order_by()
   end
 
   defp query_blacklist_with_market(market, params) do
-    query = 
-      Stocks
-      |> query_with_market(market)
-      |> query_load_state()
-      |> query_include_blacklist(Map.get(params, "user_id"))
-      |> query_order_by()
-
-    Repo.paginate(query, params)
+    Stocks
+    |> query_with_market(market)
+    |> query_load_state()
+    |> query_include_blacklist(Map.get(params, "user_id"))
+    |> query_order_by()
   end
 
   defp query_star_with_market(market, params) do
-    query =
-      Stocks
-      |> query_with_market(market)
-      |> query_load_state()
-      |> query_include_star(Map.get(params, "user_id"))
-      |> query_order_by()
-
-    Repo.paginate(query, params)
+    Stocks
+    |> query_with_market(market)
+    |> query_load_state()
+    |> query_include_star(Map.get(params, "user_id"))
+    |> query_order_by()
   end
 
   defp query_with_market(query, market) do
@@ -139,5 +127,13 @@ defmodule TradingSystem.Markets.StocksContext do
 
   defp query_order_by(query) do
     order_by(query, [stock], desc: stock.volume)
+  end
+
+  defp query_paginate(query, params) do
+    Repo.paginate(query, params)
+  end
+
+  defp query_all(query) do
+    Repo.all(query)
   end
 end

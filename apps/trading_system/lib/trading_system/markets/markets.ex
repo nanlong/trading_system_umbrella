@@ -4,17 +4,18 @@ defmodule TradingSystem.Markets do
   alias TradingSystem.Markets.StocksContext
 
   defdelegate create_stock(attrs), to: StocksContext, as: :create
+  defdelegate update_stock(stock, attrs), to: StocksContext, as: :update
   defdelegate get_stock(params), to: StocksContext, as: :get
   defdelegate get_stock!(params), to: StocksContext, as: :get!
   defdelegate paginate_stocks(market, params), to: StocksContext, as: :paginate
-  
+  defdelegate list_stocks(market), to: StocksContext, as: :list
 
   # stock dayk
   alias TradingSystem.Markets.StockDaykContext
 
   defdelegate create_dayk(attrs), to: StockDaykContext, as: :create
 
-  
+
   # stock state
   alias TradingSystem.Markets.StockStateContext
 

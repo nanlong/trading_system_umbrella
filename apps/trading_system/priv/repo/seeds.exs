@@ -199,7 +199,7 @@ defmodule StockState do
   end
 end
 
-# Stock.save()
-# StockDailyK.save()
+Stock.save()
+StockDailyK.save()
 # StockMinK.save()
 StockState.save()

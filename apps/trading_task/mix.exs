@@ -11,8 +11,13 @@ defmodule TradingTask.Mixfile do
       lockfile: "../../mix.lock",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+      escript: escript(),
     ]
+  end
+
+  def escript do
+    [main_module: TradingTask.CLI]
   end
 
   # Run "mix help compile.app" to learn about applications.

@@ -1,18 +1,21 @@
-defmodule TradingTask do
-  @moduledoc """
-  Documentation for TradingTask.
-  """
+defmodule TradingTask.CLI do
+  
+  def main(args \\ []) do
+    args
+    |> parse_args
+    |> response
+    |> IO.puts
+  end
 
-  @doc """
-  Hello world.
+  defp parse_args(args) do
+    {opts, word, _} =
+      args
+      |> OptionParser.parse(switches: [upcase: :boolean])
 
-  ## Examples
+    {opts, List.to_string(word)}
+  end
 
-      iex> TradingTask.hello
-      :world
-
-  """
-  def hello do
-    :world
+  defp response({opts, word}) do
+    if opts[:upcase], do: String.upcase(word), else: word
   end
 end
