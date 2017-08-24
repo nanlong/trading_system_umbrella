@@ -5,7 +5,7 @@ defmodule TradingTask.Worker.USStock.Dayk do
 
   def perform(symbol) do
     Logger.info "#{symbol} 日K数据"
-    %{body: body} = Api.get(:us, "dayk", symbol: stock.symbol)
+    %{body: body} = Api.get(:us, "dayk", symbol: symbol)
     
     (if is_nil(body), do: [], else: body)
     |> data_handler(symbol)
@@ -21,7 +21,7 @@ defmodule TradingTask.Worker.USStock.Dayk do
       |> Enum.map(fn({x, index}) -> 
         pre_close =
           if index > 0 do
-            dayk_list |> Enum.at(index - 1) |> Map.get(:close)
+            data |> Enum.at(index - 1) |> Map.get(:close)
           else
             x |> Map.get(:close)
           end

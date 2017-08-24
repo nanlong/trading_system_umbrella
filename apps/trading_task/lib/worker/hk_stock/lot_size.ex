@@ -4,6 +4,7 @@ defmodule TradingTask.Worker.HKStock.LotSize do
 
   def perform(symbol) do
     %{body: attrs} = Api.get(:hk, "lotSize", symbol: symbol)
+    stock = Markets.get_stock(symbol: symbol)
     {:ok, _} = Markets.update_stock(stock, attrs)
   end
 end
