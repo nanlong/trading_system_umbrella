@@ -1,23 +1,26 @@
 defmodule TradingTask.Worker.CNStock.Dayk do
   alias TradingApi, as: Api
+  alias TradingSystem.Markets
 
   def perform(symbol) do
-    %{body: body} = Api.get(:cn, "dayk", symbol: stock.symbol)
-    data = if is_nil(body), do: [], else: body
-    data = data_handler(symbol, data)
+    %{body: body} = Api.get(:cn, "dayk", symbol: symbol)
+
+    data = 
+      (if is_nil(body), do: [], else: body)
+      |> data_handler(symbol)
 
     Enum.map(data, fn(attrs) ->  Markets.create_stock_dayk(attrs) end)
     Exq.enqueue(Exq, "default", TradingTask.Worker.CNStock.State, [symbol])
   end
 
-  def data_handler(symbol, data) do
+  def data_handler(data, symbol) do
     data = 
       data
       |> Enum.with_index()
       |> Enum.map(fn({x, index}) -> 
         pre_close =
           if index > 0 do
-            dayk_list |> Enum.at(index - 1) |> Map.get("close")
+            data |> Enum.at(index - 1) |> Map.get("close")
           else
             x |> Map.get("close")
           end

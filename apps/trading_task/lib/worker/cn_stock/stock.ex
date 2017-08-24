@@ -1,5 +1,6 @@
 defmodule TradingTask.Worker.CNStock.Stock do
   alias TradingApi, as: Api 
+  alias TradingSystem.Markets
 
   def perform(page) do
     %{body: body} = Api.get(:cn, "list", page: page)
