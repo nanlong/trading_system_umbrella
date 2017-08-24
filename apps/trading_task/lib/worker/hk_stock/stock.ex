@@ -16,7 +16,8 @@ defmodule TradingTask.Worker.HKStock.Stock do
           attrs = if not is_nil(stock.lot_size), do: Map.delete(attrs, :lot_size), else: attrs
           {:ok, _} = Markets.update_stock(stock, attrs)
       end
-
+      
+      Exq.enqueue(Exq, "default", TradingTask.Worker.HKStock.LotSize, [attrs.symbol])
       Exq.enqueue(Exq, "default", TradingTask.Worker.HKStock.Dayk, [attrs.symbol])
     end)
 
