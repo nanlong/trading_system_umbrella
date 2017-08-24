@@ -17,8 +17,8 @@ defmodule TradingSystem.Graphql.StockResolver do
       |> String.replace(".", "$")))
     
     data = 
-      "realtime"
-      |> TradingApi.get(stocks: stocks)
+      TradingApi.get(:us, "realtime", stocks: stocks)
+      |> Map.get(:body)
       |> Enum.map(fn(x) -> Map.put_new(x, :random, :os.system_time()) end)
 
     {:ok, data}

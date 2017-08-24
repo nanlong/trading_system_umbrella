@@ -3,7 +3,6 @@ defmodule TradingSystem.Web.USStocksController do
 
   alias TradingSystem.Accounts
   alias TradingSystem.Markets
-  alias TradingSystem.Stocks
 
   plug Guardian.Plug.EnsureAuthenticated, [handler: TradingSystem.Web.Guardian.ErrorHandler]
   plug :vip when action in [:new_counter, :post_counter]

@@ -10,7 +10,6 @@ defmodule TradingTask.HKStock do
     load_list()
     load_dayk()
     generate_state()
-    load_lot_size()
   end
 
   defp load_list(), do: load_list(page: 1)
@@ -25,6 +24,7 @@ defmodule TradingTask.HKStock do
         name: Map.get(x, "engname"),
         cname: Map.get(x, "name"),
         market: "HK",
+        lot_size: 1,
         open: Map.get(x, "open"),
         highest: Map.get(x, "high"),
         lowest: Map.get(x, "low"),
@@ -42,7 +42,9 @@ defmodule TradingTask.HKStock do
 
       case Markets.get_stock(symbol: attrs.symbol) do
         nil -> {:ok, _} = Markets.create_stock(attrs)
-        stock -> {:ok, _} = Markets.update_stock(stock, attrs)
+        stock -> 
+          attrs = if not is_nil(stock.lot_size), do: Map.delete(attrs, :lot_size), else: attrs
+          {:ok, _} = Markets.update_stock(stock, attrs)
       end
     end)
     
@@ -182,17 +184,5 @@ defmodule TradingTask.HKStock do
     data
     |> Enum.slice(cur_index..cur_index + limit)
     |> Enum.reverse()
-  end
-
-  defp load_lot_size() do
-    stock_list = Markets.list_stocks(:hk)
-    load_lot_size(stock_list)
-  end
-  defp load_lot_size([]), do: nil
-  defp load_lot_size([stock | rest]) do
-    IO.puts "hk 更新股票每手股数 #{stock.symbol}"
-    %{body: attrs} = Api.get(:hk, "lotSize", symbol: stock.symbol)
-    {:ok, _} = Markets.update_stock(stock, attrs)
-    load_lot_size(rest)
   end
 end

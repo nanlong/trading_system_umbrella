@@ -7,7 +7,7 @@
       <p class="control">
         <%= link to: session_path(@conn, :new), class: "button is-fullwidth" do %>
           登录
-        <%= end %>
+        <% end %>
       </p>
     </div>
   </div>
