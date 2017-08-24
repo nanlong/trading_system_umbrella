@@ -7,6 +7,6 @@ config :trading_system, TradingSystem.Repo,
   password: "postgres",
   database: "trading_system_dev",
   hostname: "localhost",
-  pool_size: 10
+  pool_size: 20
 
 config :logger, level: :info

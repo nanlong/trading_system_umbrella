@@ -1,7 +1,9 @@
-defmodule TradingTask.Worker.CNStock.State do
+defmodule TradingTask.Worker.StockState do
   alias TradingSystem.Markets
+  require Logger
 
   def perform(symbol) do
+    Logger.info "#{symbol} 状态数据"
     dayk_list = Markets.list_stock_dayk(symbol: symbol)
     
     case Markets.list_stock_state(symbol: symbol) |> List.last() do
