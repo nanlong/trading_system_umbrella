@@ -40,8 +40,8 @@ defmodule TradingTask.CNStock do
       IO.puts "cn 保存股票数据 #{attrs.symbol}"
 
       case Markets.get_stock(symbol: attrs.symbol) do
-        nil -> Markets.create_stock(attrs)
-        stock -> Markets.update_stock(stock, attrs)
+        nil -> {:ok, _} = Markets.create_stock(attrs)
+        stock -> {:ok, _} = Markets.update_stock(stock, attrs)
       end
     end)
     
@@ -106,7 +106,7 @@ defmodule TradingTask.CNStock do
   defp save_dayk([]), do: nil
   defp save_dayk([attrs | rest]) do
     IO.puts "cn 保存日K数据 #{attrs.symbol} #{attrs.date}"
-    Markets.create_stock_dayk(attrs)
+    {:ok, _} = Markets.create_stock_dayk(attrs)
     save_dayk(rest)
   end
 
@@ -167,7 +167,7 @@ defmodule TradingTask.CNStock do
       dcl60: dc60.lower,
     }
 
-    Markets.create_stock_state(attrs)
+    {:ok, _} = Markets.create_stock_state(attrs)
 
     save_state(rest, all_dayk)
   end

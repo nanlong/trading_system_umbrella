@@ -7,7 +7,7 @@ defmodule TradingTask.HKStock do
   alias TradingSystem.Markets
 
   def run() do
-    # load_list()
+    load_list()
     load_dayk()
     generate_state()
     load_lot_size()
@@ -19,8 +19,6 @@ defmodule TradingTask.HKStock do
     
     data = if is_nil(body), do: [], else: body
     
-    # TODO: 更新 amplitude
-    # TODO: 增加字段 lotsize
     Enum.map(data, fn(x) -> 
       attrs = %{
         symbol: Map.get(x, "symbol"),
@@ -43,8 +41,8 @@ defmodule TradingTask.HKStock do
       IO.puts "hk 保存股票数据 #{attrs.symbol}"
 
       case Markets.get_stock(symbol: attrs.symbol) do
-        nil -> Markets.create_stock(attrs)
-        stock -> Markets.update_stock(stock, attrs)
+        nil -> {:ok, _} = Markets.create_stock(attrs)
+        stock -> {:ok, _} = Markets.update_stock(stock, attrs)
       end
     end)
     
@@ -55,7 +53,6 @@ defmodule TradingTask.HKStock do
 
   defp load_dayk() do
     stock_list = Markets.list_stocks(:hk)
-    # stock_list = [%{symbol: "00009"}]
     load_dayk(stock_list)
   end
 
@@ -112,7 +109,7 @@ defmodule TradingTask.HKStock do
   defp save_dayk([]), do: nil
   defp save_dayk([attrs | rest]) do
     IO.puts "hk 保存日K数据 #{attrs.symbol} #{attrs.date}"
-    Markets.create_stock_dayk(attrs)
+    {:ok, _} = Markets.create_stock_dayk(attrs)
     save_dayk(rest)
   end
 
@@ -173,7 +170,7 @@ defmodule TradingTask.HKStock do
       dcl60: dc60.lower,
     }
 
-    Markets.create_stock_state(attrs)
+    {:ok, _} = Markets.create_stock_state(attrs)
 
     save_state(rest, all_dayk)
   end
@@ -195,7 +192,7 @@ defmodule TradingTask.HKStock do
   defp load_lot_size([stock | rest]) do
     IO.puts "hk 更新股票每手股数 #{stock.symbol}"
     %{body: attrs} = Api.get(:hk, "lotSize", symbol: stock.symbol)
-    Markets.update_stock(stock, attrs)
+    {:ok, _} = Markets.update_stock(stock, attrs)
     load_lot_size(rest)
   end
 end
