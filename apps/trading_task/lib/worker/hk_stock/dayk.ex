@@ -1,13 +1,15 @@
 defmodule TradingTask.Worker.HKStock.Dayk do
   alias TradingApi, as: Api
   alias TradingSystem.Markets
+  require Logger
 
   def perform(symbol) do
+    Logger.info "#{symbol} 日K数据"
     %{body: body} = Api.get(:hk, "dayk", symbol: stock.symbol)
     
     (if is_nil(body), do: [], else: body)
     |> data_handler(symbol)
-    |> Enum.map(data, fn(attrs) -> Markets.create_stock_dayk(attrs) end)
+    |> Enum.map(data, fn(attrs) -> {:ok, _} =Markets.create_stock_dayk(attrs) end)
 
     Exq.enqueue(Exq, "default", TradingTask.Worker.StockState, [symbol])
   end
