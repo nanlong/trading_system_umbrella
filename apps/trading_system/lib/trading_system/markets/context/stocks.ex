@@ -46,9 +46,16 @@ defmodule TradingSystem.Markets.StocksContext do
   def paginate(:us_blacklist, params), do: query_blacklist_with_market(@us_markets, params) |> query_paginate(params)
   def paginate(:us_star, params), do: query_star_with_market(@us_markets, params) |> query_paginate(params)
 
-  def list(:cn), do: query_with_market(Stocks, @cn_markets) |> query_all()
-  def list(:hk), do: query_with_market(Stocks, @hk_markets) |> query_all()
-  def list(:us), do: query_with_market(Stocks, @us_markets) |> query_all()
+  def list(:cn), do: query_list(@cn_markets)
+  def list(:hk), do: query_list(@hk_markets)
+  def list(:us), do: query_list(@us_markets)
+
+  defp query_list(market) do  
+    Stocks
+    |> query_with_market(market)
+    |> query_order_by()
+    |> query_all()
+  end
 
   defp query_all_with_market(market, params) do
     Stocks

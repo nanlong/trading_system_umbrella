@@ -7,7 +7,7 @@ defmodule TradingTask.HKStock do
   alias TradingSystem.Markets
 
   def run() do
-    load_list()
+    # load_list()
     load_dayk()
     generate_state()
     load_lot_size()
@@ -55,6 +55,7 @@ defmodule TradingTask.HKStock do
 
   defp load_dayk() do
     stock_list = Markets.list_stocks(:hk)
+    # stock_list = [%{symbol: "00009"}]
     load_dayk(stock_list)
   end
 

@@ -42,9 +42,15 @@ defmodule TradingApi.Sina.HKStock do
   end
 
   def process_response_body(body) do
-    body
-    |> IO.iodata_to_binary()
-    |> decode()
+    data = body |> IO.iodata_to_binary()
+    try do
+      decode(data)
+    rescue
+      e in MatchError ->
+        IO.inspect e
+        IO.inspect data
+        []
+    end
   end
 
   def decode("var" <> _string = data) do
