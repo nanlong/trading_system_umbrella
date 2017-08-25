@@ -1,4 +1,4 @@
-defmodule TradingTask.Worker.StockState do
+defmodule TradingTask.Worker.Stock.State do
   alias TradingSystem.Markets
   require Logger
 

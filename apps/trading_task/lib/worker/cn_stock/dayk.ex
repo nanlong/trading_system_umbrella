@@ -11,7 +11,7 @@ defmodule TradingTask.Worker.CNStock.Dayk do
     |> data_handler(symbol)
     |> Enum.map(fn(attrs) -> {:ok, _} = Markets.create_stock_dayk(attrs) end)
 
-    Exq.enqueue(Exq, "default", TradingTask.Worker.StockState, [symbol])
+    Exq.enqueue(Exq, "default", TradingTask.Worker.Stock.State, [symbol])
   end
 
   def data_handler(data, symbol) do
