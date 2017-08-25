@@ -43,8 +43,9 @@ defmodule TradingSystem.Web.Router do
     get "/settings", SettingController, :index
     resources "/settings/:page", SettingController, only: [:show, :update], singleton: true
 
-    resources "/market", MarketController, singleton: true, only: [:show] do
+    resources "/markets", MarketController, singleton: true, only: [:show] do
       resources "/US_Stocks", USStocksController, param: "symbol", only: [:index, :show]
+      resources "/HK_Stocks", HKStocksController, param: "symbol", only: [:index, :show]
     end
 
     resources "/toolbox/calculator", CalculatorController, singleton: true, only: [:show, :create]

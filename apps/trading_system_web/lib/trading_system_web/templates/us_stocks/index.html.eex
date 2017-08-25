@@ -1,25 +1,6 @@
 <div class="columns">
     <div class="column is-2">
-      <nav class="panel">
-        <p class="panel-heading">
-          市场
-        </p>
-        <span class="panel-block" link="/market/CN_Stocks">
-          沪深 <i class="is-size-7">(后续支持)</i>
-        </span>
-        <span class="panel-block" link="/market/HK_Stocks">
-          港股 <i class="is-size-7">(后续支持)</i>
-        </span>
-
-        <%= link "美股", to: market_us_stocks_path(@conn, :index), class: "panel-block is-active" %>
-
-        <span class="panel-block" link="/market/I_Futures">
-          国内期货 <i class="is-size-7">(后续支持)</i>
-        </span>
-        <span class="panel-block" link="/market/G_Futures">
-          外盘期货 <i class="is-size-7">(后续支持)</i>
-        </span>
-      </nav>
+      <%= render TradingSystem.Web.MarketsView, "panel.html", assigns %>
     </div>
     <div class="column">
       <%= render "component_tabs.html", assigns %>

@@ -1,38 +1,25 @@
-defmodule TradingSystem.Web.USStocksController do
+defmodule TradingSystem.Web.HKStocksController do
   use TradingSystem.Web, :controller
 
   alias TradingSystem.Accounts
   alias TradingSystem.Markets
-
-  plug Guardian.Plug.EnsureAuthenticated, [handler: TradingSystem.Web.Guardian.ErrorHandler]
-  plug :vip when action in [:new_counter, :post_counter]
-
-  def vip(conn, _params) do
-    if Accounts.vip?(conn.assigns.current_user) do
-      conn
-    else
-      conn
-      |> render(:novip)
-      |> halt()
-    end
-  end
 
   def index(conn, params) do
     params = Map.put(params, "user_id", conn.assigns.current_user.id)
 
     market =
       case Map.get(params, "tab", "all") do
-        "all" -> :us
-        "bull" -> :us_bull
-        "bear" -> :us_bear
-        "star" -> :us_star
-        "blacklist" -> :us_blacklist
+        "all" -> :hk
+        "bull" -> :hk_bull
+        "bear" -> :hk_bear
+        "star" -> :hk_star
+        "blacklist" -> :hk_blacklist
       end
 
     page = Markets.paginate_stocks(market, params)
 
     conn
-    |> assign(:title, "美股")
+    |> assign(:title, "港股")
     |> assign(:params, params)
     |> assign(:page, page)
     |> render(:index)

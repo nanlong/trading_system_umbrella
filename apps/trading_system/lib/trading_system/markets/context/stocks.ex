@@ -39,7 +39,7 @@ defmodule TradingSystem.Markets.StocksContext do
   def paginate(:hk_bull, params), do: query_bull_with_market(@hk_markets, params) |> query_paginate(params)
   def paginate(:hk_bear, params), do: query_bear_with_market(@hk_markets, params) |> query_paginate(params)
   def paginate(:hk_blacklist, params), do: query_blacklist_with_market(@hk_markets, params) |> query_paginate(params)
-  def paginate(:hk_star, params), do: query_blacklist_with_market(@hk_markets, params) |> query_paginate(params)
+  def paginate(:hk_star, params), do: query_star_with_market(@hk_markets, params) |> query_paginate(params)
   def paginate(:us, params), do: query_all_with_market(@us_markets, params) |> query_paginate(params)
   def paginate(:us_bull, params), do: query_bull_with_market(@us_markets, params) |> query_paginate(params)
   def paginate(:us_bear, params), do: query_bear_with_market(@us_markets, params) |> query_paginate(params)
