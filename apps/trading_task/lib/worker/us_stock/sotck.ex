@@ -1,9 +1,9 @@
 defmodule TradingTask.Worker.USStock.Stock do
-  alias TradingApi, as: Api 
+  alias TradingApi.Sina.USStock, as: Api 
   alias TradingSystem.Markets
 
   def perform(page) do
-    %{body: %{data: data}} = Api.get(:us, "list", page: page)
+    %{body: %{data: data}} = Api.get("list", page: page)
     
     Enum.map(data, fn(attrs) -> 
       attrs = Map.put(attrs, :lot_size, 1)
