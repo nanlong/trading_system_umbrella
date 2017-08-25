@@ -22,7 +22,7 @@ defmodule TradingApi.Sina.GFuture do
     process_url(@dayk_api, query)
   end
 
-  def process_url("lotSize", query) do
+  def process_url("detail", query) do
     query = [
       symbol: Keyword.get(query, :symbol)
     ]
@@ -55,19 +55,34 @@ defmodule TradingApi.Sina.GFuture do
   end
 
   def decode("<!DOCTYPE html" <> _string = html) do
-    selector = "table#table-futures-basic-data tr:nth-child(1) td:nth-child(4)"
-
-    data =
+    name =
       html
-      |> Floki.find(selector)
+      |> Floki.find(".futures-title .title")
+      |> Floki.text()
+
+    cname =
+      html
+      |> Floki.find("table#table-futures-basic-data tr:nth-child(1) td:nth-child(2)")
+      |> Floki.text()
+
+
+    lot_size_data =
+      html
+      |> Floki.find("table#table-futures-basic-data tr:nth-child(1) td:nth-child(4)")
       |> Floki.text() 
     
     lot_size =
-      Regex.named_captures(~r/(?<lot_size>\d+)/, data)
+      Regex.named_captures(~r/(?<lot_size>\d+)/, lot_size_data)
       |> Map.get("lot_size")
       |> String.to_integer()
 
-    {:ok, %{"lot_size" => lot_size}}
+    data = %{
+      "name" => name,
+      "cname" => cname,
+      "lot_size" => lot_size
+    }
+
+    {:ok, data}
   end
 
   def decode(data) do
