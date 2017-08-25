@@ -1,11 +1,11 @@
 defmodule TradingTask.Worker.HKStock.Dayk do
-  alias TradingApi, as: Api
+  alias TradingApi.Sina.HKStock, as: Api
   alias TradingSystem.Markets
   require Logger
 
   def perform(symbol) do
     Logger.info "#{symbol} 日K数据"
-    %{body: body} = Api.get(:hk, "dayk", symbol: symbol)
+    %{body: body} = Api.get("dayk", symbol: symbol)
     
     (if is_nil(body), do: [], else: body)
     |> data_handler(symbol)

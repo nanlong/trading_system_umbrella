@@ -1,9 +1,9 @@
 defmodule TradingTask.Worker.HKStock.Stock do
-  alias TradingApi, as: Api 
+  alias TradingApi.Sina.HKStock, as: Api 
   alias TradingSystem.Markets
 
   def perform(page) do 
-    %{body: body} = Api.get(:hk, "list", page: page)
+    %{body: body} = Api.get("list", page: page)
     data = 
       (if is_nil(body), do: [], else: body)
       |> data_handler()
