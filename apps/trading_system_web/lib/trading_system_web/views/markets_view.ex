@@ -3,7 +3,7 @@ defmodule TradingSystem.Web.MarketsView do
 
   def panel(conn) do
     [
-      {"沪深", "cn", ""},
+      {"沪深", "CNStocksController", market_cn_stocks_path(conn, :index)},
       {"港股", "HKStocksController", market_hk_stocks_path(conn, :index)},
       {"美股", "USStocksController", market_us_stocks_path(conn, :index)},
       {"国内期货", "if", ""},

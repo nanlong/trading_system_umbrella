@@ -44,13 +44,12 @@ defmodule TradingSystem.Web.Router do
     resources "/settings/:page", SettingController, only: [:show, :update], singleton: true
 
     resources "/markets", MarketController, singleton: true, only: [:show] do
-      resources "/US_Stocks", USStocksController, param: "symbol", only: [:index, :show]
+      resources "/CN_Stocks", CNStocksController, param: "symbol", only: [:index, :show]
       resources "/HK_Stocks", HKStocksController, param: "symbol", only: [:index, :show]
+      resources "/US_Stocks", USStocksController, param: "symbol", only: [:index, :show]
     end
 
     resources "/toolbox/calculator", CalculatorController, singleton: true, only: [:show, :create]
-
-
   end
 
   scope "/api" do

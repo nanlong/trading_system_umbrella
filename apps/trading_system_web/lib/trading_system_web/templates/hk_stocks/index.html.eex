@@ -37,12 +37,22 @@
         <tr>
           <th>代码</th>
           <th>名称</th>
+          <th>20日最高</th>
+          <th>10日最低</th>
+          <th>60日最高</th>
+          <th>20日最低</th>
+          <th>ATR</th>
           <th></th>
         </tr>
         <%= for stock <- @page do %>
         <tr>
           <td><%= stock.symbol %></td>
           <td><%= stock.cname %></td>
+          <td><%= stock.state.dcu20 %></td>
+          <td><%= stock.state.dcl10 %></td>
+          <td><%= stock.state.dcu60 %></td>
+          <td><%= stock.state.dcl20 %></td>
+          <td><%= stock.state.atr20 %></td>
           <td><%= link "查看", to: market_hk_stocks_path(@conn, :show, stock.symbol), target: "_blank" %></td>
         </tr>
         <% end %>
