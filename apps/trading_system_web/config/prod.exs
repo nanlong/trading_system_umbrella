@@ -56,6 +56,16 @@ config :trading_system_web, TradingSystem.Web.Endpoint,
 #     config :trading_system_web, TradingSystem.Web.Endpoint, server: true
 #
 
+config :trading_system_web, TradingSystem.Web.Scheduler,
+  jobs: [
+    # 沪深
+    {"30 15 * * 2-6", {TradingTask.Worker.CNStock, :run, []}},
+    # 港股
+    {"30 16 * * 2-6", {TradingTask.Worker.HKStock, :run, []}},
+    # 美股
+    {"30 5 * * 2-6", {TradingTask.Worker.USStock, :run, []}},
+  ]
+
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 import_config "prod.secret.exs"

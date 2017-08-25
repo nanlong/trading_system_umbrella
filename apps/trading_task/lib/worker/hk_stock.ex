@@ -1,7 +1,7 @@
 defmodule TradingTask.Worker.HKStock do
-  # Exq.enqueue(Exq, "default", TradingTask.Worker.HKStock, [])
+  # TradingTask.Worker.HKStock.run()
 
-  def perform() do
+  def run() do
     Exq.enqueue(Exq, "default", TradingTask.Worker.HKStock.Stock, [1])
   end
 end

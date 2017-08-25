@@ -49,6 +49,7 @@ defmodule TradingSystem.Web.Mixfile do
       {:guardian, "~> 0.14"},
       {:scrivener_html, "~> 1.7"},
       {:bamboo, "~> 0.8"},
+      {:quantum, ">= 2.1.0-beta.1"},
     ]
   end
 
