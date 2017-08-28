@@ -37,6 +37,7 @@
         <tr>
           <th>代码</th>
           <th>名称</th>
+          <th>股/手</th>
           <th>20日最高</th>
           <th>10日最低</th>
           <th>60日最高</th>
@@ -48,6 +49,7 @@
         <tr>
           <td><%= stock.symbol %></td>
           <td><%= stock.cname %></td>
+          <td><%= stock.lot_size %></td>
           <td><%= stock.state.dcu20 %></td>
           <td><%= stock.state.dcl10 %></td>
           <td><%= stock.state.dcu60 %></td>

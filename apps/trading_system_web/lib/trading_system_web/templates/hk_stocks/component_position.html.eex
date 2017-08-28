@@ -5,10 +5,10 @@
 <table class="table">
   <thead>
     <tr>
-      <th>头寸</th>
+      <th>头寸单位</th>
       <th>买入价</th>
       <th>止损价</th>
-      <th>头寸单位规模</th>
+      <th>单位规模</th>
       <th>单位成本</th>
     </tr>
   </thead>
