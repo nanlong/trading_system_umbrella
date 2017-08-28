@@ -14,7 +14,9 @@ defmodule TradingTask.Worker.CNStock.Dayk do
       |> data_handler(symbol)
       |> Enum.chunk_every(5000)
       |> Enum.map(fn(data_chunk) -> 
-        Repo.insert_all(StockDayk, data_chunk)
+        {_num, results} = Repo.insert_all(StockDayk, data_chunk, returning: true)
+        stock_dayk_id = results |> List.last() |> Map.get(:id)
+        Markets.update_stock(stock, %{stock_dayk_id: stock_dayk_id})
       end)
 
       Exq.enqueue(Exq, "default", TradingTask.Worker.Stock.State, [symbol])
