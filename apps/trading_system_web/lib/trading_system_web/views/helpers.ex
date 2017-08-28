@@ -129,7 +129,7 @@ defmodule TradingSystem.Web.Helpers do
 
     TradingKernel.Common.unit(
       config.account, 
-      atr, 
+      atr * config.lot_size, 
       config.atr_account_ratio
     )
   end
@@ -160,7 +160,8 @@ defmodule TradingSystem.Web.Helpers do
       tread: tread(state),
       position: position,
       atr_account_ratio: config.atr_account_ratio,
-      add_step: config.atr_add_step
+      add_step: config.atr_add_step,
+      lot_size: config.lot_size
     )
   end
 
