@@ -7,6 +7,7 @@ defmodule TradingTask.Worker.USStock.Dayk do
 
   def perform(symbol) do
     try do
+      stock = Markets.get_stock(symbol: symbol)
       %{body: body} = Api.get("dayk", symbol: symbol)
       
       (if is_nil(body), do: [], else: body)
