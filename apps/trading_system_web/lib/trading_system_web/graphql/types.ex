@@ -16,14 +16,6 @@ defmodule TradingSystem.Graphql.Types do
     field :name, :string
     field :cname, :string
     field :category, :string
-    field :open, :float
-    field :highest, :float
-    field :lowest, :float
-    field :pre_close, :float
-    field :diff, :float
-    field :chg, :float
-    field :amplitude, :string
-    field :volume, :float
     field :market_cap, :float
     field :pe, :string
     field :market, :string

@@ -213,4 +213,32 @@ defmodule TradingSystem.Web.Helpers do
   defp tread(state) do
     if Decimal.cmp(state.ma50, state.ma300) == :lt, do: :bear, else: :bull
   end
+
+  @doc """
+  涨跌幅
+  """
+  def diff(dayk) do 
+    Decimal.sub(dayk.close, dayk.pre_close)
+  end
+
+  @doc """
+  涨跌额
+  """
+  def chg(dayk) do
+    diff(dayk) 
+    |> Decimal.div(dayk.pre_close)
+    |> Decimal.mult(Decimal.new(100))
+    |> Decimal.round(2)
+  end
+
+  @doc """
+  振幅
+  """
+  def amplitude(dayk) do
+    dayk.highest
+    |> Decimal.sub(dayk.lowest)
+    |> Decimal.div(dayk.pre_close)
+    |> Decimal.mult(Decimal.new(100))
+    |> Decimal.round(2)
+  end
 end

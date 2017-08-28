@@ -19,6 +19,6 @@ Repo.all(Stocks)
     nil -> nil
     dayk -> 
       IO.puts "更新股票 #{stock.symbol} #{stock.cname}"
-      Markets.update_stock(stock, %{stock_dayk_id: dayk.id})
+      {:ok, _} = Markets.update_stock(stock, %{lot_size: 1, stock_dayk_id: dayk.id})
   end
 end)

@@ -159,7 +159,8 @@ defmodule TradingSystem.Markets.StocksContext do
   end
 
   defp query_order_by(query) do
-    order_by(query, [stock], desc: stock.volume)
+    # order_by(query, [stock], desc: stock.volume)
+    query
   end
 
   defp query_paginate(query, params) do

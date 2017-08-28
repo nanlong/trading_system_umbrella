@@ -37,27 +37,35 @@
           <tr>
             <th>代码</th>
             <th>名称</th>
-            <th>行业</th>
-            <th>20日最高</th>
-            <th>10日最低</th>
-            <th>60日最高</th>
-            <th>20日最低</th>
-            <th>ATR</th>
+            <th>最新价</th>
+            <th>涨跌额</th>
+            <th>涨跌幅</th>
+            <th>振幅</th>
+            <th>昨收/今开盘</th>
+            <th>最高价/最低价</th>
             <th>成交量</th>
-            <th></th>
+            <th>ATR</th>
           </tr>
           <%= for stock <- @page do %>
           <tr>
-            <td><%= stock.symbol %></td>
-            <td><%= stock.cname %></td>
-            <td><%= stock.category %></td>
-            <td><%= stock.state.dcu20 %></td>
-            <td><%= stock.state.dcl10 %></td>
-            <td><%= stock.state.dcu60 %></td>
-            <td><%= stock.state.dcl20 %></td>
+            <td>
+              <%= link to: market_cn_stocks_path(@conn, :show, stock.symbol), target: "_blank" do %>
+                <%= stock.symbol %>
+              <% end %>
+            </td>
+            <td>
+              <%= link to: market_cn_stocks_path(@conn, :show, stock.symbol), target: "_blank" do %>
+                <%= stock.cname %>
+              <% end %>
+            </td>
+            <td><%= stock.dayk.close %></td>
+            <td><%= diff(stock.dayk) %></td>
+            <td><%= chg(stock.dayk) %>%</td>
+            <td><%= amplitude(stock.dayk) %>%</td>
+            <td><%= stock.dayk.pre_close %>/<%= stock.dayk.open %></td>
+            <td><%= stock.dayk.highest %>/<%= stock.dayk.lowest %></td>
+            <td><%= stock.dayk.volume %></td>
             <td><%= stock.state.atr20 %></td>
-            <td><%= stock.volume %></td>
-            <td><%= link "查看", to: market_us_stocks_path(@conn, :show, stock.symbol), target: "_blank" %></td>
           </tr>
           <% end %>
         </table>

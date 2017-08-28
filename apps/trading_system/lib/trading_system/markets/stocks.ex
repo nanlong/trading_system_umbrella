@@ -11,14 +11,14 @@ defmodule TradingSystem.Markets.Stocks do
     field :name, :string
     field :cname, :string
     field :category, :string
-    field :open, :decimal
-    field :highest, :decimal
-    field :lowest, :decimal
-    field :pre_close, :decimal
-    field :diff, :decimal # 涨跌额
-    field :chg, :decimal # 涨跌幅
-    field :amplitude, :string # 振幅
-    field :volume, :decimal # 成交量
+    # field :open, :decimal
+    # field :highest, :decimal
+    # field :lowest, :decimal
+    # field :pre_close, :decimal
+    # field :diff, :decimal # 涨跌额
+    # field :chg, :decimal # 涨跌幅
+    # field :amplitude, :string # 振幅
+    # field :volume, :decimal # 成交量
     field :market_cap, :decimal # 市值
     field :pe, :string # 市盈率
     field :market, :string # 市场
@@ -31,7 +31,7 @@ defmodule TradingSystem.Markets.Stocks do
   end
 
   @required_fields ~w(symbol name cname market lot_size)a
-  @optioned_fields ~w(category open highest lowest pre_close diff chg amplitude volume market_cap pe stock_state_id stock_dayk_id)a
+  @optioned_fields ~w(category market_cap pe stock_state_id stock_dayk_id)a
 
   @doc false
   def changeset(%Stocks{} = stock, attrs) do

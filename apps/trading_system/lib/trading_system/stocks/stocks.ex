@@ -138,7 +138,7 @@ defmodule TradingSystem.Stocks do
     |> where([s], s.ma50 > s.ma300)
     |> where([s], fragment("? / ?", s.atr20, s.dcu60) > 0.02)
     |> where([s], not s.symbol in fragment("select symbol from stock_blacklist"))
-    |> join(:inner, [s1], s2 in Stock, s1.symbol == s2.symbol and s2.volume > 3000000 and s2.open > 10)
+    |> join(:inner, [s1], s2 in Stock, s1.symbol == s2.symbol)
     |> preload(:stock)
     |> Repo.all()
   end
