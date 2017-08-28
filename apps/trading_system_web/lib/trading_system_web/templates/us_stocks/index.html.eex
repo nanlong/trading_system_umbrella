@@ -57,7 +57,7 @@
             </td>
             <td>
               <%= link to: market_cn_stocks_path(@conn, :show, stock.symbol), target: "_blank" do %>
-                <%= stock.cname %>
+                <%= truncate(stock.cname, length: 14) %>
               <% end %>
             </td>
             <td><%= stock.dayk.close %></td>

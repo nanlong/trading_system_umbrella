@@ -272,4 +272,16 @@ defmodule TradingSystem.Web.Helpers do
       _ -> "--"
     end
   end
+
+  def truncate(text, options \\ []) do
+    len = options[:length] || 30
+    omi = options[:omission] || "..."
+
+    cond do
+     !String.valid?(text)       -> text
+      String.length(text) < len -> text
+      true -> "#{String.slice(text, 0, len - String.length(omi))}#{omi}"
+    end
+  end
+
 end

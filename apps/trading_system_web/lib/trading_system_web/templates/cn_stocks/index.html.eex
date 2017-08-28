@@ -44,6 +44,8 @@
             <th>昨收/今开盘</th>
             <th>最高价/最低价</th>
             <th>成交量</th>
+            <th>市值</th>
+            <th>市盈率</th>
             <th>ATR</th>
           </tr>
           <%= for stock <- @page do %>
@@ -55,7 +57,7 @@
             </td>
             <td>
               <%= link to: market_cn_stocks_path(@conn, :show, stock.symbol), target: "_blank" do %>
-                <%= stock.cname %>
+                <%= truncate(stock.cname, length: 14) %>
               <% end %>
             </td>
             <td><%= stock.dayk.close %></td>
@@ -65,6 +67,8 @@
             <td><%= stock.dayk.pre_close %>/<%= stock.dayk.open %></td>
             <td><%= stock.dayk.highest %>/<%= stock.dayk.lowest %></td>
             <td><%= stock.dayk.volume %></td>
+            <td><%= market_cap(stock) %></td>
+            <td><%= pe(stock) %></td>
             <td><%= stock.state.atr20 %></td>
           </tr>
           <% end %>
