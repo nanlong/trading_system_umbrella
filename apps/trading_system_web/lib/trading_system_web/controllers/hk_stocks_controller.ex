@@ -35,7 +35,7 @@ defmodule TradingSystem.Web.HKStocksController do
       isBlacklist: Markets.blacklist_stock?(symbol, conn.assigns.current_user.id),
       isStar: Markets.star_stock?(symbol, conn.assigns.current_user.id),
       isVip: Accounts.vip?(conn.assigns.current_user),
-      userConfig: user_config,
+      userConfig: Map.put(user_config, :lot_size, stock.lot_size),
     }
     
     conn
