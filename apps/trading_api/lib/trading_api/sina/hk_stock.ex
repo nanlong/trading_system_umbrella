@@ -42,15 +42,9 @@ defmodule TradingApi.Sina.HKStock do
   end
 
   def process_response_body(body) do
-    data = body |> IO.iodata_to_binary()
-    try do
-      decode(data)
-    rescue
-      e in MatchError ->
-        IO.inspect e
-        IO.inspect data
-        []
-    end
+    body 
+    |> IO.iodata_to_binary()
+    |> decode()
   end
 
   def decode("var" <> _string = data) do
@@ -73,15 +67,19 @@ defmodule TradingApi.Sina.HKStock do
   end
 
   def decode(data) do
-    data = 
-      :iconv.convert("gbk", "utf-8", data)
-      |> String.replace("\\'", "\'")
+    try do
+      data = 
+        :iconv.convert("gbk", "utf-8", data)
+        |> String.replace("\\'", "\'")
 
-    {:ok, data} =
-      ~r/(?<={|,)\w+(?=:)/
-      |> Regex.replace(data, "\"\\g{0}\"")
-      |> Poison.decode()
+      {:ok, data} =
+        ~r/(?<={|,)\w+(?=:)/
+        |> Regex.replace(data, "\"\\g{0}\"")
+        |> Poison.decode()
 
-    data
+      data
+    rescue
+      _ -> []
+    end
   end
 end

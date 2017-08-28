@@ -1,17 +1,27 @@
 defmodule TradingTask.Worker.HKStock.Dayk do
   alias TradingApi.Sina.HKStock, as: Api
+  alias TradingSystem.Repo
   alias TradingSystem.Markets
+  alias TradingSystem.Markets.StockDayk
   require Logger
 
   def perform(symbol) do
-    Logger.info "#{symbol} 日K数据"
-    %{body: body} = Api.get("dayk", symbol: symbol)
-    
-    (if is_nil(body), do: [], else: body)
-    |> data_handler(symbol)
-    |> Enum.map(fn(attrs) -> {:ok, _} = Markets.create_stock_dayk(attrs) end)
-
-    Exq.enqueue(Exq, "default", TradingTask.Worker.Stock.State, [symbol])
+    try do
+      %{body: body} = Api.get("dayk", symbol: symbol)
+      (if is_nil(body), do: [], else: body)
+      |> data_handler(symbol)
+      |> Enum.chunk_every(5000)
+      |> Enum.map(fn(data_chunk) -> 
+        Repo.insert_all(StockDayk, data_chunk)
+      end)
+  
+      Exq.enqueue(Exq, "default", TradingTask.Worker.Stock.State, [symbol])
+    rescue
+      error ->
+        Logger.error "#{symbol} dayk 接口请求错误"
+        IO.inspect error
+        raise "error"
+    end
   end
 
   def data_handler(data, symbol) do 
@@ -41,7 +51,9 @@ defmodule TradingTask.Worker.HKStock.Dayk do
           lowest: Map.get(x, "low"),
           close: Map.get(x, "close"),
           pre_close: pre_close,
-          volume: Map.get(x, "volume")
+          volume: Map.get(x, "volume"),
+          inserted_at: NaiveDateTime.utc_now(),
+          updated_at: NaiveDateTime.utc_now(),
         }
       end)
     
