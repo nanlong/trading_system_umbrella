@@ -101,6 +101,7 @@ defmodule TradingSystem.Markets.StocksContext do
 
   defp query_with_market(query, market) do
     where(query, [stock], stock.market in ^market)
+    |> join(:inner, [stock], state in assoc(stock, :state), state.atr20 > 0.1)
   end
 
   defp query_bull(query) do

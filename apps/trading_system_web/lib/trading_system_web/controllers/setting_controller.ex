@@ -12,7 +12,7 @@ defmodule TradingSystem.Web.SettingController do
 
   def show(conn, %{"page" => "config"}) do
     config = 
-      Accounts.get_config(user_id: conn.assigns.current_user.id)
+      Accounts.get_config!(user_id: conn.assigns.current_user.id)
       |> Map.update!(:account, &(:erlang.float_to_binary(&1, decimals: 2)))
     
     changeset = Accounts.change_config(config)
