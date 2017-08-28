@@ -241,4 +241,35 @@ defmodule TradingSystem.Web.Helpers do
     |> Decimal.mult(Decimal.new(100))
     |> Decimal.round(2)
   end
+
+  def market_cap(stock) do
+    with false <- is_nil(stock.market_cap), market_cap<- Decimal.to_integer(stock.market_cap) do
+      cond do
+        market_cap > 100_000_000 -> 
+          (market_cap / 100_000_000) 
+          |> Float.round(2) 
+          |> Float.to_string()
+          |> Kernel.<>("亿")
+        
+        market_cap > 10_000 ->
+          (market_cap / 10_000) 
+          |> Float.round(2) 
+          |> Float.to_string()
+          |> Kernel.<>("万")
+        
+        market_cap == 0 -> "--"
+        true -> market_cap
+      end
+    else
+      _ -> "--"
+    end
+  end
+
+  def pe(stock) do
+    with false <- is_nil(stock.pe), {pe, _} <- Float.parse(stock.pe) do
+      Float.round(pe, 2)
+    else
+      _ -> "--"
+    end
+  end
 end
