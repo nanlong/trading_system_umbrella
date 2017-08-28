@@ -60,6 +60,7 @@ defmodule TradingSystem.Markets.StocksContext do
   defp query_all_with_market(market, params) do
     Stocks
     |> query_with_market(market)
+    |> query_filter(params)
     |> query_load_state()
     |> query_exclude_blacklist(Map.get(params, "user_id"))
     |> query_order_by()
@@ -68,6 +69,7 @@ defmodule TradingSystem.Markets.StocksContext do
   defp query_bull_with_market(market, params) do
     Stocks
     |> query_with_market(market)
+    |> query_filter(params)
     |> query_load_state()
     |> query_exclude_blacklist(Map.get(params, "user_id"))
     |> query_bull()
@@ -77,6 +79,7 @@ defmodule TradingSystem.Markets.StocksContext do
   defp query_bear_with_market(market, params) do
     Stocks
     |> query_with_market(market)
+    |> query_filter(params)
     |> query_load_state()
     |> query_exclude_blacklist(Map.get(params, "user_id"))
     |> query_bear()
@@ -86,6 +89,7 @@ defmodule TradingSystem.Markets.StocksContext do
   defp query_blacklist_with_market(market, params) do
     Stocks
     |> query_with_market(market)
+    |> query_filter(params)
     |> query_load_state()
     |> query_include_blacklist(Map.get(params, "user_id"))
     |> query_order_by()
@@ -94,14 +98,24 @@ defmodule TradingSystem.Markets.StocksContext do
   defp query_star_with_market(market, params) do
     Stocks
     |> query_with_market(market)
+    |> query_filter(params)
     |> query_load_state()
     |> query_include_star(Map.get(params, "user_id"))
     |> query_order_by()
   end
 
   defp query_with_market(query, market) do
-    where(query, [stock], stock.market in ^market)
+    query
+    |> where([stock], stock.market in ^market)
     |> join(:inner, [stock], state in assoc(stock, :state), state.atr20 > 0.1)
+  end
+
+  defp query_filter(query, params) do
+    with {:ok, q} <- Map.fetch(params, "q"), q <- "%#{q}%" do
+      where(query, [stock], ilike(stock.symbol, ^q) or ilike(stock.name, ^q) or ilike(stock.cname, ^q))
+    else
+      _ -> query
+    end
   end
 
   defp query_bull(query) do
