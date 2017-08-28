@@ -61,6 +61,7 @@ defmodule TradingSystem.Markets.StocksContext do
     Stocks
     |> query_with_market(market)
     |> query_filter(params)
+    |> query_load_dayk()
     |> query_load_state()
     |> query_exclude_blacklist(Map.get(params, "user_id"))
     |> query_order_by()
@@ -70,6 +71,7 @@ defmodule TradingSystem.Markets.StocksContext do
     Stocks
     |> query_with_market(market)
     |> query_filter(params)
+    |> query_load_dayk()
     |> query_load_state()
     |> query_exclude_blacklist(Map.get(params, "user_id"))
     |> query_bull()
@@ -80,6 +82,7 @@ defmodule TradingSystem.Markets.StocksContext do
     Stocks
     |> query_with_market(market)
     |> query_filter(params)
+    |> query_load_dayk()
     |> query_load_state()
     |> query_exclude_blacklist(Map.get(params, "user_id"))
     |> query_bear()
@@ -90,6 +93,7 @@ defmodule TradingSystem.Markets.StocksContext do
     Stocks
     |> query_with_market(market)
     |> query_filter(params)
+    |> query_load_dayk()
     |> query_load_state()
     |> query_include_blacklist(Map.get(params, "user_id"))
     |> query_order_by()
@@ -99,6 +103,7 @@ defmodule TradingSystem.Markets.StocksContext do
     Stocks
     |> query_with_market(market)
     |> query_filter(params)
+    |> query_load_dayk()
     |> query_load_state()
     |> query_include_star(Map.get(params, "user_id"))
     |> query_order_by()
@@ -145,6 +150,12 @@ defmodule TradingSystem.Markets.StocksContext do
     query
     |> where([stock], not is_nil(stock.stock_state_id))
     |> preload([], [:state])
+  end
+
+  defp query_load_dayk(query) do
+    query
+    |> where([stock], not is_nil(stock.stock_dayk_id))
+    |> preload([], [:dayk])
   end
 
   defp query_order_by(query) do

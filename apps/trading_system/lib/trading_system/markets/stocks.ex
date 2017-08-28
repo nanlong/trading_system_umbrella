@@ -25,12 +25,13 @@ defmodule TradingSystem.Markets.Stocks do
     field :lot_size, :integer
     
     belongs_to :state, TradingSystem.Markets.StockState, foreign_key: :stock_state_id
+    belongs_to :dayk, TradingSystem.Markets.StockDayk, foreign_key: :stock_dayk_id
 
     timestamps()
   end
 
   @required_fields ~w(symbol name cname market lot_size)a
-  @optioned_fields ~w(category open highest lowest pre_close diff chg amplitude volume market_cap pe stock_state_id)a
+  @optioned_fields ~w(category open highest lowest pre_close diff chg amplitude volume market_cap pe stock_state_id stock_dayk_id)a
 
   @doc false
   def changeset(%Stocks{} = stock, attrs) do
