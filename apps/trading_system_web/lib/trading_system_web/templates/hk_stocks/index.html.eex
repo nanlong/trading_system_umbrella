@@ -51,12 +51,12 @@
         <%= for stock <- @page do %>
         <tr>
           <td>
-            <%= link to: market_cn_stocks_path(@conn, :show, stock.symbol), target: "_blank" do %>
+            <%= link to: market_hk_stocks_path(@conn, :show, stock.symbol), target: "_blank" do %>
               <%= stock.symbol %>
             <% end %>
           </td>
           <td>
-            <%= link to: market_cn_stocks_path(@conn, :show, stock.symbol), target: "_blank" do %>
+            <%= link to: market_hk_stocks_path(@conn, :show, stock.symbol), target: "_blank" do %>
               <%= truncate(stock.cname, length: 14) %>
             <% end %>
           </td>
