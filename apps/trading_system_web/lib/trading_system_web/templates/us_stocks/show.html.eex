@@ -36,8 +36,7 @@
     <div id="slider"></div>
   </div>
   <div class="column is-3">
-    <!-- React Component: StockRealtime  -->
-    <div id="stock-realtime"></div>
+    <div id="us-stock-detail"></div>
   </div>
 </div>
 

@@ -2,7 +2,7 @@ import React from 'react'
 import { gql, graphql } from 'react-apollo'
 
 
-class StockRelatime extends React.Component {
+class USStockDetail extends React.Component {
 
   componentDidUpdate({data: {refetch}}, state) {
     setTimeout(() => refetch(), 1000)
@@ -47,10 +47,13 @@ class StockRelatime extends React.Component {
     
     return (
       <div>
-        <h1>
-          <span style={{fontSize: '20px', marginRight: '10px'}}>${data.price}</span>
-          <span style={{fontSize: '14px', color: '#999'}}>{data.chg}</span>
-          <span style={{fontSize: '14px', color: '#999'}}>({data.diff}%)</span>
+        <h1 className={data.chg >= 0 ? 'bull' : 'bear'}>
+          <span style={{fontSize: '20px', marginRight: '10px'}}>{data.price}</span>
+          <span className="icon">
+            <i className={data.chg >= 0 ? 'fa fa-long-arrow-up' : 'fa fa-long-arrow-down'} aria-hidden="true"></i>
+          </span>
+          <span style={{fontSize: '14px'}}>{data.chg}</span>
+          <span style={{fontSize: '14px'}}>({data.diff}%)</span>
         </h1>
         <div className="columns">
           <div className="column">
@@ -161,4 +164,4 @@ const graphqlOptions = {
   }
 }
 
-export default graphql(graphqlQuery, graphqlOptions)(StockRelatime)
+export default graphql(graphqlQuery, graphqlOptions)(USStockDetail)

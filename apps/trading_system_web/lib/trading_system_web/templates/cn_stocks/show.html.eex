@@ -22,7 +22,6 @@
       <div id="slider"></div>
     </div>
     <div class="column is-3">
-      <!-- React Component: StockRealtime  -->
       <div id="cn-stock-detail"></div>
     </div>
   </div>
