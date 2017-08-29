@@ -47,7 +47,7 @@ defmodule TradingApi.Sina.CNStock do
   def process_url("detail", query) do
     rn = (System.system_time() / 1_000_000_000) |> round()
     list = "#{query[:symbol]},#{query[:symbol]}_i"
-    @detail_api <> "/rn=#{rn}&list=#{list}"
+    @detail_api <> "/?rn=#{rn}&list=#{list}"
   end
 
   def process_url(url, query) do
@@ -63,6 +63,8 @@ defmodule TradingApi.Sina.CNStock do
   end
 
   def decode("var" <> _ = data) do
+    %{"symbol" => symbol} = Regex.named_captures(~r/str_(?<symbol>\w+)=/, data)
+
     [[_, d1], [_, d2]] = Regex.scan(~r/"(.*)"/, data)
     d1 = String.split(d1, ",") |> List.to_tuple()
     d2 = String.split(d2, ",") |> List.to_tuple()
@@ -100,6 +102,7 @@ defmodule TradingApi.Sina.CNStock do
     amplitude = ((highest - lowest) / pre_close * 100) |> Float.round(2)
 
     %{
+      "symbol" => symbol,
       "name" => elem(d1, 0),
       "price" => price,
       "open" => open,
