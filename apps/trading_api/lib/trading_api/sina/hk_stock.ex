@@ -89,22 +89,25 @@ defmodule TradingApi.Sina.HKStock do
       {year_highest, _} = elem(d1, 15) |> Float.parse()
       # 52周最低
       {year_lowest, _} = elem(d1, 16) |> Float.parse()
-      # 总股本
-      {total_capital, _} = elem(d2, 7) |> Integer.parse()
       # 港股股本
-      {hk_capital, _} = elem(d2, 9) |> Integer.parse()
+      {hk_capital, _} = elem(d2, 7) |> Integer.parse()
+      # 总股本
+      {total_capital, _} = elem(d2, 9) |> Integer.parse()
       # 周息率
       {dividend_yield, _} = elem(d2, 10) |> Float.parse()
       # 振幅
-      amplitude = ((highest - lowest) / pre_close * 100) |> Float.round(2)
+      amplitude = ((highest - lowest) / pre_close * 100) |> Float.round(3)
       # 港股市值
-      hk_market_cap = (price * hk_capital) |> Float.round(2)
+      hk_market_cap = (price * hk_capital) |> Float.round(3)
       datetime = "#{elem(d1, 17)} #{elem(d1, 18)}"
 
       lot_size = 
         TradingApi.Sina.HKStock.get("lotSize", symbol: symbol) 
         |> Map.get(:body) 
         |> Map.get("lot_size")
+
+      stock = TradingSystem.Markets.get_stock(symbol: symbol)
+      TradingSystem.Markets.update_stock(stock, %{lot_size: lot_size})
 
       %{
         "symbol" => symbol,
@@ -127,7 +130,7 @@ defmodule TradingApi.Sina.HKStock do
         "total_capital" => total_capital,
         "hk_capital" => hk_capital,
         "hk_market_cap" => hk_market_cap,
-        "dividend_yield" => dividend_yield,
+        "dividend_yield" => dividend_yield |> Float.round(3),
         "datetime" => datetime,
       }
     end

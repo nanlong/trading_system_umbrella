@@ -55,6 +55,7 @@ defmodule TradingSystem.Graphql.Types do
     field :hk_market_cap, :integer
     field :dividend_yield, :float
     field :datetime, :string
+    field :timestamp, :integer
   end
 
   @desc "美股详情"
