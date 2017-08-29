@@ -4,7 +4,7 @@ defmodule TradingApi.Sina.CNStock do
   TradingApi.Sina.CNStock.get("dayk", symbol: "sh601677")
   TradingApi.Sina.CNStock.get("mink", symbol: "sh601677", scale: 5)
   TradingApi.Sina.CNStock.get("mink", symbol: "sh601677", scale: 60)
-  TradingApi.Sina.CNStock.get("detail", symbol: "sh601677")
+  TradingApi.Sina.CNStock.get("detail", symbol: "sh603181")
   """
   use HTTPotion.Base
 
@@ -64,63 +64,67 @@ defmodule TradingApi.Sina.CNStock do
 
   def decode("var" <> _ = data) do
     %{"symbol" => symbol} = Regex.named_captures(~r/str_(?<symbol>\w+)=/, data)
-
     [[_, d1], [_, d2]] = Regex.scan(~r/"(.*)"/, data)
-    d1 = String.split(d1, ",") |> List.to_tuple()
-    d2 = String.split(d2, ",") |> List.to_tuple()
+    
+    if String.length(d1) <= 0 or String.length(d2) <= 0 do
+      %{}
+    else
+      d1 = String.split(d1, ",") |> List.to_tuple()
+      d2 = String.split(d2, ",") |> List.to_tuple()
 
-    {open, _} = elem(d1, 1) |> Float.parse()
-    {pre_close, _} = elem(d1, 2) |> Float.parse()
-    {price, _} = elem(d1, 3) |> Float.parse()
-    {highest, _} = elem(d1, 4) |> Float.parse()
-    {lowest, _} = elem(d1, 5) |> Float.parse()
-    {volume, _} = elem(d1, 8) |> Integer.parse()
-    {amount, _} = elem(d1, 9) |> Float.parse()
-    # 最近报告的每股净资产
-    {navps, _} = elem(d2, 5) |> Float.parse()
-    # 最近四个季度净利润
-    {eps, _} = elem(d2, 13) |> Float.parse()
-    # 总股本
-    {total_capital, _} = elem(d2, 7) |> Float.parse()
-    # 流通股本
-    {cur_capital, _} = elem(d2, 8) |> Float.parse()
-    # 总市值
-    market_cap = (price * total_capital * 10_000) |> round()
-    # 流通市值
-    cur_market_cap = (price * cur_capital * 10_000) |> round()
-    # 市盈率
-    pe = (market_cap / eps / 100_000_000) |> Float.round(2)
-    # 市净率
-    pb = (price / navps) |> Float.round(2)
-    # 换手率
-    turnover = (volume / cur_capital / 100) |> Float.round(2)
-    # 涨跌额
-    diff = (price - pre_close) |> Float.round(2)
-    # 涨跌幅
-    chg = (diff / pre_close * 100) |> Float.round(2)
-    # 振幅
-    amplitude = ((highest - lowest) / pre_close * 100) |> Float.round(2)
+      {open, _} = elem(d1, 1) |> Float.parse()
+      {pre_close, _} = elem(d1, 2) |> Float.parse()
+      {price, _} = elem(d1, 3) |> Float.parse()
+      {highest, _} = elem(d1, 4) |> Float.parse()
+      {lowest, _} = elem(d1, 5) |> Float.parse()
+      {volume, _} = elem(d1, 8) |> Integer.parse()
+      {amount, _} = elem(d1, 9) |> Float.parse()
+      # 最近报告的每股净资产
+      {navps, _} = elem(d2, 5) |> Float.parse()
+      # 最近四个季度净利润
+      {eps, _} = elem(d2, 13) |> Float.parse()
+      # 总股本
+      {total_capital, _} = elem(d2, 7) |> Float.parse()
+      # 流通股本
+      {cur_capital, _} = elem(d2, 8) |> Float.parse()
+      # 总市值
+      market_cap = (price * total_capital * 10_000) |> round()
+      # 流通市值
+      cur_market_cap = (price * cur_capital * 10_000) |> round()
+      # 市盈率
+      pe = if eps <= 0, do: 0, else: (market_cap / eps / 100_000_000) |> Float.round(2)
+      # 市净率
+      pb = (price / navps) |> Float.round(2)
+      # 换手率
+      turnover = (volume / cur_capital / 100) |> Float.round(2)
+      # 涨跌额
+      diff = (price - pre_close) |> Float.round(2)
+      # 涨跌幅
+      chg = (diff / pre_close * 100) |> Float.round(2)
+      # 振幅
+      amplitude = ((highest - lowest) / pre_close * 100) |> Float.round(2)
 
-    %{
-      "symbol" => symbol,
-      "name" => elem(d1, 0),
-      "price" => price,
-      "open" => open,
-      "highest" => highest,
-      "lowest" => lowest,
-      "pre_close" => pre_close,
-      "volume" => volume,
-      "amount" => amount,
-      "market_cap" => market_cap,
-      "cur_market_cap" => cur_market_cap,
-      "turnover" => turnover,
-      "pb" => pb,
-      "pe" => pe,
-      "diff" => diff,
-      "chg" => chg,
-      "amplitude" => amplitude,
-      "datetime" => "#{elem(d1, 30)} #{elem(d1, 31)}"
-    }
+      %{
+        "symbol" => symbol,
+        "name" => elem(d1, 0),
+        "price" => price,
+        "open" => open,
+        "highest" => highest,
+        "lowest" => lowest,
+        "pre_close" => pre_close,
+        "volume" => volume,
+        "amount" => amount,
+        "market_cap" => market_cap,
+        "cur_market_cap" => cur_market_cap,
+        "turnover" => turnover,
+        "pb" => pb,
+        "pe" => pe,
+        "diff" => diff,
+        "chg" => chg,
+        "amplitude" => amplitude,
+        "datetime" => "#{elem(d1, 30)} #{elem(d1, 31)}"
+      }
+    end
   end
 
   def decode(data) do

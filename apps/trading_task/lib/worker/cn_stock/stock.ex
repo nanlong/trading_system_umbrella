@@ -9,6 +9,13 @@ defmodule TradingTask.Worker.CNStock.Stock do
       |> data_handler()
     
     Enum.map(data, fn(attrs) -> 
+      %{body: body} = Api.get("detail", symbol: attrs.symbol)
+
+      attrs =
+        attrs
+        |> Map.put(:market_cap, Map.get(body, "market_cap"))
+        |> Map.put(:pe, Map.get(body, "pe") |> to_string())
+
       case Markets.get_stock(symbol: attrs.symbol) do
         nil -> {:ok, _} = Markets.create_stock(attrs)
         stock -> {:ok, _} = Markets.update_stock(stock, attrs)

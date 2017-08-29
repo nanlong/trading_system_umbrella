@@ -9,15 +9,19 @@ defmodule TradingTask.Worker.HKStock.Stock do
       |> data_handler()
 
     Enum.map(data, fn(attrs) -> 
+      %{body: body} = Api.get("detail", symbol: attrs.symbol)
+      
+      attrs =
+        attrs
+        |> Map.put(:market_cap, Map.get(body, "hk_market_cap"))
+        |> Map.put(:pe, Map.get(body, "pe") |> to_string())
+        |> Map.put(:lot_size, Map.get(body, "lot_size"))
+
       case Markets.get_stock(symbol: attrs.symbol) do
-        nil -> 
-          {:ok, _} = Markets.create_stock(attrs)
-        stock -> 
-          attrs = if not is_nil(stock.lot_size), do: Map.delete(attrs, :lot_size), else: attrs
-          {:ok, _} = Markets.update_stock(stock, attrs)
+        nil -> {:ok, _} = Markets.create_stock(attrs)
+        stock -> {:ok, _} = Markets.update_stock(stock, attrs)
       end
       
-      Exq.enqueue(Exq, "default", TradingTask.Worker.HKStock.LotSize, [attrs.symbol])
       Exq.enqueue(Exq, "default", TradingTask.Worker.HKStock.Dayk, [attrs.symbol])
     end)
 
