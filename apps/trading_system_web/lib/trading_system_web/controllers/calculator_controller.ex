@@ -6,7 +6,6 @@ defmodule TradingSystem.Web.CalculatorController do
   def show(conn, _params) do
     attrs =
     conn.assigns.user_config
-    |> Map.from_struct()
     |> Map.update!(:account, &(:erlang.float_to_binary(&1, decimals: 2)))
     
     changeset = Counter.changeset(%Counter{}, attrs)
