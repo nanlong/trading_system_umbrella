@@ -60,8 +60,6 @@ defmodule TradingSystem.Web.Router do
   end
 
   scope "/graphiql" do
-    pipe_through [:graphql]
-
     forward "/", Absinthe.Plug.GraphiQL,
       schema: TradingSystem.Graphql.Schema
   end

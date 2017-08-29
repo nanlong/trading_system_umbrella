@@ -26,6 +26,16 @@ defmodule TradingSystem.Graphql.Schema do
       arg :symbol, non_null(:string)
       resolve &TradingSystem.Graphql.StockBacktestResolver.all/2
     end
+
+    field :cn_stock, :cn_stock do
+      arg :symbol, non_null(:string)
+      resolve &TradingSystem.Graphql.StockDetailResolver.get_cn/2
+    end
+
+    field :hk_stock, :hk_stock do
+      arg :symbol, non_null(:string)
+      resolve &TradingSystem.Graphql.StockDetailResolver.get_hk/2
+    end
   end
 
   mutation do
