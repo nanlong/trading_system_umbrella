@@ -20,3 +20,9 @@ table {
   background: url('/images/icon/vip.png') no-repeat;
   background-size: cover;
 }
+.bull {
+  color: Red;
+}
+.bear {
+  color: Green;
+}

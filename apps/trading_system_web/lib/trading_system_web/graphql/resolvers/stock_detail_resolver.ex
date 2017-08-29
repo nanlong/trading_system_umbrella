@@ -15,6 +15,7 @@ defmodule TradingSystem.Graphql.StockDetailResolver do
   end
   
   def to_data(data) do
-    for {key, val} <- data, into: %{}, do: {String.to_atom(key), val}
+    (for {key, val} <- data, into: %{}, do: {String.to_atom(key), val})
+    |> Map.put(:timestamp, (System.system_time() / 1_000_000_000) |> round())
   end
 end

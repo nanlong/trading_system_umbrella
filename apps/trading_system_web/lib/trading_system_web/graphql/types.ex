@@ -29,6 +29,7 @@ defmodule TradingSystem.Graphql.Types do
     field :chg, :float
     field :amplitude, :float
     field :datetime, :string
+    field :timestamp, :integer
   end
 
   object :hk_stock do
