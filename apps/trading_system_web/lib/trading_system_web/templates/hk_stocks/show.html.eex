@@ -38,7 +38,7 @@
         <span>当前日期: <%= DateTime.utc_now() |> DateTime.to_date() %></span>
         <span>数据日期: <%= @state.date %></span>
       </div>
-      <%= render "component_position.html", assigns %>    
+      <%= render TradingSystem.Web.MarketsView, "position.html", state: @state, config: @config.userConfig %>  
     </div>
     <% end %>
   </div>

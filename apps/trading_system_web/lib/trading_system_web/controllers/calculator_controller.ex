@@ -22,23 +22,24 @@ defmodule TradingSystem.Web.CalculatorController do
     if changeset.valid? do
       {account, _} = Float.parse(changeset.changes.account)
 
-      user_config = 
+      config = 
         changeset.changes
         |> Map.put(:account, account)
         |> Map.put(:create_days, 20)
+        |> Map.put(:lot_size, Map.get(changeset.changes, :lot_size, 1))
 
       state = %{
-        atr20: Decimal.new(user_config.atr),
-        dcu20: Decimal.new(user_config.buy_price),
-        dcl20: Decimal.new(user_config.buy_price),
-        ma50: (if user_config.trade == "bull", do: Decimal.new(1), else: Decimal.new(0)),
-        ma300: (if user_config.trade == "bull", do: Decimal.new(0), else: Decimal.new(1)),
+        atr20: Decimal.new(config.atr),
+        dcu20: Decimal.new(config.buy_price),
+        dcl20: Decimal.new(config.buy_price),
+        ma50: (if config.trade == "bull", do: Decimal.new(1), else: Decimal.new(0)),
+        ma300: (if config.trade == "bull", do: Decimal.new(0), else: Decimal.new(1)),
       }
       
       conn
       |> assign(:title, "计算器")
       |> assign(:state, state)
-      |> assign(:user_config, user_config)
+      |> assign(:config, config)
       |> assign(:changeset, changeset)
       |> render(:show)
     else

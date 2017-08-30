@@ -83,6 +83,20 @@
 
       <div class="field is-horizontal">
         <div class="field-label is-normal">
+          <%= label f, :lot_size, "每手股数", class: "label" %>
+        </div>
+        <div class="field-body">
+          <div class="field">
+            <div class="control">
+              <%= text_input f, :lot_size, class: "input" %>
+              <%= error_tag f, :lot_size %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="field is-horizontal">
+        <div class="field-label is-normal">
           <%= label f, :buy_price, "买入价", class: "label" %>
         </div>
         <div class="field-body">
@@ -148,8 +162,8 @@
     <% end %>
   </div>
   <div class="column">
-    <%= if assigns[:state] && assigns[:user_config] do %>
-      <%= render TradingSystem.Web.USStocksView, "component_position.html", state: @state, user_config: @user_config %>
+    <%= if assigns[:state] && assigns[:config] do %>
+      <%= render TradingSystem.Web.MarketsView, "position.html", assigns %>
     <% end %>
   </div>
 </div>
