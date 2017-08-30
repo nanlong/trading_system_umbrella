@@ -1,6 +1,7 @@
 defmodule TradingApi.Sina.GFuture do
   @moduledoc """
   TradingApi.Sina.GFuture.get("list")
+  TradingApi.Sina.GFuture.get("detail", symbol: "CL")
   TradingApi.Sina.GFuture.get("dayk", symbol: "CL")
   TradingApi.Sina.GFuture.get("lotSize", symbol: "CL")
   """
@@ -9,7 +10,8 @@ defmodule TradingApi.Sina.GFuture do
   @list_api "http://gu.sina.cn/hq/api/openapi.php/FuturesService.getGlobal"
   @dayk_api "http://stock2.finance.sina.com.cn/futures/api/jsonp.php/data/GlobalFuturesService.getGlobalFuturesDailyKLine"
   @detail_url "http://finance.sina.com.cn/futures/quotes/<%= @symbol %>.shtml"
-  
+  @detail_api "http://hq.sinajs.cn"
+
   def process_url("list", _query) do
     @list_api
   end
@@ -22,11 +24,17 @@ defmodule TradingApi.Sina.GFuture do
     process_url(@dayk_api, query)
   end
 
-  def process_url("detail", query) do
+  def process_url("lotSize", query) do
     query = [
       symbol: Keyword.get(query, :symbol)
     ]
     EEx.eval_string(@detail_url, assigns: query)
+  end
+
+  def process_url("detail", query) do
+    rn = (System.system_time() / 1_000_000_000) |> round()
+    list = "hf_#{query[:symbol]}"
+    @detail_api <> "/?rn=#{rn}&list=#{list}"
   end
 
   def process_url(url, query) do
@@ -83,6 +91,50 @@ defmodule TradingApi.Sina.GFuture do
     }
 
     {:ok, data}
+  end
+
+  def decode("var hq_str_hf_" <> _ = data) do
+    %{"symbol" => symbol} = Regex.named_captures(~r/hf_(?<symbol>\w+)=/, data)
+    %{"data" => data} = Regex.named_captures(~r/"(?<data>.*)"/, data)
+    data = data |> String.split(",") |> List.to_tuple()
+
+    {price, _} = elem(data, 0) |> Float.parse()
+    {chg, _} = elem(data, 1) |> Float.parse()
+    {buy_price, _} = elem(data, 2) |> Float.parse()
+    {sell_price, _} = elem(data, 3) |> Float.parse()
+    {highest, _} = elem(data, 4) |> Float.parse()
+    {lowest, _} = elem(data, 5) |> Float.parse()
+    {pre_close, _} = elem(data, 7) |> Float.parse()
+    {open, _} = elem(data, 8) |> Float.parse()
+    {open_positions, _} = elem(data, 9) |> Integer.parse()
+    {buy_positions, _} = elem(data, 10) |> Integer.parse()
+    {sell_positions, _} = elem(data, 11) |> Integer.parse()
+    name = elem(data, 13)
+    diff = (price - pre_close) |> Float.round(2)
+    datetime = "#{elem(data, 12)} #{elem(data, 6)}"
+    lot_size = 
+      TradingApi.Sina.GFuture.get("lotSize", symbol: symbol)
+      |> Map.get(:body) 
+      |> Map.get("lot_size")
+
+    {:ok, %{
+      "symbol" => symbol,
+      "name" => name,
+      "lot_size" => lot_size,
+      "price" => price,
+      "open" => open,
+      "highest" => highest,
+      "lowest" => lowest,
+      "pre_close" => pre_close,
+      "diff" => diff,
+      "chg" => chg,
+      "buy_price" => buy_price,
+      "sell_price" => sell_price,
+      "open_positions" => open_positions,
+      "buy_positions" => buy_positions,
+      "sell_positions" => sell_positions,
+      "datetime" => datetime,
+    }}
   end
 
   def decode(data) do
