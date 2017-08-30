@@ -3,7 +3,7 @@
       <%= render TradingSystem.Web.MarketsView, "panel.html", assigns %>
     </div>
     <div class="column">
-      <%= render "component_tabs.html", assigns %>
+      <%= render TradingSystem.Web.MarketsView, "tabs.html", data: tabs(@conn), params: @params %>
       <div class="columns">
         <div class="column">
           <nav class="breadcrumb" aria-label="breadcrumbs">
