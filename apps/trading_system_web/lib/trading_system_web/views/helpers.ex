@@ -129,8 +129,9 @@ defmodule TradingSystem.Web.Helpers do
 
     TradingKernel.Common.unit(
       config.account, 
-      atr * config.lot_size, 
-      config.atr_account_ratio
+      atr, 
+      config.atr_account_ratio,
+      config.lot_size
     )
   end
 

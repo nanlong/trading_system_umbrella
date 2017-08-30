@@ -18,7 +18,7 @@
       <th>第 <%= position %> 单位</th>
       <td>$<%= buy(@state, @config.userConfig, position) |> float_to_string %></td>
       <td>$<%= stop_loss(@state, @config.userConfig, position) |> float_to_string %></td>
-      <td><%= unit(@state, @config.userConfig) %>手</td>
+      <td><%= unit(@state, @config.userConfig) / @config.userConfig.lot_size |> round() %>手</td>
       <td>$<%= unit_cost(@state, @config.userConfig, position) |> float_to_string %></td>  
     </tr>
     <% end %>
@@ -26,7 +26,7 @@
       <th></th>
       <td>平均 $<%= buy_avg(@state, @config.userConfig, max_position(@state, @config.userConfig)) |> float_to_string %></td>
       <td>--</td>
-      <td>共 <%= unit(@state, @config.userConfig) * max_position(@state, @config.userConfig) %> 手 (<%= @config.userConfig.lot_size %>股/手)</td>
+      <td>共 <%= unit(@state, @config.userConfig) * max_position(@state, @config.userConfig) / @config.userConfig.lot_size |> round() %> 手 (<%= @config.userConfig.lot_size %>股/手)</td>
       <td>总 $<%= all_cost(@state, @config.userConfig, max_position(@state, @config.userConfig)) |> float_to_string %></td>
     </tr>
   </tbody>
