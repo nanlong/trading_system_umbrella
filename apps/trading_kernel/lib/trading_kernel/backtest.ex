@@ -12,17 +12,23 @@ defmodule TradingKernel.Backtest do
 
   def trading(_position, [], _config, results), do: results
   def trading(position, [data | rest], config, results) do
-    position =
+    {action, position} =
       cond do
-        create_position?(position, data, config) -> create_position(position, data, config)
-        add_position?(position, data, config) -> add_position(position, data, config)
-        close_position?(position, data, config) -> close_position(position, data, config)
-        stop_loss?(position, data, config) -> stop_loss(position, data, config)
-        true -> position
+        create_position?(position, data, config) -> 
+          {"create", create_position(position, data, config)}
+        add_position?(position, data, config) -> 
+          {"add", add_position(position, data, config)}
+        close_position?(position, data, config) -> 
+          {"close", close_position(position, data, config)}
+        stop_loss?(position, data, config) -> 
+          {"stop", stop_loss(position, data, config)}
+        true -> 
+          {"short", position}
       end
     
     result = %{
       date: data.date,
+      action: action,
       ratio: Float.round((cast(position, data) - config.account) / config.account, 2),
     }
     

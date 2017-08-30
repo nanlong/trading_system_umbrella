@@ -9,7 +9,7 @@ class StockBacktest extends React.Component {
       xAxisData: [],
       ratioData: []
     }
-
+    
     data.stockBacktest.map(x => {
       const {date, ratio} = x
       source.xAxisData.push(date)
