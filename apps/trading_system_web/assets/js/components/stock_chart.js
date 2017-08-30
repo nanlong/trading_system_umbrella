@@ -2,7 +2,6 @@ import React from 'react'
 import { gql, graphql } from 'react-apollo'
 import echarts from 'echarts'
 import { stop_loss } from '../lib/stock'
-import Backtest from '../lib/backtest'
 
 
 class StockChart extends React.Component {
@@ -77,32 +76,22 @@ class StockChart extends React.Component {
       })
     }
 
-    const backtest = new Backtest(lineData, CONFIG['userConfig'])
-    const backtestData = backtest.run()
-    
-    backtestData.map(x => {
-      const {action, date, price} = x
-      let color = null;
+    data.stockBacktest.map((x) => {
+      const {date, tread, action, price} = x
 
-      switch (action) {
-        case 'close':
-          color = '#fbbc05'
-          break
-        case 'stop':
-          color = '#9966CC'
-          break
-        case 'create': 
-        default:
-          color = '#34a853'
+      if (CONFIG["tread"] == tread) {
+        switch(action) {
+          case "create":
+            source.createPointData.push(this.markPoint(date, price, '#34a853'))
+            break
+          case "close":
+            source.closePointData.push(this.markPoint(date, price, '#fbbc05'))
+            break
+          case "stop":
+            source.closePointData.push(this.markPoint(date, price, '#9966CC'))
+            break
+        }
       }
-
-      if (action == 'create') {
-        source.createPointData.push(this.markPoint(date, price, color))
-      }
-      else {
-        source.closePointData.push(this.markPoint(date, price, color))
-      }
-      source.pointData.push(this.markPoint(date, price, color))
     })
 
     lineData.map(x => {
@@ -391,6 +380,12 @@ const graphqlQuery = gql`
       dcl20
       dcl60
       atr20
+    }
+    stockBacktest(symbol: $symbol) {
+      date
+      tread
+      action
+      price
     }
   }
 `

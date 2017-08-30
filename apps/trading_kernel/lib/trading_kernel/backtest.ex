@@ -12,23 +12,25 @@ defmodule TradingKernel.Backtest do
 
   def trading(_position, [], _config, results), do: results
   def trading(position, [data | rest], config, results) do
-    {action, position} =
+    {action, price, position} =
       cond do
         create_position?(position, data, config) -> 
-          {"create", create_position(position, data, config)}
+          create_position(position, data, config)
         add_position?(position, data, config) -> 
-          {"add", add_position(position, data, config)}
+          add_position(position, data, config)
         close_position?(position, data, config) -> 
-          {"close", close_position(position, data, config)}
+          close_position(position, data, config)
         stop_loss?(position, data, config) -> 
-          {"stop", stop_loss(position, data, config)}
+          stop_loss(position, data, config)
         true -> 
-          {"short", position}
+          {"short", 0, position}
       end
     
     result = %{
       date: data.date,
+      tread: position.tread,
       action: action,
+      price: price,
       ratio: Float.round((cast(position, data) - config.account) / config.account, 2),
     }
     
@@ -64,13 +66,13 @@ defmodule TradingKernel.Backtest do
       end)
       |> Enum.filter(&(Date.compare(&1.date, begin_date) == :gt))
     
-    {init_position(config.account), data, config}
+    {init_position(config.account, ""), data, config}
   end
 
-  def init_position(account) do
+  def init_position(account, tread) do
     %{
       account: account,
-      tread: "",
+      tread: tread,
       amount: 0,
       unit: 0,
       atr: 0,
@@ -96,7 +98,7 @@ defmodule TradingKernel.Backtest do
       atr_account_ratio: config.atr_account_ratio
     ]    
     
-    %{
+    position = %{
       account: account - break_price * unit,
       tread: tread,
       amount: 1,
@@ -107,6 +109,8 @@ defmodule TradingKernel.Backtest do
       add_position_price: Common.buy(break_price, atr, Keyword.put(opts, :position, 2)),
       stop_loss_price: Common.stop_loss(break_price, atr, opts)
     }
+
+    {"create", break_price, position}
   end
 
   def add_position(position, _data, config) do
@@ -120,7 +124,7 @@ defmodule TradingKernel.Backtest do
       atr_account_ratio: config.atr_account_ratio
     ]
 
-    %{
+    position = %{
       account: account - add_position_price * unit,
       tread: tread,
       amount: amount,
@@ -131,6 +135,8 @@ defmodule TradingKernel.Backtest do
       add_position_price: Common.buy(break_price, atr, Keyword.update!(opts, :position, &(&1 + 1))),
       stop_loss_price: Common.stop_loss(break_price, atr, opts)
     }
+
+    {"add", add_position_price, position}
   end
 
   def close_position(position, data, config) do
@@ -144,7 +150,9 @@ defmodule TradingKernel.Backtest do
         account + (avg_price * 2 - price) * unit * amount
       end
       
-    init_position(account)
+    position = init_position(account, tread)
+
+    {"close", price, position}
   end
 
   def stop_loss(position, _data, _config) do
@@ -157,7 +165,9 @@ defmodule TradingKernel.Backtest do
         account + (avg_price * 2 - stop_loss_price) * unit * amount
       end
 
-    init_position(account)
+    position = init_position(account, tread)
+
+    {"stop", stop_loss_price, position}
   end
 
   def create_position?(position, data, config) do
@@ -175,7 +185,9 @@ defmodule TradingKernel.Backtest do
 
     position.amount > 0 &&
     position.amount < config.position && 
-    (if bull?(data), do: price < Decimal.to_float(highest), else: Decimal.to_float(lowest) < price)
+    (if position.tread == :bull, 
+    do: price < Decimal.to_float(highest), 
+    else: Decimal.to_float(lowest) < price)
   end
 
   def close_position?(position, data, config) do
@@ -183,7 +195,9 @@ defmodule TradingKernel.Backtest do
     %{lowest: lowest, highest: highest} = data
 
     position.amount > 0 &&
-    (if bull?(data), do: Decimal.to_float(lowest) < price, else: price < Decimal.to_float(highest))
+    (if position.tread == :bull, 
+    do: Decimal.to_float(lowest) < price, 
+    else: price < Decimal.to_float(highest))
   end
 
   def stop_loss?(position, data, _config) do
@@ -191,7 +205,9 @@ defmodule TradingKernel.Backtest do
     %{lowest: lowest, highest: highest} = data
 
     position.amount > 0 &&
-    (if bull?(data), do: Decimal.to_float(lowest) < price, else: price < Decimal.to_float(highest))
+    (if position.tread == :bull, 
+    do: Decimal.to_float(lowest) < price, 
+    else: price < Decimal.to_float(highest))
   end
 
   def break_point(data, config) do

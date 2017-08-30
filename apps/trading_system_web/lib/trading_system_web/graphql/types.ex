@@ -140,7 +140,9 @@ defmodule TradingSystem.Graphql.Types do
   @desc "收益率"
   object :stock_backtest do
     field :date, :string
+    field :tread, :string
     field :action, :string
+    field :price, :float
     field :ratio, :float
   end
 end
