@@ -9,7 +9,7 @@ class StockBacktest extends React.Component {
       xAxisData: [],
       ratioData: []
     }
-    
+
     data.stockBacktest.map(x => {
       const {date, ratio} = x
       source.xAxisData.push(date)
@@ -95,7 +95,7 @@ class StockBacktest extends React.Component {
   yearYieldRate(data) {
     const years = this.dateDiff(data.xAxisData[0], data.xAxisData[data.xAxisData.length - 1])
     const yieldRate = data.ratioData[data.ratioData.length - 1]
-    return Math.ceil(yieldRate / years * 10000) / 100
+    return Math.ceil(yieldRate * 10000 / years) / 100
   }
 
   componentDidUpdate() {
