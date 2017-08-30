@@ -4,9 +4,8 @@
       <div>
         <strong style="font-size: 24px;">
           <%= @stock.cname %> 
-          <%= @stock.market %>:<%= @stock.symbol %>
+          <%= @stock.symbol |> String.upcase() %>
         </strong>
-        <span><%= @stock.name %></span>
       </div>
     </div>
     <div class="column" style="padding-top: 20px;"> 
