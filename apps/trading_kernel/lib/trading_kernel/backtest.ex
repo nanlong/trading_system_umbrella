@@ -1,7 +1,7 @@
 defmodule TradingKernel.Backtest do
 
   alias TradingSystem.Accounts
-  alias TradingSystem.Stocks
+  alias TradingSystem.Markets
   alias TradingKernel.Common
 
 
@@ -43,9 +43,10 @@ defmodule TradingKernel.Backtest do
   end
 
   def init_data(symbol, user) do
-    config = Accounts.get_config(user_id: user.id)
-    list_dailyk = Stocks.list_stock_dailyk(symbol: symbol)
-    list_state = Stocks.list_stock_state(symbol: symbol)
+    stock = Markets.get_stock(symbol: symbol)
+    list_dailyk = Markets.list_stock_dayk(symbol: symbol)
+    list_state = Markets.list_stock_state(symbol: symbol)
+    config = Accounts.get_config(user_id: user.id) |> Map.put(:lot_size, stock.lot_size)
     begin_date = Timex.shift(DateTime.utc_now(), years: -3) |> Timex.to_date()
 
     data = 
@@ -79,7 +80,8 @@ defmodule TradingKernel.Backtest do
     tread = tread(data)
     break_price = break_point(data, config)
     atr = data.atr20 |> Decimal.to_float()
-    unit = Common.unit(account, atr, config.atr_account_ratio)
+    unit = Common.unit(account, atr, config.atr_account_ratio, config.lot_size)
+    
     opts = [
       tread: tread, 
       position: 1, 

@@ -64,8 +64,8 @@ defmodule TradingKernel.Common do
     37
   """
   @spec unit(integer, float, float) :: integer
-  def unit(account, atr, percent \\ 0.5) do
-    (account * percent / 100 / atr ) |> round()
+  def unit(account, atr, percent \\ 0.5, lot_size \\ 1) do
+    (account * percent / 100 / atr / lot_size ) |> round() |> Kernel.*(lot_size)
   end
 
   @doc """
@@ -131,12 +131,11 @@ defmodule TradingKernel.Common do
     tread = Keyword.get(opts, :tread, :bull)
     position = Keyword.get(opts, :position, 1)
     add_step = Keyword.get(opts, :add_step, 0.5)
-    lot_size = Keyword.get(opts, :lot_size, 1)
 
     num1 = buy_signal
     num2 = atr * add_step * (position - 1)
 
-    ((if tread == :bull, do: num1 + num2, else: num1 - num2) * lot_size)
+    (if tread == :bull, do: num1 + num2, else: num1 - num2)
     |> Float.round(2)
   end
 
@@ -214,13 +213,10 @@ defmodule TradingKernel.Common do
     23696.96
   """
   def unit_cost(account, buy_signal, atr, opts \\ []) do
-    tread = Keyword.get(opts, :tread, :bull)
     atr_account_ratio = Keyword.get(opts, :atr_account_ratio, 0.5)
-    position = Keyword.get(opts, :position, 1)
-    add_step = Keyword.get(opts, :add_step, 0.5)
     lot_size = Keyword.get(opts, :lot_size, 1)
 
-    num1 = unit(account, atr * lot_size, atr_account_ratio)
+    num1 = unit(account, atr, atr_account_ratio, lot_size)
     num2 = buy(buy_signal, atr, opts)
 
     (num1 * num2) |> Float.round(2)
