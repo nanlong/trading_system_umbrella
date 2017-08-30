@@ -1,7 +1,7 @@
 defmodule TradingSystem.Web.CalculatorController do
   use TradingSystem.Web, :controller
 
-  alias TradingSystem.Stocks.Counter
+  alias TradingSystem.Markets.Counter
 
   def show(conn, _params) do
     attrs =

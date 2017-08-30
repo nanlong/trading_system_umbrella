@@ -1,12 +1,8 @@
 defmodule TradingSystem.Graphql.StockResolver do
-  alias TradingSystem.Stocks
-
-  def all(_args, _info) do
-    {:ok, Stocks.list_stock()}
-  end
+  alias TradingSystem.Markets
 
   def get(%{symbol: symbol}, _info) do
-    {:ok, Stocks.get_stock!(symbol)}
+    {:ok, Markets.get_stock!(symbol: symbol)}
   end
 
   def realtime(%{stocks: stocks}, _info) do

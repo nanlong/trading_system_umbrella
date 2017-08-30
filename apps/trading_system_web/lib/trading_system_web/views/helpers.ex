@@ -1,7 +1,7 @@
 defmodule TradingSystem.Web.Helpers do
   use Timex
   
-  alias TradingSystem.Stocks.Stock
+  alias TradingSystem.Markets.Stocks
   
   def vip?(user), do: TradingSystem.Accounts.vip?(user)
 
@@ -20,7 +20,7 @@ defmodule TradingSystem.Web.Helpers do
     Timex.from_now(d, "zh_CN")
   end
 
-  def symbol(%Stock{symbol: symbol}) do
+  def symbol(%Stocks{symbol: symbol}) do
     String.replace(symbol, ".", "_")
   end 
 

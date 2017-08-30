@@ -1,8 +1,8 @@
 defmodule TradingSystem.Graphql.StockDailyKResolver do
-  alias TradingSystem.Stocks
+  alias TradingSystem.Markets
 
   def all(%{symbol: symbol}, _info) do
-    data = Stocks.list_stock_dailyk(symbol)
+    data = Markets.list_stock_dayk(symbol: symbol)
     {:ok, data}
   end
 end

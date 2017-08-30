@@ -1,4 +1,4 @@
-defmodule TradingSystem.Stocks.Counter do
+defmodule TradingSystem.Markets.Counter do
   use Ecto.Schema
   import Ecto.Changeset
 
