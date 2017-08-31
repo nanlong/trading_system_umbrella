@@ -11,14 +11,6 @@ defmodule TradingSystem.Markets.Stocks do
     field :name, :string
     field :cname, :string
     field :category, :string
-    # field :open, :decimal
-    # field :highest, :decimal
-    # field :lowest, :decimal
-    # field :pre_close, :decimal
-    # field :diff, :decimal # 涨跌额
-    # field :chg, :decimal # 涨跌幅
-    # field :amplitude, :string # 振幅
-    # field :volume, :decimal # 成交量
     field :market_cap, :decimal # 市值
     field :pe, :string # 市盈率
     field :market, :string # 市场
