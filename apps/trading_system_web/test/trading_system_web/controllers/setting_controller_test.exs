@@ -40,7 +40,7 @@ defmodule TradingSystem.Web.SettingControllerTest do
     @profile_valid_attrs %{nickname: "test11"}
     @profile_invalid_attrs %{nickname: nil}
     @password_valid_attrs %{old_password: "123456", password: "xxxxxx", password_confirmation: "xxxxxx"}
-    @config_valid_attrs %{account: 500000}
+    @config_valid_attrs %{account: 500000, create_days: "20"}
 
     test "update profile with valid attrs", %{conn: conn} do
       conn = put conn, setting_path(conn, :update, "profile"), user: @profile_valid_attrs

@@ -50,12 +50,6 @@ defmodule TradingSystem.MarketsTest do
       stock = stock_fixture()
       assert Markets.get_stock(symbol: stock.symbol) == stock
     end
-
-    @tag markets_stocks: true
-    test "paginate/1" do
-      stocks = stocks_fixture()
-      assert Markets.paginate_stocks(:us, page: 1).entries == stocks
-    end
   end
 
   describe "stock_state" do

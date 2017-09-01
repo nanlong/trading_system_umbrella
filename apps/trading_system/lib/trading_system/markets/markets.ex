@@ -37,4 +37,10 @@ defmodule TradingSystem.Markets do
   defdelegate create_stock_star(attrs), to: StockStarContext, as: :create
   defdelegate delete_stock_star(symbol, user_id), to: StockStarContext, as: :delete
   defdelegate star_stock?(symbol, user_id), to: StockStarContext, as: :include?
+
+  # futures
+  alias TradingSystem.Markets.FuturesContext
+
+  defdelegate create_future(attrs), to: FuturesContext, as: :create
+  defdelegate update_future(future, attrs), to: FuturesContext, as: :update
 end
