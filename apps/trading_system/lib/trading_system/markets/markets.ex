@@ -43,6 +43,7 @@ defmodule TradingSystem.Markets do
 
   defdelegate create_future(attrs), to: FuturesContext, as: :create
   defdelegate update_future(future, attrs), to: FuturesContext, as: :update
+  defdelegate get_future(params), to: FuturesContext, as: :get
   defdelegate list_future(market), to: FuturesContext, as: :list
 
   # future dayk
@@ -51,4 +52,10 @@ defmodule TradingSystem.Markets do
   defdelegate create_future_dayk(attrs), to: FutureDaykContext, as: :create
   defdelegate get_future_dayk(params), to: FutureDaykContext, as: :get
   defdelegate list_future_dayk(params), to: FutureDaykContext, as: :list
+
+  # future state
+  alias TradingSystem.Markets.FutureStateContext
+
+  defdelegate create_future_state(attrs), to: FutureStateContext, as: :create
+  defdelegate list_future_state(params), to: FutureStateContext, as: :list
 end

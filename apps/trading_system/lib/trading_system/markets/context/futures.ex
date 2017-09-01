@@ -18,6 +18,10 @@ defmodule TradingSystem.Markets.FuturesContext do
     |> Repo.update()
   end
 
+  def get(symbol: symbol) do
+    Repo.get_by(Futures, symbol: symbol)
+  end
+
   def list(:i) do
     Futures
     |> where([f], f.market in @i_markets)

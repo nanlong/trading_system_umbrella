@@ -94,6 +94,12 @@ defmodule TradingSystem.MarketsTest do
     end
 
     @tag markets_futures: true
+    test "get_future/1" do
+      future = future_fixture()
+      assert Markets.get_future(symbol: "RB0") == future
+    end
+
+    @tag markets_futures: true
     test "list/1 get cn market" do
       future = future_fixture()
       assert Markets.list_future(:i) == [future]
@@ -150,6 +156,43 @@ defmodule TradingSystem.MarketsTest do
     test "list_future_dayk/1" do
       future_dayk = future_dayk_fixture()
       assert Markets.list_future_dayk(symbol: "RB0") == [future_dayk]
+    end
+  end
+
+  describe "future state" do
+    alias TradingSystem.Markets.FutureState
+
+    @valid_attrs %{date: "2009-05-08", symbol: "RB0"}
+    @invalid_attrs %{date: nil, symbol: nil}
+
+    def future_state_fixture(attrs \\ %{}) do
+      {:ok, future_state} =
+        attrs
+        |> Enum.into(@valid_attrs)
+        |> Markets.create_future_state()
+      
+        future_state
+    end
+
+    @tag markets_future_state: true
+    test "create_future_state/1 with valid attrs" do
+      future_fixture()
+      assert {:ok, %FutureState{} = future_state} = Markets.create_future_state(@valid_attrs)
+      assert future_state.date == ~D[2009-05-08]
+      assert future_state.symbol == "RB0"
+      future = Markets.get_future(symbol: "RB0")
+      assert future.future_state_id == future_state.id
+    end
+
+    @tag markets_future_state: true
+    test "create_future_state/1 with invalid attrs" do  
+      assert {:error, %Ecto.Changeset{}} = Markets.create_future_state(@invalid_attrs)
+    end
+
+    @tag markets_future_state: true
+    test "list_future_state/1" do
+      future_state = future_state_fixture()
+      assert Markets.list_future_state(symbol: "RB0") == [future_state]
     end
   end
 end

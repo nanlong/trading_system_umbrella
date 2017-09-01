@@ -16,6 +16,8 @@ defmodule TradingSystem.Markets.FutureDayk do
     field :pre_close, :decimal
     field :volume, :integer
 
+    belongs_to :future, TradingSystem.Markets.Futures, define_field: false, foreign_key: :symbol, references: :symbol
+
     timestamps()
   end
 
