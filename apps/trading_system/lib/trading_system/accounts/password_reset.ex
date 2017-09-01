@@ -20,13 +20,12 @@ defmodule TradingSystem.Accounts.PasswordReset do
 
   defp validate_user(%{valid?: false} = changeset), do: changeset
   defp validate_user(changeset) do
-    IO.inspect get_field(changeset, :email)
-    with email <- get_field(changeset, :email),
-      {:ok, user} <- Accounts.get_user_by(email: email) do
-        put_change(changeset, :user, user)
-      else
-        {:error, _} -> add_error(changeset, :email, "用户不存在")
-      end
+    email = get_field(changeset, :email)
+    
+    case Accounts.get_user(email: email) do
+      nil -> add_error(changeset, :email, "用户不存在")
+      user -> put_change(changeset, :user, user)
+    end
   end
 
   def get_user(%Ecto.Changeset{} = changeset) do

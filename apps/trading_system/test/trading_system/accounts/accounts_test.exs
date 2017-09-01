@@ -26,11 +26,6 @@ defmodule TradingSystem.AccountsTest do
     @valid_attrs %{email: "test@qushi.pro", password: "123456", password_confirmation: "123456"}
     @invalid_attrs %{email: nil, password: nil, password_confirmation: nil}
 
-    test "list_users/0 returns all users" do
-      user_fixture()
-      assert Accounts.list_users()
-    end
-
     test "get_user!/1 returns the user with given id" do
       user = user_fixture()
       assert Accounts.get_user!(user.id)

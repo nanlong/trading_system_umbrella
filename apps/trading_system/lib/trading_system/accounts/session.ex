@@ -40,4 +40,8 @@ defmodule TradingSystem.Accounts.Session do
         false -> add_error(changeset, :password, "密码错误")
       end
   end
+
+  def get_user(%Ecto.Changeset{} = changeset) do
+    get_field(changeset, :user)
+  end
 end
