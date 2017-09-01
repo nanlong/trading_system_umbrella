@@ -43,4 +43,5 @@ defmodule TradingSystem.Markets do
 
   defdelegate create_future(attrs), to: FuturesContext, as: :create
   defdelegate update_future(future, attrs), to: FuturesContext, as: :update
+  defdelegate list_future(market), to: FuturesContext, as: :list
 end

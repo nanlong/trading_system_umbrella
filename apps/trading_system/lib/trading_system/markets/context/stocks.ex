@@ -7,9 +7,9 @@ defmodule TradingSystem.Markets.StocksContext do
   alias TradingSystem.Markets.StockBlacklist
   alias TradingSystem.Markets.StockStar
 
-  @cn_markets ["SH", "SZ"]
-  @hk_markets ["HK"]
-  @us_markets ["NASDAQ", "NYSE", "AMEX"]
+  @cn_markets ~w(SH SZ)
+  @hk_markets ~w(HK)
+  @us_markets ~w(NASDAQ NYSE AMEX)
 
   def create(attrs \\ %{}) do
     %Stocks{}

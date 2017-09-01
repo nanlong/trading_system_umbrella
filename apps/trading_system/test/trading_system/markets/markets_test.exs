@@ -53,7 +53,6 @@ defmodule TradingSystem.MarketsTest do
   end
 
   describe "stock_state" do
-
     @valid_data %{date: ~D[2017-08-21], symbol: "ETH"}
 
     @tag markets_state: true
@@ -62,6 +61,49 @@ defmodule TradingSystem.MarketsTest do
       assert {:ok, %{state: state, stock: stock}} = Markets.create_stock_state(@valid_data)
       assert state.id == stock.stock_state_id
       assert state.symbol == stock.symbol
+    end
+  end
+
+  describe "futures" do
+    alias TradingSystem.Markets.Futures
+
+    @valid_data %{symbol: "RB0", name: "螺纹钢", market: "SHFE"}
+    @invalid_attrs %{symbol: nil, name: nil, market: nil}
+    @update_attrs %{lot_size: 10}
+
+    def future_fixture(attrs \\ %{}) do
+      {:ok, future} =
+        attrs
+        |> Enum.into(@valid_data)
+        |> Markets.create_future()
+      
+      future
+    end
+
+    @tag markets_futures: true
+    test "create_future/1 with valid attrs" do
+      assert {:ok, %Futures{} = future} = Markets.create_future(@valid_data)
+      assert future.symbol == "RB0"
+      assert future.name == "螺纹钢"
+      assert future.market == "SHFE"
+    end
+
+    @tag markets_futures: true
+    test "create_future/1 with invalid attrs" do
+      assert {:error, %Ecto.Changeset{}} = Markets.create_future(@invalid_attrs)
+    end
+
+    @tag markets_futures: true
+    test "list/1 get cn market" do
+      future = future_fixture()
+      assert Markets.list_future(:i) == [future]
+    end
+
+    @tag markets_futures: true
+    test "update/2" do
+      future = future_fixture()
+      assert {:ok, %Futures{} = future} = Markets.update_future(future, @update_attrs)
+      assert future.lot_size == 10
     end
   end
 end
