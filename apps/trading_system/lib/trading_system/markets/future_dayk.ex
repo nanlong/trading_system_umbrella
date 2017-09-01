@@ -7,22 +7,25 @@ defmodule TradingSystem.Markets.FutureDayk do
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "future_dayk" do
-    field :close, :decimal
     field :date, :date
+    field :symbol, :string
+    field :open, :decimal
+    field :close, :decimal
     field :highest, :decimal
     field :lowest, :decimal
-    field :open, :decimal
     field :pre_close, :decimal
-    field :symbol, :string
     field :volume, :integer
 
     timestamps()
   end
 
+  @required_fields ~w(date symbol open close highest lowest pre_close volume)a
+  @optional_fields ~w()a
+
   @doc false
   def changeset(%FutureDayk{} = future_dayk, attrs) do
     future_dayk
-    |> cast(attrs, [:date, :symbol, :open, :highest, :lowest, :close, :pre_close, :volume])
-    |> validate_required([:date, :symbol, :open, :highest, :lowest, :close, :pre_close, :volume])
+    |> cast(attrs, @required_fields ++ @optional_fields)
+    |> validate_required(@required_fields)
   end
 end
