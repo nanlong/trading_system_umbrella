@@ -69,12 +69,16 @@ defmodule TradingApi.Sina.IFuture do
       html
       |> Floki.find(selector)
       |> Floki.text() 
-    
-    lot_size =
-      Regex.named_captures(~r/(?<lot_size>\d+)/, data)
-      |> Map.get("lot_size")
-      |> String.to_integer()
 
+    lot_size =
+      if String.length(data) <= 0 do
+        0
+      else
+        Regex.named_captures(~r/(?<lot_size>\d+)/, data)
+        |> Map.get("lot_size")
+        |> String.to_integer()
+      end
+      
     {:ok, %{"lot_size" => lot_size}}
   end
 
