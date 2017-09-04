@@ -3,7 +3,7 @@ defmodule TradingApi.Sina.IFuture do
   TradingApi.Sina.IFuture.get("list")
   TradingApi.Sina.IFuture.get("detail", symbol: "TA0")
   TradingApi.Sina.IFuture.get("dayk", symbol: "TA0")
-  TradingApi.Sina.IFuture.get("lotSize", symbol: "TA0")
+  TradingApi.Sina.IFuture.get("info", symbol: "TA0")
   """
   use HTTPotion.Base
 
@@ -24,7 +24,7 @@ defmodule TradingApi.Sina.IFuture do
     process_url(@dayk_api, query)
   end
 
-  def process_url("lotSize", query) do
+  def process_url("info", query) do
     query = [
       symbol: Keyword.get(query, :symbol)
     ]
@@ -63,23 +63,47 @@ defmodule TradingApi.Sina.IFuture do
   end
 
   def decode("<!DOCTYPE html" <> _ = html) do
-    selector = "table#table-futures-basic-data tr:nth-child(1) td:nth-child(4)"
+    name = 
+      html
+      |> Floki.find(".futures-title .title")
+      |> Floki.text()
 
     data =
-      html
-      |> Floki.find(selector)
-      |> Floki.text() 
-
-    lot_size =
-      if String.length(data) <= 0 do
-        0
-      else
-        Regex.named_captures(~r/(?<lot_size>\d+)/, data)
-        |> Map.get("lot_size")
-        |> String.to_integer()
-      end
+      case name do
+        "纤维板" ->
+          %{
+            "lot_size" => 500,
+            "price_quote" => "元",
+            "trading_unit" => "张",
+            "minimum_price_change" => "0.05元"
+          }
+        _ ->
+          lot_size_data =
+            html
+            |> Floki.find("table#table-futures-basic-data tr:nth-child(1) td:nth-child(4)")
+            |> Floki.text() 
       
-    {:ok, %{"lot_size" => lot_size}}
+          lot_size =
+            Regex.named_captures(~r/(?<lot_size>\d+)/, lot_size_data)
+            |> Map.get("lot_size")
+            |> String.to_integer()
+      
+          minimum_price_change = 
+            html
+            |> Floki.find("table#table-futures-basic-data tr:nth-child(2) td:nth-child(2)")
+            |> Floki.text() 
+      
+          {minimum_price_change, trading_unit} = String.split(minimum_price_change, "/") |> List.to_tuple()
+      
+          %{
+            "lot_size" => lot_size,
+            "price_quote" => "元",
+            "trading_unit" => trading_unit,
+            "minimum_price_change" => minimum_price_change
+          }
+      end
+    
+    {:ok, data}
   end
 
   def decode("var hq_str_nf_" <> _ = data) do
@@ -106,15 +130,12 @@ defmodule TradingApi.Sina.IFuture do
     diff = price - pre_close |> Float.round(2)
     chg = diff / pre_close * 100 |> Float.round(2)
     
-    lot_size = 
-      TradingApi.Sina.IFuture.get("lotSize", symbol: symbol, timeout: 10_000)
-      |> Map.get(:body) 
-      |> Map.get("lot_size")
+    info = TradingApi.Sina.IFuture.get("info", symbol: symbol, timeout: 10_000) |> Map.get(:body) 
       
     {:ok, %{
       "symbol" => symbol,
       "name" => name,
-      "lot_size" => lot_size,
+      "lot_size" => Map.get(info, "lot_size"),
       "price" => price,
       "open" => open,
       "highest" => highest,
@@ -129,6 +150,9 @@ defmodule TradingApi.Sina.IFuture do
       "open_positions" => open_positions,
       "buy_positions" => buy_positions,
       "sell_positions" => sell_positions,
+      "trading_unit" => Map.get(info, "trading_unit"),
+      "price_quote" => Map.get(info, "price_quote"),
+      "minimum_price_change" => Map.get(info, "minimum_price_change"),
       "datetime" => datetime,
     }}
   end
