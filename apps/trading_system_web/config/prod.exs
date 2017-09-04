@@ -64,6 +64,12 @@ config :trading_system_web, TradingSystem.Web.Scheduler,
     {"30 16 * * 1-5", {TradingTask.Worker.HKStock, :run, []}},
     # 美股
     {"30 5 * * 2-6", {TradingTask.Worker.USStock, :run, []}},
+    # 国内期货 
+    {"30 15 * * 1-5", {TradingTask.Worker.IFuture, :run, []}},
+    # 国内期货 夜盘
+    {"00 3 * * 2-6", {TradingTask.Worker.IFuture, :run, []}},
+    # 国外期货
+    {"00 6 * * 2-6", {TradingTask.Worker.GFuture, :run, []}},
   ]
 
 # Finally import the config/prod.secret.exs
