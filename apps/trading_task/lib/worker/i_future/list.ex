@@ -17,7 +17,7 @@ defmodule TradingTask.Worker.IFuture.List do
           future -> {:ok, future}
         end
       
-      Exq.enqueue(Exq, "default", TradingTask.Worker.IFuture.LotSize, [future.symbol])
+      Exq.enqueue(Exq, "default", TradingTask.Worker.IFuture.Detail, [future.symbol])
       Exq.enqueue(Exq, "default", TradingTask.Worker.IFuture.Dayk, [future.symbol])
     end)
   end
