@@ -3,7 +3,7 @@ defmodule TradingApi.Sina.GFuture do
   TradingApi.Sina.GFuture.get("list")
   TradingApi.Sina.GFuture.get("detail", symbol: "CL")
   TradingApi.Sina.GFuture.get("dayk", symbol: "CL")
-  TradingApi.Sina.GFuture.get("lotSize", symbol: "CL")
+  TradingApi.Sina.GFuture.get("info", symbol: "CL")
   """
   use HTTPotion.Base
 
@@ -24,7 +24,7 @@ defmodule TradingApi.Sina.GFuture do
     process_url(@dayk_api, query)
   end
 
-  def process_url("lotSize", query) do
+  def process_url("info", query) do
     query = [
       symbol: Keyword.get(query, :symbol)
     ]
@@ -141,15 +141,12 @@ defmodule TradingApi.Sina.GFuture do
     name = elem(data, 13)
     diff = (price - pre_close) |> Float.round(2)
     datetime = "#{elem(data, 12)} #{elem(data, 6)}"
-    lot_size = 
-      TradingApi.Sina.GFuture.get("lotSize", symbol: symbol, timeout: 10_000)
-      |> Map.get(:body) 
-      |> Map.get("lot_size")
-
+    info = TradingApi.Sina.GFuture.get("info", symbol: symbol, timeout: 10_000) |> Map.get(:body) 
+     
     {:ok, %{
       "symbol" => symbol,
       "name" => name,
-      "lot_size" => lot_size,
+      "lot_size" => Map.get(info, "lot_size"),
       "price" => price,
       "open" => open,
       "highest" => highest,
@@ -162,6 +159,9 @@ defmodule TradingApi.Sina.GFuture do
       "open_positions" => open_positions,
       "buy_positions" => buy_positions,
       "sell_positions" => sell_positions,
+      "trading_unit" => Map.get(info, "trading_unit"),
+      "price_quote" => Map.get(info, "price_quote"),
+      "minimum_price_change" => Map.get(info, "minimum_price_change"),
       "datetime" => datetime,
     }}
   end
