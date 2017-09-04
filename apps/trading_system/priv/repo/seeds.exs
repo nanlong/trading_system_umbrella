@@ -1,24 +1,18 @@
-alias TradingSystem.Repo
 alias TradingSystem.Markets
-alias TradingSystem.Markets.Stocks
-alias TradingSystem.Markets.StockDayk
-import Ecto.Query, warn: false
+alias TradingApi.Sina.GFuture, as: Api
 
 
-Repo.all(Stocks)
-|> Enum.map(fn(stock) -> 
+Markets.list_future(:g)
+|> Enum.map(fn(x) -> 
+  %{body: body} = Api.get("lotSize", symbol: x.symbol, timeout: 30_000)
 
-  dayk =
-    StockDayk
-    |> where([dayk], dayk.symbol == ^stock.symbol)
-    |> order_by([dayk], desc: dayk.date)
-    |> limit(1)
-    |> Repo.one()
-
-  case dayk do
-    nil -> nil
-    dayk -> 
-      IO.puts "更新股票 #{stock.symbol} #{stock.cname}"
-      {:ok, _} = Markets.update_stock(stock, %{lot_size: 1, stock_dayk_id: dayk.id})
-  end
+  [
+    x.symbol, 
+    x.name, 
+    Map.get(body, "trading_unit"), 
+    Map.get(body, "price_quote"), 
+    Map.get(body, "minimum_price_change"), 
+    Map.get(body, "trading_hours")
+  ]
 end)
+|> Enum.map(fn(x) -> IO.puts(x |> Enum.join(" ") ) end)

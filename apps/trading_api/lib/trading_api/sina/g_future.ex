@@ -84,10 +84,39 @@ defmodule TradingApi.Sina.GFuture do
       |> Map.get("lot_size")
       |> String.to_integer()
 
+    price_quote =
+      html
+      |> Floki.find("table#table-futures-basic-data tr:nth-child(1) td:nth-child(6)")
+      |> Floki.text() 
+
+    {trading_unit, price_quote} = 
+      case price_quote do
+        "美元美分/美金衡盎司" -> {"美元", "金衡盎司"}
+        "美元美分/每金衡盎司" -> {"美元", "金衡盎司"}
+        "美分和0.25美分/蒲式耳" -> {"美分", "蒲式耳"}
+        string -> String.split(string, "/") |> List.to_tuple()
+      end
+
+    minimum_price_change = 
+      html
+      |> Floki.find("table#table-futures-basic-data tr:nth-child(2) td:nth-child(2)")
+      |> Floki.text() 
+
+    minimum_price_change =
+      case minimum_price_change do
+        "$0.0005/磅" -> "0.05美元"
+        "电话交易：0.5美元/吨 电子盘：0.25美元/吨" -> "0.25美元"
+        "电话交易：5美元/吨 电子盘：1美元/吨" -> "1美元"
+        string -> String.split(string, "/") |> List.first()
+      end
+
     data = %{
       "name" => name,
       "cname" => cname,
-      "lot_size" => lot_size
+      "lot_size" => lot_size,
+      "trading_unit" => trading_unit,
+      "price_quote" => price_quote,
+      "minimum_price_change" => minimum_price_change,
     }
 
     {:ok, data}
