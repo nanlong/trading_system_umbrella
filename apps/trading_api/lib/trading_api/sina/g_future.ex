@@ -113,7 +113,7 @@ defmodule TradingApi.Sina.GFuture do
     diff = (price - pre_close) |> Float.round(2)
     datetime = "#{elem(data, 12)} #{elem(data, 6)}"
     lot_size = 
-      TradingApi.Sina.GFuture.get("lotSize", symbol: symbol)
+      TradingApi.Sina.GFuture.get("lotSize", symbol: symbol, timeout: 10_000)
       |> Map.get(:body) 
       |> Map.get("lot_size")
 

@@ -107,7 +107,7 @@ defmodule TradingApi.Sina.IFuture do
     chg = diff / pre_close * 100 |> Float.round(2)
     
     lot_size = 
-      TradingApi.Sina.IFuture.get("lotSize", symbol: symbol)
+      TradingApi.Sina.IFuture.get("lotSize", symbol: symbol, timeout: 10_000)
       |> Map.get(:body) 
       |> Map.get("lot_size")
       
