@@ -83,6 +83,7 @@ defmodule TradingSystem.Web.USStocksController do
     }
 
     conn
+    |> assign(:title, stock.cname)
     |> assign(:date, d)
     |> assign(:system, (if cycle == 20, do: "1", else: "2"))
     |> assign(:stock, stock)

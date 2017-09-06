@@ -7,6 +7,10 @@
           <td><%= @user_config.account |> float_to_string() %></td>
         </tr>
         <tr>
+          <th>最低资金：</th>
+          <td><%= @state.atr20 |> Decimal.mult(Decimal.new(@stock.lot_size)) |> Decimal.div(Decimal.new(@user_config.atr_account_ratio)) |> Decimal.mult(Decimal.new(100)) %></td>
+        </tr>
+        <tr>
           <th>最大头寸规模：</th>
           <td><%= @user_config.position %></td>
         </tr>
