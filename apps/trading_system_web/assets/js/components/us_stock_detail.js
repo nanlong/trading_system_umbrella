@@ -60,67 +60,60 @@ class USStockDetail extends React.Component {
             <table className="table">
               <thead>
                 <tr>
-                  <th colSpan="2">详细行情</th>
+                  <th colSpan="4">详细行情</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <th>开盘：</th>
                   <td>{data.open}</td>
-                </tr>
-                <tr>
-                  <th>成交：</th>
-                  <td>{data.volume}</td>
-                </tr>
-                <tr>
-                  <th>10日均量：</th>
-                  <td>{data.volumeD10Avg}</td>
-                </tr>
-                <tr>
                   <th>前收盘：</th>
                   <td>{data.preClose}</td>
                 </tr>
                 <tr>
+                  <th>成交：</th>
+                  <td>{data.volume}</td>
                   <th>区间：</th>
                   <td>{data.lowest}-{data.highest}</td>
                 </tr>
                 <tr>
+                  <th>10日均量：</th>
+                  <td>{data.volumeD10Avg}</td>
                   <th>52周区间：</th>
                   <td>{data.w52Lowest}-{data.w52Highest}</td>
                 </tr>
+                
               </tbody>
             </table>
+
+          </div>
+          <div className="column">
             <table className="table">
               <thead>
                 <tr>
-                  <th colSpan="2">基本面摘要</th>
+                  <th colSpan="4">基本面摘要</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <th>市盈率：</th>
                   <td>{data.pe}</td>
-                </tr>
-                <tr>
-                  <th>每股收益：</th>
-                  <td>{data.eps}</td>
-                </tr>
-                <tr>
-                  <th>贝塔系数：</th>
-                  <td>{data.beta}</td>
-                </tr>
-                <tr>
                   <th>市值：</th>
                   <td>{data.marketCap}</td>
                 </tr>
                 <tr>
+                  <th>每股收益：</th>
+                  <td>{data.eps}</td>
                   <th>股本：</th>
                   <td>{data.capital}</td>
                 </tr>
                 <tr>
+                  <th>贝塔系数：</th>
+                  <td>{data.beta}</td>
                   <th>股息/收益率：</th>
                   <td>{data.dividend}/{data.yield}</td>
                 </tr>
+                
               </tbody>
             </table>
           </div>

@@ -288,13 +288,13 @@ class StockChart extends React.Component {
       grid: [
         {
           top: '8%',
-          left: '5%',
-          right: '5%',
+          left: '4%',
+          right: '1%',
           bottom: '25%'
         },
         {
-          left: '5%',
-          right: '5%',
+          left: '4%',
+          right: '1%',
           top: '82%',
           height: '8%'
         }
