@@ -1,0 +1,108 @@
+<div class="columns">
+  <div class="column is-3">
+    <div class="box">
+      <table class="table">
+        <tr>
+          <th>账户资金：</th>
+          <td><%= @user_config.account |> float_to_string() %></td>
+        </tr>
+        <tr>
+          <th>最大头寸规模：</th>
+          <td><%= @user_config.position %></td>
+        </tr>
+        <tr>
+          <th>波幅比：</th>
+          <td><%= @user_config.atr_account_ratio %>%</td>
+        </tr>
+        <tr>
+          <th>加仓策略：</th>
+          <td><%= @user_config.atr_add_step %>个ATR</td>
+        </tr>
+        <tr>
+          <th>止损策略：</th>
+          <td><%= @user_config.atr_stop_step * @user_config.atr_account_ratio %>%</td>
+        </tr>
+        <tr>
+          <th>操作方向：</th>
+          <td><%= if Decimal.cmp(@state.ma50, @state.ma300) == :gt, do: "做多", else: "做空" %></td>
+        </tr>
+        <tr>
+          <th>ATR：</th>
+          <td><%= @state.atr20 %></td>
+        </tr>
+      </table>
+      <h3>说明：</h3>
+      <p><strong>ATR</strong> 又称Average true range平均真实波动范围，简称ATR指标，是由J.Welles Wilder 发明的，ATR指标主要是用来衡量市场波动的强烈度，即为了显示市场变化率的指标。</p>
+      <p><strong>波幅比</strong> 指的是1个ATR的价格变动对账户资金的影响，当前参数为：如果价格下跌了一个ATR波幅，那么账户资金减少<%= @user_config.atr_account_ratio %>%，反之则增加<%= @user_config.atr_account_ratio %>%。</p>
+      <p><strong>加仓策略</strong> 指的是有价格突破并成功建仓后，做多时价格上涨，做空时价格下跌，并达到<%= @user_config.atr_add_step %>个ATR的时候，进行加仓操作。</p>
+      <p><strong>止损策略</strong> 指的是开始一笔交易之后，市场并未按预期上涨或下跌，也就是说判断失败了，那么到达止损价的时候，会损失的资金总额。当前参数为：损失总资金的<%= @user_config.atr_stop_step * @user_config.atr_account_ratio %>%，对应<%= @user_config.atr_stop_step %>个ATR。</p>
+    </div>
+  </div>
+  <div class="column">
+    <div>
+      <strong style="font-size: 24px;">
+        <%= @stock.cname %> 
+        <%= @stock.market %>:<%= @stock.symbol %>
+      </strong>
+      <span><%= @stock.name %></span>
+    </div>
+    <div id="us-stock-detail"></div>
+    <div style="padding-bottom: 10px;">
+      <form action="/markets/US_Stocks/<%= @stock.symbol %>/scheme">
+        <div class="field has-addons">
+          <p class="control">
+            <span class="select">
+              <select name="system">
+                <option value="1"<%= if @system == "1", do: " selected", else: "" %>>短期系统 (20日-10日)</option>
+                <option value="2"<%= if @system == "2", do: " selected", else: "" %>>长期系统 (60日-20日)</option>
+              </select>
+            </span>
+          </p>
+          <p class="control">
+            <span class="select">
+              <select name="d">
+                <%= for date <- @date_range do %>
+                <option value="<%= date %>"<%= if @date == date, do: " selected", else: "" %>><%= date %></option>
+                <% end %>
+              </select>
+            </span>
+          </p>
+
+          <p class="control">
+            <button class="button" type="submit">
+              切换
+            </button>
+          </p>
+        </div>
+      </form>
+    </div>
+
+    <div class="panel">
+      <p class="panel-heading">头寸管理</p>
+      <div class="panel-block">
+        <%= if @cycle == 20 do %>
+        唐奇安通道短期系统 (20日-10日) 
+        <%= if @config.tread == "bull" do %>
+        突破价: <%= @state.dcu20 %> 
+        平仓价: <%= @state.dcl10 %>
+        <% else %>
+        突破价: <%= @state.dcl20 %> 
+        平仓价: <%= @state.dcu10 %>
+        <% end %>
+        <% else %>
+        唐奇安通道长期系统 (60日-20日)
+        <%= if @config.tread == "bull" do %>
+        突破价: <%= @state.dcu60 %> 
+        平仓价: <%= @state.dcl20 %>
+        <% else %>
+        突破价: <%= @state.dcl60 %> 
+        平仓价: <%= @state.dcu20 %>
+        <% end %>
+        <% end %>
+      </div>
+      <div class="panel-block">
+        <%= render TradingSystem.Web.MarketsView, "position.html", state: @state, config: @config.userConfig, cycle: @cycle %>
+      </div>
+    </div>
+  </div>
+</div>

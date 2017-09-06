@@ -41,8 +41,8 @@ defmodule TradingSystem.Web.Helpers do
     iex> StockView.buy(state, config, 4)
     175.61
   """
-  def buy(state, config, position) do
-    buy_signal = buy_signal(state, config)
+  def buy(state, config, position, cycle \\ 20) do
+    buy_signal = buy_signal(state, cycle)
     atr = atr(state, config)
 
     TradingKernel.Common.buy(
@@ -70,8 +70,8 @@ defmodule TradingSystem.Web.Helpers do
     iex> StockView.buy_avg(state, config, 4)
     171.56
   """
-  def buy_avg(state, config, position) do
-    buy_signal = buy_signal(state, config)
+  def buy_avg(state, config, position, cycle \\ 20) do
+    buy_signal = buy_signal(state, cycle)
     atr = atr(state, config)
 
     TradingKernel.Common.buy_avg(
@@ -100,8 +100,8 @@ defmodule TradingSystem.Web.Helpers do
     iex> StockView.stop_loss(state, config, 4)
     166.16
   """
-  def stop_loss(state, config, position) do
-    buy_signal = buy_signal(state, config)
+  def stop_loss(state, config, position, cycle \\ 20) do
+    buy_signal = buy_signal(state, cycle)
     atr = atr(state, config)
 
     TradingKernel.Common.stop_loss(
@@ -152,8 +152,8 @@ defmodule TradingSystem.Web.Helpers do
     iex> StockView.unit_cost(state, config, 4)
     16331.73
   """
-  def unit_cost(state, config, position) do
-    buy_signal = buy_signal(state, config)
+  def unit_cost(state, config, position, cycle \\ 20) do
+    buy_signal = buy_signal(state, cycle)
     atr = atr(state, config)
 
     TradingKernel.Common.unit_cost(
@@ -177,10 +177,10 @@ defmodule TradingSystem.Web.Helpers do
     iex> StockView.all_cost(state, config)
     63820.32
   """
-  def all_cost(state, config, position \\ 0) do
+  def all_cost(state, config, position \\ 0, cycle \\ 20) do
     range_end = if position > 0, do: position, else: config.position
 
-    (for position <- 1..range_end, do: unit_cost(state, config, position)) 
+    (for position <- 1..range_end, do: unit_cost(state, config, position, cycle)) 
     |> Enum.sum 
     |> Float.round(2)
   end
@@ -202,9 +202,9 @@ defmodule TradingSystem.Web.Helpers do
 
   def float_to_string(float), do: :erlang.float_to_binary(float, decimals: 2)
 
-  defp buy_signal(state, config) do
+  defp buy_signal(state, cycle \\ 20) do
     prefix = if tread(state) == :bull, do: "dcu", else: "dcl"
-    Decimal.to_float(Map.get(state, String.to_atom(prefix <> Integer.to_string(config.create_days))))
+    Decimal.to_float(Map.get(state, String.to_atom(prefix <> Integer.to_string(cycle))))
   end
 
   defp atr(state, _config) do

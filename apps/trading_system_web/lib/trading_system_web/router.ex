@@ -46,7 +46,9 @@ defmodule TradingSystem.Web.Router do
     resources "/markets", MarketController, singleton: true, only: [:show] do
       resources "/CN_Stocks", CNStocksController, param: "symbol", only: [:index, :show]
       resources "/HK_Stocks", HKStocksController, param: "symbol", only: [:index, :show]
-      resources "/US_Stocks", USStocksController, param: "symbol", only: [:index, :show]
+      resources "/US_Stocks", USStocksController, param: "symbol", only: [:index, :show] do
+        get "/scheme", USStocksController, :scheme, as: :scheme
+      end
     end
 
     resources "/toolbox/calculator", CalculatorController, singleton: true, only: [:show, :create]

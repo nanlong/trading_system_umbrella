@@ -17,6 +17,13 @@ defmodule TradingSystem.Markets.StockStateContext do
     |> Repo.transaction()
   end
 
+  def get(symbol: symbol, date: date) do
+    StockState
+    |> where([s], s.symbol == ^symbol)
+    |> where([s], s.date == ^date)
+    |> Repo.one()
+  end
+
   def list(symbol: symbol) do
     StockState
     |> where([s], s.symbol == ^symbol)

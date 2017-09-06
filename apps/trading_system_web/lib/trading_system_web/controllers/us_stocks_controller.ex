@@ -58,4 +58,39 @@ defmodule TradingSystem.Web.USStocksController do
     |> assign(:state, stock.state)
     |> render(:show)
   end
+
+  def scheme(conn, %{"system" => "1"} = params), do: scheme(conn, params |> Map.delete("system") |> Map.put("cycle", 20))
+  def scheme(conn, %{"system" => "2"} = params), do: scheme(conn, params |> Map.delete("system") |> Map.put("cycle", 60))
+
+  def scheme(conn, %{"us_stocks_symbol" => symbol, "d" => d, "cycle" => cycle}) do
+    stock = Markets.get_stock!(symbol: symbol)
+    state = Markets.get_stock_state(symbol: symbol, date: d)
+    date_range = 
+      Markets.list_stock_state(symbol: symbol)
+      |> Enum.map(fn(x) -> Date.to_string(x.date) end)
+      |> Enum.reverse()
+    user_config = 
+      Accounts.get_config(user_id: conn.assigns.current_user.id)
+      |> Map.put(:lot_size, stock.lot_size)
+
+    config = %{
+      symbol: symbol,
+      tread: (if Decimal.cmp(state.ma50, state.ma300) == :gt, do: "bull", else: "bear"),
+      isBlacklist: Markets.blacklist_stock?(symbol, conn.assigns.current_user.id),
+      isStar: Markets.star_stock?(symbol, conn.assigns.current_user.id),
+      isVip: Accounts.vip?(conn.assigns.current_user),
+      userConfig: Map.put(user_config, :lot_size, stock.lot_size),
+    }
+
+    conn
+    |> assign(:date, d)
+    |> assign(:system, (if cycle == 20, do: "1", else: "2"))
+    |> assign(:stock, stock)
+    |> assign(:state, state)
+    |> assign(:cycle, cycle)
+    |> assign(:config, config)
+    |> assign(:user_config, user_config)
+    |> assign(:date_range, date_range)
+    |> render(:scheme)
+  end
 end

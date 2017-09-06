@@ -33,7 +33,7 @@
         查看
       </p>
 
-      <%= link "交易方案", to: "", class: "panel-block" %>
+      <%= link "交易方案", to: market_us_stocks_scheme_path(@conn, :scheme, @stock.symbol, d: @state.date |> Date.to_string(), system: (if @config.userConfig.atr_days == 20, do: "1", else: "2")), class: "panel-block", target: "_blank" %>
       <%= link "回测情况", to: "", class: "panel-block" %>
     </nav>
   </div>
